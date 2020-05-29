@@ -13,7 +13,7 @@ export class StudentResolver {
   constructor(private readonly studentService: StudentsService) {}
 
   @Query(returns => Student)
-  async student(@Args('id') id: string): Promise<Student> {
+  async student(@Args('id') id: number): Promise<Student> {
     const student = await this.studentService.findOneById(id);
     if (!student) {
       throw new NotFoundException(id);
@@ -36,7 +36,7 @@ export class StudentResolver {
   }
 
   @Mutation(returns => Boolean)
-  async removeStudent(@Args('id') id: string) {
+  async removeStudent(@Args('id') id: number) {
     return this.studentService.remove(id);
   }
 

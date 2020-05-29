@@ -16,13 +16,13 @@ type Student {
 scalar Date
 
 type Query {
-  student(id: String!): Student!
+  student(id: Float!): Student!
   students(skip: Int = 0, take: Int = 25): [Student!]!
 }
 
 type Mutation {
   addStudent(newStudentData: NewStudentInput!): Student!
-  removeStudent(id: String!): Boolean!
+  removeStudent(id: Float!): Boolean!
 }
 
 input NewStudentInput {
