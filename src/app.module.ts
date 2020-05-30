@@ -13,9 +13,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      'mongodb+srv://geral:11019601@cluster0-kbti7.mongodb.net/test?retryWrites=true&w=majority',
-    ),
+    MongooseModule.forRoot('mongodb://localhost:27018/pjnestjs'),
+    // MongooseModule.forRoot(
+    //   'mongodb+srv://geral:11019601@cluster0-kbti7.mongodb.net/test?retryWrites=true&w=majority',
+    // ),
     TypeOrmModule.forRoot(config),
     GraphQLModule.forRoot({
       installSubscriptionHandlers: true,
