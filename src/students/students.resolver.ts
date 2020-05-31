@@ -4,7 +4,7 @@ import { PubSub } from 'apollo-server-express';
 import { NewStudentInput } from './dto/new-student.input';
 import { StudentArgs } from './dto/student.arqs';
 import { Student } from './models/sutdent.model';
-import { StudentsService } from './sutdentsgq.service';
+import { StudentsService } from './sutdents.service';
 
 const pubSub = new PubSub();
 
@@ -30,14 +30,19 @@ export class StudentResolver {
   async addStudent(
     @Args('newStudentData') newStudentData: NewStudentInput,
   ): Promise<Student> {
-    const recipe = await this.studentService.create(newStudentData);
-    pubSub.publish('studentAdded', { studentAdded: recipe });
-    return recipe;
+    const student = await this.studentService.create({ ...newStudentData });
+    pubSub.publish('studentAdded', { studentAdded: student });
+    return student;
   }
 
   @Mutation(returns => Boolean)
   async removeStudent(@Args('id') id: number) {
-    return this.studentService.remove(id);
+    await this.studentService.remove(id);
+    const student = await this.studentService.findOneById(id);
+    if (!student) {
+      return true;
+    }
+    return false;
   }
 
   @Subscription(returns => Student)

@@ -9,7 +9,7 @@ type Student {
   bairro: String
   cidade: String
   createdAt: Date!
-  updateAt: Date!
+  updateAt: Date
 }
 
 """Date custom scalar type"""

@@ -13,7 +13,8 @@ export class StudentsService {
   ) {}
 
   async create(student: NewStudentInput): Promise<Student> {
-    return await this.studentsRepository.save(student);
+    const stud = await this.studentsRepository.save(student);
+    return stud;
   }
 
   async findOneById(id: number): Promise<Student> {

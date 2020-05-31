@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
-import { StudentsModule } from './student/students.module';
-import { StudentsgqModule } from './studentsgq/studentsgq.module';
+import { StudentsgqModule } from './students/students.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { AppController } from './app.controller';
@@ -25,7 +24,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     UsersModule,
     TasksModule,
     AuthModule,
-    StudentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
