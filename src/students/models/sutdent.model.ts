@@ -17,9 +17,9 @@ export class Student {
   @Field({ nullable: true })
   cidade?: string;
 
-  @Field()
-  createdAt: Date;
+  @Field({ name: 'createdAt' })
+  created_at: Date;
 
-  @Field({ nullable: true })
-  updateAt: Date;
+  @Field({ name: 'updateAt', nullable: true })
+  update_at: Date;
 }
