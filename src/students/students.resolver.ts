@@ -1,10 +1,11 @@
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'apollo-server-express';
 import { NewStudentInput } from './dto/new-student.input';
 import { StudentArgs } from './dto/student.arqs';
 import { Student } from './models/sutdent.model';
 import { StudentsService } from './sutdents.service';
+import { GqlAuthGuard } from '../auth/shared/jwt-authgq.gaurd';
 
 const pubSub = new PubSub();
 
@@ -22,11 +23,13 @@ export class StudentResolver {
   }
 
   @Query(returns => [Student])
+  @UseGuards(GqlAuthGuard)
   students(@Args() studentsArgs: StudentArgs): Promise<Student[]> {
     return this.studentService.findAll(studentsArgs);
   }
 
   @Mutation(returns => Student)
+  @UseGuards(GqlAuthGuard)
   async addStudent(
     @Args('newStudentData') newStudentData: NewStudentInput,
   ): Promise<Student> {
