@@ -3,24 +3,22 @@ import { IsOptional, Length, MaxLength } from 'class-validator';
 
 @InputType()
 export class NewStudentInput {
-  @Field()
-  @MaxLength(100)
   @Field({ nullable: false })
+  @MaxLength(100)
   name: string;
 
-  @Field()
-  @IsOptional()
+  @Field({ nullable: true })
   @MaxLength(100)
-  @Field({ nullable: true })
-  endereco?: string;
-  
-  @Field({ nullable: true })
-  @MaxLength(50)
   @IsOptional()
-  bairro?: string;  
+  endereco?: string;
 
   @Field({ nullable: true })
   @MaxLength(50)
   @IsOptional()
-  cidade?: string;  
+  bairro?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(50)
+  @IsOptional()
+  cidade?: string;
 }

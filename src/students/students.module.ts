@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { DateScalar } from '../common/scalars/date.scalar';
 import { StudentResolver } from './students.resolver';
-import { StudentsService } from './sutdentsgq.service';
+import { StudentsService } from './sutdents.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Student } from './../student/schemas/student.entity';
+import { Student } from './schemas/student.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Student])],
