@@ -21,4 +21,9 @@ export class NewStudentInput {
   @MaxLength(50)
   @IsOptional()
   cidade?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(100)
+  @IsOptional()
+  image?: string;
 }

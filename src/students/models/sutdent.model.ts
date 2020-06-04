@@ -2,7 +2,7 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class Student {
-  @Field(type => ID)
+  @Field(() => ID)
   id: string;
 
   @Field()
@@ -22,4 +22,7 @@ export class Student {
 
   @Field({ name: 'updatedAt', nullable: true })
   updated_at: Date;
+
+  @Field({ nullable: true })
+  image: string;
 }

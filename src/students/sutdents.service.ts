@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { NewStudentInput } from './dto/new-student.input';
-import { StudentArgs } from './dto/student.arqs';
+import { StudentArgs } from './dto/student.args';
 import { Student } from './models/sutdent.model';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';

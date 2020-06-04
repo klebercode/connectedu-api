@@ -9,7 +9,8 @@ type Student {
   bairro: String
   cidade: String
   createdAt: Date!
-  updateAt: Date
+  updatedAt: Date
+  image: String
 }
 
 """Date custom scalar type"""
@@ -30,6 +31,7 @@ input NewStudentInput {
   endereco: String
   bairro: String
   cidade: String
+  image: String
 }
 
 type Subscription {

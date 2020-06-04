@@ -9,11 +9,17 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
 import { config } from './orm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MulterModule } from '@nestjs/platform-express';
+import { FileUploadModule } from './fileUpload/fileUpload.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     MongooseModule.forRoot(
-      'mongodb+srv://geral:11019601@cluster0-kbti7.mongodb.net/test?retryWrites=true&w=majority',
+      'mongodb+srv://cadu:cadu3105@cluster0-vjqze.mongodb.net/test?retryWrites=true&w=majority',
     ),
     TypeOrmModule.forRoot(config),
     GraphQLModule.forRoot({
@@ -24,8 +30,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     UsersModule,
     TasksModule,
     AuthModule,
+    FileUploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
