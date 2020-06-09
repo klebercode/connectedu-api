@@ -9,6 +9,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
 import { config } from './orm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { GroupModule } from './group/group.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     UsersModule,
     TasksModule,
     AuthModule,
+    GroupModule,
   ],
   controllers: [AppController],
   providers: [AppService],
