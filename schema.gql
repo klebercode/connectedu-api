@@ -65,6 +65,7 @@ input NewStudentInput {
   endereco: String
   bairro: String
   cidade: String
+  image: String
 }
 
 input NewUsers {

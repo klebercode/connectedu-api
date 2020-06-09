@@ -16,6 +16,9 @@ export class Student extends BaseEntity {
   @Column({ type: 'varchar', length: 50, nullable: true })
   cidade: string;
 
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  image: string;
+
   @Column({ nullable: true })
   usercreatedId: number;
 

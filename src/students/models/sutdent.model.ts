@@ -3,7 +3,7 @@ import { User } from '../../users/models/user.model';
 
 @ObjectType()
 export class Student {
-  @Field(type => ID)
+  @Field(() => ID)
   id: string;
 
   @Field()
@@ -35,4 +35,5 @@ export class Student {
 
   @Field(type => User, { nullable: true })
   userupdated: User;
+  image: string;
 }
