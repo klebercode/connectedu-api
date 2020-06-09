@@ -2,7 +2,7 @@ import { NotFoundException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'apollo-server-express';
 import { NewStudentInput } from './dto/new-student.input';
-import { StudentArgs } from './dto/student.arqs';
+import { StudentArgs } from './dto/student.args';
 import { Student } from './models/sutdent.model';
 import { StudentsService } from './sutdents.service';
 import { GqlAuthGuard } from '../auth/shared/jwt-authgq.gaurd';

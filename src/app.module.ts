@@ -9,13 +9,33 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
 import { config } from './orm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { FileUploadModule } from './fileUpload/fileUpload.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      'mongodb+srv://geral:11019601@cluster0-kbti7.mongodb.net/test?retryWrites=true&w=majority',
-    ),
-    TypeOrmModule.forRoot(config),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGO_URI'),
+      }),
+      inject: [ConfigService],
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        ...config,
+        username: configService.get<string>('DB_USER'),
+        password: configService.get<string>('DB_PASS'),
+        port: configService.get<number>('DB_PORT'),
+        host: configService.get<string>('DB_HOST'),
+        database: configService.get<any>('DB_NAME')
+      }),
+      inject: [ConfigService]
+    }),
     GraphQLModule.forRoot({
       installSubscriptionHandlers: true,
       autoSchemaFile: 'schema.gql',
@@ -25,8 +45,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     UsersModule,
     TasksModule,
     AuthModule,
+    FileUploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

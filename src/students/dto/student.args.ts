@@ -3,11 +3,11 @@ import { Max, Min } from 'class-validator';
 
 @ArgsType()
 export class StudentArgs {
-  @Field(type => Int)
+  @Field(() => Int)
   @Min(0)
   skip: number = 0;
 
-  @Field(type => Int)
+  @Field(() => Int)
   @Min(1)
   @Max(50)
   take: number = 25;
