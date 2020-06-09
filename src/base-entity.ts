@@ -6,7 +6,7 @@ import {
 
 export class BaseEntity {
   @PrimaryGeneratedColumn()
-  id?: number;
+  id: number;
 
   @CreateDateColumn({ nullable: true })
   created_at?: Date;
@@ -14,4 +14,3 @@ export class BaseEntity {
   @UpdateDateColumn({ nullable: true })
   updated_at?: Date;
 }
-

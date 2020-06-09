@@ -2,6 +2,18 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  password: String!
+  createdAt: Date!
+  updatedAt: Date
+}
+
+"""Date custom scalar type"""
+scalar Date
+
 type Student {
   id: ID!
   name: String!
@@ -9,20 +21,43 @@ type Student {
   bairro: String
   cidade: String
   createdAt: Date!
-  updateAt: Date
+  updatedAt: Date
+  usercreatedId: Float
+  userupdatedId: Float
+  usercreated: User
+  userupdated: User
 }
 
-"""Date custom scalar type"""
-scalar Date
+type Group {
+  id: ID!
+  description: String!
+  tipo: Boolean!
+  dateBegin: Date
+  dateEnd: Date
+  createdAt: Date!
+  updatedAt: Date
+}
 
 type Query {
-  student(id: Float!): Student!
-  students(skip: Int = 0, take: Int = 25): [Student!]!
+  studentId(id: Float!): Student!
+  studentAll(skip: Int = 0, take: Int = 25): [Student!]!
+  userId(id: Float!): User!
+  userAll: [User!]!
+  userLogin(password: String!, email: String!): String!
+  groupId(id: Float!): Group!
+  groupAll: [Group!]!
 }
 
 type Mutation {
-  addStudent(newStudentData: NewStudentInput!): Student!
-  removeStudent(id: Float!): Boolean!
+  studentCreate(newData: NewStudentInput!): Student!
+  studentUpdate(updateData: NewStudentInput!, id: Float!): Student!
+  studentRemove(id: Float!): Boolean!
+  userCreate(newData: NewUsers!): User!
+  userDelete(id: Float!): Boolean!
+  userUpdate(updateData: NewUsers!, id: Float!): User!
+  groupCreate(newData: NewGroup!): Group!
+  groupDelete(id: Float!): Boolean!
+  groupUpdate(updateData: NewGroup!, id: Float!): Group!
 }
 
 input NewStudentInput {
@@ -30,6 +65,20 @@ input NewStudentInput {
   endereco: String
   bairro: String
   cidade: String
+  image: String
+}
+
+input NewUsers {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input NewGroup {
+  description: String!
+  tipo: Boolean
+  dateBegin: Date
+  dateEnd: Date
 }
 
 type Subscription {
