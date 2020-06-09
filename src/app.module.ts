@@ -9,19 +9,33 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
 import { config } from './orm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MulterModule } from '@nestjs/platform-express';
 import { FileUploadModule } from './fileUpload/fileUpload.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MongooseModule.forRoot(
-      'mongodb+srv://cadu:cadu3105@cluster0-vjqze.mongodb.net/test?retryWrites=true&w=majority',
-    ),
-    TypeOrmModule.forRoot(config),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGO_URI'),
+      }),
+      inject: [ConfigService],
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        ...config,
+        username: configService.get<string>('DB_USER'),
+        password: configService.get<string>('DB_PASS'),
+        port: configService.get<number>('DB_PORT'),
+        host: configService.get<string>('DB_HOST'),
+        database: configService.get<any>('DB_NAME')
+      }),
+      inject: [ConfigService]
+    }),
     GraphQLModule.forRoot({
       installSubscriptionHandlers: true,
       autoSchemaFile: 'schema.gql',
