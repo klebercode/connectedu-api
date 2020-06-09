@@ -20,6 +20,6 @@ export class Student {
   @Field({ name: 'createdAt' })
   created_at: Date;
 
-  @Field({ name: 'updateAt', nullable: true })
-  update_at: Date;
+  @Field({ name: 'updatedAt', nullable: true })
+  updated_at: Date;
 }

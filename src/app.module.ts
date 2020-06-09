@@ -20,6 +20,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     GraphQLModule.forRoot({
       installSubscriptionHandlers: true,
       autoSchemaFile: 'schema.gql',
+      context: ({ req, res }) => ({ req, res }),
     }),
     StudentsgqModule,
     UsersModule,
