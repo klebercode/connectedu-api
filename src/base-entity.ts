@@ -1,16 +1,25 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { IsOptional } from 'class-validator';
 
+@ObjectType()
 export class BaseEntity {
+  @Field(() => ID)
   @PrimaryGeneratedColumn()
+  @IsOptional()
   id: number;
 
-  @CreateDateColumn({ nullable: true })
-  created_at?: Date;
+  @Field({ name: 'createdAt', nullable: true })
+  @CreateDateColumn()
+  @IsOptional()
+  createdAt?: Date;
 
-  @UpdateDateColumn({ nullable: true })
+  @Field({ name: 'updatedAt', nullable: true })
+  @UpdateDateColumn()
+  @IsOptional()
   updated_at?: Date;
 }

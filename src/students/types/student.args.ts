@@ -12,3 +12,4 @@ export class StudentArgs {
   @Max(50)
   take: number = 25;
 }
+

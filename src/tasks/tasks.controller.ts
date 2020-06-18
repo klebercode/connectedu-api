@@ -11,7 +11,7 @@ import {
 import { TaskService } from './shared/task.service';
 import { Task } from './shared/task';
 //import { JwtAuthGuard } from './../auth/shared/jwt-auth.guard';
-import { GqlAuthGuard } from '../auth/shared/jwt-authgq.gaurd';
+import { GqlAuthGuard } from '../auth/shared/jwt-authgql.guard';
 
 @Controller('tasks')
 export class TasksController {

@@ -5,7 +5,7 @@ import { AuthService } from './../shared/auth.service';
 export class LoginResolver {
   constructor(private readonly authService: AuthService) {}
 
-  @Query(returns => String)
+  @Query(() => String)
   userLogin(
     @Args('email') email: string,
     @Args('password') password: string,

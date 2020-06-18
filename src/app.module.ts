@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { StudentsgqModule } from './students/students.module';
+import { StudentsModule } from './students/students.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { AppController } from './app.controller';
@@ -11,7 +11,10 @@ import { config } from './orm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FileUploadModule } from './fileUpload/fileUpload.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { GroupModule } from './group/group.module';
+import { GroupsModule } from './groups/groups.module';
+// Schema do postgres
+import { CustomersModule } from './customers/customers.module';
+import { Customer } from './customers/customer.object';
 
 @Module({
   imports: [
@@ -29,11 +32,13 @@ import { GroupModule } from './group/group.module';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         ...config,
+        name: 'public',
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASS'),
         port: configService.get<number>('DB_PORT'),
         host: configService.get<string>('DB_HOST'),
         database: configService.get<any>('DB_NAME'),
+        entities: [Customer],
       }),
       inject: [ConfigService],
     }),
@@ -42,11 +47,12 @@ import { GroupModule } from './group/group.module';
       autoSchemaFile: 'schema.gql',
       context: ({ req, res }) => ({ req, res }),
     }),
-    StudentsgqModule,
+    CustomersModule,
+    StudentsModule,
     UsersModule,
     TasksModule,
     AuthModule,
-    GroupModule,
+    GroupsModule,
     FileUploadModule,
   ],
   controllers: [AppController],

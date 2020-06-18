@@ -2,7 +2,7 @@ import { Field, InputType } from '@nestjs/graphql';
 import { IsOptional, MaxLength } from 'class-validator';
 
 @InputType()
-export class NewGroup {
+export class CreateGroupInput {
   @Field({ nullable: false })
   @MaxLength(100)
   description: string;
