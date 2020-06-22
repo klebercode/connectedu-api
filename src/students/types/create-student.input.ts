@@ -23,6 +23,10 @@ export class CreateStudentInput {
   cidade?: string;
 
   @Field({ nullable: true })
+  @IsOptional()
+  stateId?: number;
+
+  @Field({ nullable: true })
   @MaxLength(100)
   @IsOptional()
   image?: string;

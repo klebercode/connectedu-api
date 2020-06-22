@@ -2,6 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../base-entity';
 import { UserEntity } from '../../users/entities/user.entity';
+import { StateEntity } from '../../states/entities/state.object';
 import { IsOptional } from 'class-validator';
 
 @ObjectType()
@@ -25,6 +26,15 @@ export class StudentEntity extends BaseEntity {
   @Column({ type: 'varchar', length: 50, nullable: true })
   @IsOptional()
   cidade?: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  @IsOptional()
+  stateId?: number;
+
+  @Field(type => StateEntity, { nullable: true })
+  @IsOptional()
+  state?: StateEntity;
 
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: true })

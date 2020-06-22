@@ -7,13 +7,19 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { config } from './orm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+
+import { FileUploadModule } from './fileUpload/fileUpload.module';
+import { StatesModule } from './states/states.module';
+import { StateEntity } from './states/entities/state.object';
+import { GroupsModule } from './groups/groups.module';
+import { StudentsModule } from './students/students.module';
+
 // Schema do postgres
 import { CustomersModule } from './customers/customers.module';
 import { Customer } from './customers/customer.object';
 
 @Module({
   imports: [
-    AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -27,17 +33,22 @@ import { Customer } from './customers/customer.object';
         port: configService.get<number>('DB_PORT'),
         host: configService.get<string>('DB_HOST'),
         database: configService.get<any>('DB_NAME'),
-        entities: [Customer],
+        entities: [Customer, StateEntity],
       }),
       inject: [ConfigService],
     }),
     GraphQLModule.forRoot({
       installSubscriptionHandlers: true,
       autoSchemaFile: 'schema.gql',
-      context: ({ req2, res2 }) => ({ req2, res2 }),
+      context: ({ req, res }) => ({ req, res }),
     }),
+    AuthModule,
+    StatesModule,
     CustomersModule,
     UsersModule,
+    StudentsModule,
+    GroupsModule,
+    FileUploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

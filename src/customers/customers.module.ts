@@ -20,7 +20,6 @@ export const CUSTOMER_CONNECTION = 'CUSTOMER_CONNECTION';
       inject: [REQUEST, Connection],
       scope: Scope.REQUEST,
       useFactory: async (request, connection) => {
-        console.log(request.req2);
         const customer: Customer = await connection
           .getRepository(Customer)
           .findOne({ where: { host: request.req.headers.host } });
@@ -65,7 +64,7 @@ export class CustomersModule {
             // logging: true,
           });
 
-          console.log(__dirname + '/**/*.entity{.ts,.js}');
+          //console.log(__dirname + '/**/*.entity{.ts,.js}');
 
           if (createdConnection) {
             next();

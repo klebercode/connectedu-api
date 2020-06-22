@@ -17,9 +17,12 @@ export class UsersService {
   }
 
   async findOneById(id: number): Promise<UserEntity> {
+    if (!id) {
+      return null;
+    }
     const user = await this.usersRepository.findOne(id);
     if (!user) {
-      throw new NotFoundException(id);
+      return null;
     }
     return user;
   }
@@ -33,8 +36,13 @@ export class UsersService {
     return createdUser;
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number): Promise<boolean> {
     await this.usersRepository.delete(id);
+    const user = await this.findOneById(id);
+    if (!user) {
+      return true;
+    }
+    return false;
   }
 
   async update(

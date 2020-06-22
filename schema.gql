@@ -14,20 +14,95 @@ type UserEntity {
 """Date custom scalar type"""
 scalar Date
 
+type StateEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  description: String!
+  uf: String!
+}
+
+type GroupEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  description: String!
+  tipo: Boolean!
+  dateBegin: Date
+  dateEnd: Date
+}
+
+type StudentEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  name: String!
+  endereco: String
+  bairro: String
+  cidade: String
+  stateId: Float
+  state: StateEntity
+  image: String
+  userCreatedId: Float
+  userUpdatedId: Float
+  userCreated: UserEntity
+  userUpdated: UserEntity
+}
+
 type Query {
   user(id: Float!): UserEntity!
   userAll: [UserEntity!]!
   userLogin(password: String!, email: String!): String!
+  state(id: Float!): StateEntity!
+  stateAll: [StateEntity!]!
+  group(id: Float!): GroupEntity!
+  groupAll: [GroupEntity!]!
+  student(id: Float!): StudentEntity!
+  studentAll(skip: Int = 0, take: Int = 25): [StudentEntity!]!
 }
 
 type Mutation {
   userCreate(createData: CreateUsersInput!): UserEntity!
   userDelete(id: Float!): Boolean!
   userUpdate(updateData: CreateUsersInput!, id: Float!): UserEntity!
+  stateCreate(createData: CreateStateInput!): StateEntity!
+  stateUpdate(updateData: CreateStateInput!, id: Float!): StateEntity!
+  stateDelete(id: Float!): Boolean!
+  groupCreate(createData: CreateGroupInput!): GroupEntity!
+  groupUpdate(updateData: CreateGroupInput!, id: Float!): GroupEntity!
+  groupDelete(id: Float!): Boolean!
+  studentCreate(createData: CreateStudentInput!): StudentEntity!
+  studentUpdate(updateData: CreateStudentInput!, id: Float!): StudentEntity!
+  studentDelete(id: Float!): Boolean!
 }
 
 input CreateUsersInput {
   name: String!
   email: String!
   password: String!
+}
+
+input CreateStateInput {
+  description: String!
+  uf: String!
+}
+
+input CreateGroupInput {
+  description: String!
+  tipo: Boolean
+  dateBegin: Date
+  dateEnd: Date
+}
+
+input CreateStudentInput {
+  name: String!
+  endereco: String
+  bairro: String
+  cidade: String
+  stateId: Float
+  image: String
+}
+
+type Subscription {
+  studentAdded: StudentEntity!
 }

@@ -16,7 +16,7 @@ export class BaseEntity {
   @Field({ name: 'createdAt', nullable: true })
   @CreateDateColumn()
   @IsOptional()
-  createdAt?: Date;
+  created_at?: Date;
 
   @Field({ name: 'updatedAt', nullable: true })
   @UpdateDateColumn()

@@ -19,7 +19,7 @@ export class StudentsService {
   ): Promise<StudentEntity> {
     const studentCreated = await this.studentsRepository.save({
       ...student,
-      usercreated: idUser,
+      userCreatedId: idUser,
     });
     return studentCreated;
   }
@@ -27,7 +27,7 @@ export class StudentsService {
   async findOneById(id: number): Promise<StudentEntity> {
     const student = await this.studentsRepository.findOne(id);
     if (!student) {
-      throw new NotFoundException(id);
+      return null;
     }
     return student;
   }
@@ -47,7 +47,7 @@ export class StudentsService {
   ): Promise<StudentEntity> {
     await this.studentsRepository.update(id, {
       ...student,
-      userUpdated: idUser,
+      userUpdatedId: idUser,
     });
     return this.findOneById(id);
   }

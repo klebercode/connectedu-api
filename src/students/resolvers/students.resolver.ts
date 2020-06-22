@@ -18,6 +18,7 @@ import { StudentArgs } from '../types/student.args';
 import { StudentEntity } from '../entities/student.entity';
 import { StudentsService } from '../students.service';
 import { MyContext } from '../../common/types/myContext';
+import { StateService } from '../../states/states.service';
 import { UsersService } from '../../users/users.service';
 
 const pubSub = new PubSub();
@@ -28,6 +29,7 @@ export class StudentsResolver {
   constructor(
     private readonly studentsService: StudentsService,
     private readonly usersService: UsersService,
+    private readonly stateService: StateService,
   ) {}
 
   @Query(() => StudentEntity, { name: 'student' })
@@ -82,6 +84,15 @@ export class StudentsResolver {
   @Subscription(() => StudentEntity)
   studentAdded() {
     return pubSub.asyncIterator('createData');
+  }
+
+  @ResolveField('state')
+  async state(@Parent() student: StudentEntity) {
+    const id = student.stateId;
+    if (!id) {
+      return null;
+    }
+    return this.stateService.findOneById(id);
   }
 
   @ResolveField('userCreated')

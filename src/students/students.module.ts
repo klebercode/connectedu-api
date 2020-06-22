@@ -5,10 +5,11 @@ import { StudentsResolver } from './resolvers/students.resolver';
 import { StudentsService } from './students.service';
 
 import { UsersModule } from '../users/users.module';
+import { StatesModule } from '../states/states.module';
 import { CustomersModule } from '../customers/customers.module';
 
 @Module({
-  imports: [UsersModule, CustomersModule],
+  imports: [UsersModule, CustomersModule, StatesModule],
   providers: [StudentsResolver, StudentsService, DateScalar],
 })
 export class StudentsModule {}
