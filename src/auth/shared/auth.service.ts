@@ -1,13 +1,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from '../../users/shared/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../../users/models/user.model';
+
+import { UsersService } from '../../users/users.service';
+import { UserEntity } from '../../users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
     private jwtService: JwtService,
+    private usersService: UsersService,
   ) {}
 
   async userLogin(userEmail: string, userPassword: string): Promise<String> {
@@ -19,7 +20,7 @@ export class AuthService {
     throw new UnauthorizedException();
   }
 
-  async createToken(user: User): Promise<String> {
+  async createToken(user: UserEntity): Promise<String> {
     const payload = { email: user.email, sub: user.id };
     return this.jwtService.sign(payload);
   }
