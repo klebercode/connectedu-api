@@ -1,4 +1,4 @@
-import { NotFoundException, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -10,58 +10,57 @@ import {
   ResolveField,
 } from '@nestjs/graphql';
 import { PubSub } from 'apollo-server-express';
-import { GqlAuthGuard } from '../../auth/shared/jwt-authgq.gaurd';
+import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
+import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
-import { NewStudentInput } from '../inputs/new-student.input';
-import { StudentArgs } from '../inputs/student.arqs';
-import { Student } from '../models/sutdent.model';
-import { StudentsService } from '../shared/sutdents.service';
+import { CreateStudentInput } from '../types/create-student.input';
+import { StudentArgs } from '../types/student.args';
+import { StudentEntity } from '../entities/student.entity';
+import { StudentsService } from '../students.service';
 import { MyContext } from '../../common/types/myContext';
-import { UsersService } from '../../users/shared/users.service';
+import { UsersService } from '../../users/users.service';
 
 const pubSub = new PubSub();
 
-@UseGuards(GqlAuthGuard)
-@Resolver(of => Student)
-export class StudentResolver {
+@UseGuards(GqlAuthGuard, UserAuthGuard)
+@Resolver(of => StudentEntity)
+export class StudentsResolver {
   constructor(
-    private readonly studentService: StudentsService,
+    private readonly studentsService: StudentsService,
     private readonly usersService: UsersService,
   ) {}
 
-  @Query(returns => Student)
-  async studentId(@Args('id') id: number): Promise<Student> {
-    const student = await this.studentService.findOneById(id);
-    if (!student) {
-      throw new NotFoundException(id);
-    }
-    return student;
+  @Query(() => StudentEntity, { name: 'student' })
+  async getStudent(@Args('id') id: number): Promise<StudentEntity> {
+    return await this.studentsService.findOneById(id);
   }
 
-  @Query(returns => [Student])
-  studentAll(@Args() studentsArgs: StudentArgs): Promise<Student[]> {
-    return this.studentService.findAll(studentsArgs);
+  @Query(() => [StudentEntity], { name: 'studentAll' })
+  async getStudents(
+    @Args() studentsArgs: StudentArgs,
+  ): Promise<StudentEntity[]> {
+    return await this.studentsService.findAll(studentsArgs);
   }
 
-  @Mutation(returns => Student)
-  async studentCreate(
+  @Mutation(() => StudentEntity, { name: 'studentCreate' })
+  async createStudent(
     @Context() context: MyContext,
-    @Args('newData') newData: NewStudentInput,
-  ): Promise<Student> {
+    @Args('createData') createData: CreateStudentInput,
+  ): Promise<StudentEntity> {
     const { user } = context.req;
-    const student = await this.studentService.create(newData, user['id']);
+    const student = await this.studentsService.create(createData, user['id']);
     pubSub.publish('studentAdded', { studentAdded: student });
     return student;
   }
 
-  @Mutation(returns => Student)
-  async studentUpdate(
+  @Mutation(() => StudentEntity, { name: 'studentUpdate' })
+  async updateStudent(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('updateData') updateData: NewStudentInput,
-  ): Promise<Student> {
+    @Args('updateData') updateData: CreateStudentInput,
+  ): Promise<StudentEntity> {
     const { user } = context.req;
-    const student = await this.studentService.update(
+    const student = await this.studentsService.update(
       id,
       { ...updateData },
       user['id'],
@@ -70,30 +69,30 @@ export class StudentResolver {
     return student;
   }
 
-  @Mutation(returns => Boolean)
-  async studentRemove(@Args('id') id: number): Promise<Boolean> {
-    await this.studentService.remove(id);
-    const student = await this.studentService.findOneById(id);
+  @Mutation(() => Boolean, { name: 'studentDelete' })
+  async deteleStudent(@Args('id') id: number): Promise<boolean> {
+    await this.studentsService.remove(id);
+    const student = await this.studentsService.findOneById(id);
     if (!student) {
       return true;
     }
     return false;
   }
 
-  @Subscription(returns => Student)
+  @Subscription(() => StudentEntity)
   studentAdded() {
-    return pubSub.asyncIterator('newData');
+    return pubSub.asyncIterator('createData');
   }
 
-  @ResolveField('usercreated')
-  async usercreated(@Parent() student: Student) {
-    const id = student.usercreatedId;
+  @ResolveField('userCreated')
+  async userCreated(@Parent() student: StudentEntity) {
+    const id = student.userCreatedId;
     return this.usersService.findOneById(id);
   }
 
-  @ResolveField('userupdated')
-  async userupdated(@Parent() student: Student) {
-    const id = student.userupdatedId;
+  @ResolveField('userUpdated')
+  async userUpdated(@Parent() student: StudentEntity) {
+    const id = student.userUpdatedId;
     return this.usersService.findOneById(id);
   }
 }

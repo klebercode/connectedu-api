@@ -2,65 +2,66 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type User {
+type UserEntity {
   id: ID!
+  createdAt: Date
+  updatedAt: Date
   name: String!
   email: String!
   password: String!
-  createdAt: Date!
-  updatedAt: Date
 }
 
 """Date custom scalar type"""
 scalar Date
 
-type Student {
+type StudentEntity {
   id: ID!
+  createdAt: Date
+  updatedAt: Date
   name: String!
   endereco: String
   bairro: String
   cidade: String
-  createdAt: Date!
-  updatedAt: Date
-  usercreatedId: Float
-  userupdatedId: Float
-  usercreated: User
-  userupdated: User
+  image: String
+  userCreatedId: Float
+  userUpdatedId: Float
+  userCreated: UserEntity
+  userUpdated: UserEntity
 }
 
-type Group {
+type GroupEntity {
   id: ID!
+  createdAt: Date
+  updatedAt: Date
   description: String!
   tipo: Boolean!
   dateBegin: Date
   dateEnd: Date
-  createdAt: Date!
-  updatedAt: Date
 }
 
 type Query {
-  studentId(id: Float!): Student!
-  studentAll(skip: Int = 0, take: Int = 25): [Student!]!
-  userId(id: Float!): User!
-  userAll: [User!]!
+  student(id: Float!): StudentEntity!
+  studentAll(skip: Int = 0, take: Int = 25): [StudentEntity!]!
+  user(id: Float!): UserEntity!
+  userAll: [UserEntity!]!
   userLogin(password: String!, email: String!): String!
-  groupId(id: Float!): Group!
-  groupAll: [Group!]!
+  group(id: Float!): GroupEntity!
+  groupAll: [GroupEntity!]!
 }
 
 type Mutation {
-  studentCreate(newData: NewStudentInput!): Student!
-  studentUpdate(updateData: NewStudentInput!, id: Float!): Student!
-  studentRemove(id: Float!): Boolean!
-  userCreate(newData: NewUsers!): User!
+  studentCreate(createData: CreateStudentInput!): StudentEntity!
+  studentUpdate(updateData: CreateStudentInput!, id: Float!): StudentEntity!
+  studentDelete(id: Float!): Boolean!
+  userCreate(createData: CreateUsersInput!): UserEntity!
   userDelete(id: Float!): Boolean!
-  userUpdate(updateData: NewUsers!, id: Float!): User!
-  groupCreate(newData: NewGroup!): Group!
+  userUpdate(updateData: CreateUsersInput!, id: Float!): UserEntity!
+  groupCreate(createData: CreateGroupInput!): GroupEntity!
+  groupUpdate(updateData: CreateGroupInput!, id: Float!): GroupEntity!
   groupDelete(id: Float!): Boolean!
-  groupUpdate(updateData: NewGroup!, id: Float!): Group!
 }
 
-input NewStudentInput {
+input CreateStudentInput {
   name: String!
   endereco: String
   bairro: String
@@ -68,13 +69,13 @@ input NewStudentInput {
   image: String
 }
 
-input NewUsers {
+input CreateUsersInput {
   name: String!
   email: String!
   password: String!
 }
 
-input NewGroup {
+input CreateGroupInput {
   description: String!
   tipo: Boolean
   dateBegin: Date
@@ -82,5 +83,5 @@ input NewGroup {
 }
 
 type Subscription {
-  studentAdded: Student!
+  studentAdded: StudentEntity!
 }

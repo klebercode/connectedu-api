@@ -8,14 +8,16 @@ const s3 = new AWS.S3();
 
 @Injectable()
 export class FileUploadService {
-  private AWS_S3_BUCKET_NAME: string = this.configService.get<string>('S3_BUCKET');
+  private AWS_S3_BUCKET_NAME: string = this.configService.get<string>(
+    'S3_BUCKET',
+  );
 
   private upload = multer({
     storage: multerS3({
       s3: s3,
       bucket: this.AWS_S3_BUCKET_NAME,
       acl: 'public-read',
-      key: function (request, file, cb) {
+      key: function(request: any, file: any, cb: any) {
         cb(null, `${Date.now().toString()} - ${file.originalname}`);
       },
     }),
@@ -28,9 +30,9 @@ export class FileUploadService {
     });
   }
 
-  async fileupload(@Req() req, @Res() res) {
+  async fileupload(@Req() req: any, @Res() res: any) {
     try {
-      this.upload(req, res, function (error) {
+      this.upload(req, res, function(error: any) {
         if (error) {
           console.log(error);
           return res.status(404).json(`Failed to upload file: ${error}`);
@@ -43,3 +45,4 @@ export class FileUploadService {
     }
   }
 }
+
