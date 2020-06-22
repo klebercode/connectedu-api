@@ -4,7 +4,6 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TasksModule } from './tasks/tasks.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
 import { config } from './orm.config';
@@ -50,7 +49,6 @@ import { Customer } from './customers/customer.object';
     CustomersModule,
     StudentsModule,
     UsersModule,
-    TasksModule,
     AuthModule,
     GroupsModule,
     FileUploadModule,

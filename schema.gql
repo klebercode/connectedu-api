@@ -23,10 +23,10 @@ type StudentEntity {
   bairro: String
   cidade: String
   image: String
-  usercreatedId: Float
-  userupdatedId: Float
-  usercreated: UserEntity
-  userupdated: UserEntity
+  userCreatedId: Float
+  userUpdatedId: Float
+  userCreated: UserEntity
+  userUpdated: UserEntity
 }
 
 type GroupEntity {

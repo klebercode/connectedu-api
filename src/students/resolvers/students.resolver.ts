@@ -10,7 +10,8 @@ import {
   ResolveField,
 } from '@nestjs/graphql';
 import { PubSub } from 'apollo-server-express';
-import { GqlAuthGuard } from '../../auth/shared/jwt-authgql.guard';
+import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
+import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
 import { CreateStudentInput } from '../types/create-student.input';
 import { StudentArgs } from '../types/student.args';
@@ -21,7 +22,7 @@ import { UsersService } from '../../users/users.service';
 
 const pubSub = new PubSub();
 
-// @UseGuards(GqlAuthGuard)
+@UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => StudentEntity)
 export class StudentsResolver {
   constructor(
@@ -83,15 +84,15 @@ export class StudentsResolver {
     return pubSub.asyncIterator('createData');
   }
 
-  @ResolveField('usercreated')
-  async usercreated(@Parent() student: StudentEntity) {
-    const id = student.usercreatedId;
+  @ResolveField('userCreated')
+  async userCreated(@Parent() student: StudentEntity) {
+    const id = student.userCreatedId;
     return this.usersService.findOneById(id);
   }
 
-  @ResolveField('userupdated')
-  async userupdated(@Parent() student: StudentEntity) {
-    const id = student.userupdatedId;
+  @ResolveField('userUpdated')
+  async userUpdated(@Parent() student: StudentEntity) {
+    const id = student.userUpdatedId;
     return this.usersService.findOneById(id);
   }
 }

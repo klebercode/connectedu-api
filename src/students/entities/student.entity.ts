@@ -32,24 +32,24 @@ export class StudentEntity extends BaseEntity {
   image?: string;
 
   @Field({ nullable: true })
-  @Column({ nullable: true })
+  @Column({ name: 'user_created_id', nullable: true })
   @IsOptional()
-  usercreatedId?: number;
+  userCreatedId?: number;
 
   @Field({ nullable: true })
-  @Column({ nullable: true })
+  @Column({ name: 'user_updated_id', nullable: true })
   @IsOptional()
-  userupdatedId?: number;
+  userUpdatedId?: number;
 
   @Field(type => UserEntity, { nullable: true })
   @ManyToOne(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'usercreatedId' })
+  @JoinColumn({ name: 'user_created' })
   @IsOptional()
-  usercreated?: UserEntity;
+  userCreated?: UserEntity;
 
   @Field(type => UserEntity, { nullable: true })
   @ManyToOne(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'userupdatedId' })
+  @JoinColumn({ name: 'user_updated' })
   @IsOptional()
-  userupdated?: UserEntity;
+  userUpdated?: UserEntity;
 }

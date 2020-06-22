@@ -64,8 +64,6 @@ export class CustomersModule {
             // logging: true,
           });
 
-          console.log(__dirname + '/**/*.entity{.ts,.js}');
-
           if (createdConnection) {
             next();
           } else {

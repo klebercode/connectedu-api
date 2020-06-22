@@ -47,7 +47,7 @@ export class StudentsService {
   ): Promise<StudentEntity> {
     await this.studentsRepository.update(id, {
       ...student,
-      userupdated: idUser,
+      userUpdated: idUser,
     });
     return this.findOneById(id);
   }

@@ -1,12 +1,13 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { GqlAuthGuard } from '../../auth/shared/jwt-authgql.guard';
+import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
+import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
 import { CreateGroupInput } from '../types/create-group.input';
 import { GroupEntity } from '../entities/group.entity';
 import { GroupsService } from '../groups.service';
 
-@UseGuards(GqlAuthGuard)
+@UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => GroupEntity)
 export class GroupsResolver {
   constructor(private readonly groupsService: GroupsService) {}

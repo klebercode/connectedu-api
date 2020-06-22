@@ -13,13 +13,13 @@ export class BaseEntity {
   @IsOptional()
   id: number;
 
-  @Field({ name: 'createdAt', nullable: true })
-  @CreateDateColumn()
+  @Field({ nullable: true })
+  @CreateDateColumn({ name: 'created_at' })
   @IsOptional()
   createdAt?: Date;
 
-  @Field({ name: 'updatedAt', nullable: true })
-  @UpdateDateColumn()
+  @Field({ nullable: true })
+  @UpdateDateColumn({ name: 'updated_at' })
   @IsOptional()
-  updated_at?: Date;
+  updatedAt?: Date;
 }

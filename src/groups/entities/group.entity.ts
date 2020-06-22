@@ -15,14 +15,14 @@ export class GroupEntity extends BaseEntity {
   @IsOptional()
   tipo?: boolean;
 
-  @Field({ name: 'dateBegin', nullable: true })
-  @Column({ nullable: true })
+  @Field({ nullable: true })
+  @Column({ name: 'date_begin', nullable: true })
   @IsOptional()
-  date_begin?: Date;
+  dateBegin?: Date;
 
   @Field()
-  @Field({ name: 'dateEnd', nullable: true })
-  @Column({ nullable: true })
+  @Field({ nullable: true })
+  @Column({ name: 'date_end', nullable: true })
   @IsOptional()
-  date_end?: Date;
+  dateEnd?: Date;
 }
