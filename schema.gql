@@ -16,8 +16,6 @@ scalar Date
 
 type StateEntity {
   id: ID!
-  createdAt: Date
-  updatedAt: Date
   description: String!
   uf: String!
 }

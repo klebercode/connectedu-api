@@ -20,6 +20,7 @@ import { StudentsService } from '../students.service';
 import { MyContext } from '../../common/types/myContext';
 import { StateService } from '../../states/states.service';
 import { UsersService } from '../../users/users.service';
+import { UserEntity } from '../../users/entities/user.entity';
 
 const pubSub = new PubSub();
 
@@ -96,7 +97,7 @@ export class StudentsResolver {
   }
 
   @ResolveField('userCreated')
-  async userCreated(@Parent() student: StudentEntity) {
+  async userCreated(@Parent() student: StudentEntity): Promise<any> {
     const id = student.userCreatedId;
     return this.usersService.findOneById(id);
   }

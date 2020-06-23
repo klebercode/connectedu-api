@@ -1,9 +1,10 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm';
-import { BaseEntity } from '../../base-entity';
-import { UserEntity } from '../../users/entities/user.entity';
+
 import { StateEntity } from '../../states/entities/state.object';
 import { IsOptional } from 'class-validator';
+import { BaseEntity } from '../../base-entity';
+import { UserEntity } from '../../users/entities/user.entity';
 
 @ObjectType()
 @Entity('student')

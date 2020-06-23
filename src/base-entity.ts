@@ -3,6 +3,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  Column,
 } from 'typeorm';
 import { IsOptional } from 'class-validator';
 
@@ -13,13 +14,13 @@ export class BaseEntity {
   @IsOptional()
   id: number;
 
-  @Field({ name: 'createdAt', nullable: true })
-  @CreateDateColumn()
+  @Field({ nullable: true })
+  @CreateDateColumn({ name: 'created_at', nullable: true })
   @IsOptional()
-  created_at?: Date;
+  createdAt?: Date;
 
-  @Field({ name: 'updatedAt', nullable: true })
-  @UpdateDateColumn()
+  @Field({ nullable: true })
+  @UpdateDateColumn({ name: 'updated_at', nullable: true })
   @IsOptional()
-  updated_at?: Date;
+  updatedAt?: Date;
 }
