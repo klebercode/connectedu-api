@@ -1,10 +1,11 @@
 import { Field, ObjectType, ID } from '@nestjs/graphql';
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, Unique } from 'typeorm';
 import { BaseEntity } from '../../base-entity';
 import { IsOptional } from 'class-validator';
 
 @ObjectType()
 @Entity('state')
+@Unique(['description'])
 export class StateEntity extends BaseEntity {
   @Field()
   @Column({ length: 100, nullable: false })

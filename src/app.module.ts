@@ -18,6 +18,9 @@ import { OrganizationsModule } from './organizations/organizations.module';
 import { OrganizationEntity } from './organizations/entities/organization.object';
 import { StatesModule } from './states/states.module';
 import { StateEntity } from './states/entities/state.object';
+import { CitiesModule } from './cities/cities.module';
+import { CityEntity } from './cities/entities/city.object';
+
 // Schema do postgres
 import { CustomersModule } from './customers/customers.module';
 import { Customer } from './customers/entities/customer.object';
@@ -37,7 +40,13 @@ import { Customer } from './customers/entities/customer.object';
         port: configService.get<number>('DB_PORT'),
         host: configService.get<string>('DB_HOST'),
         database: configService.get<any>('DB_NAME'),
-        entities: [Customer, StateEntity, OrganizationEntity, PermissionEntity],
+        entities: [
+          Customer,
+          StateEntity,
+          OrganizationEntity,
+          PermissionEntity,
+          CityEntity,
+        ],
       }),
       inject: [ConfigService],
     }),
@@ -54,6 +63,7 @@ import { Customer } from './customers/entities/customer.object';
     FileUploadModule,
     OrganizationsModule,
     PermisisonsModule,
+    CitiesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

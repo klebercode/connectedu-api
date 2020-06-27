@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, HttpException } from '@nestjs/common';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
@@ -25,8 +25,12 @@ export class StatesResolver {
   async createState(
     @Args('createData') createData: CreateStateInput,
   ): Promise<StateEntity> {
-    const obj = await this.statesService.create({ ...createData });
-    return obj;
+    try {
+      const obj = await this.statesService.create({ ...createData });
+      return obj;
+    } catch (exception) {
+      throw new HttpException(exception.message, 409);
+    }
   }
 
   @Mutation(() => StateEntity, { name: 'stateUpdate' })
@@ -34,8 +38,12 @@ export class StatesResolver {
     @Args('id') id: number,
     @Args('updateData') updateData: CreateStateInput,
   ): Promise<StateEntity> {
-    const obj = await this.statesService.update(id, { ...updateData });
-    return obj;
+    try {
+      const obj = await this.statesService.update(id, { ...updateData });
+      return obj;
+    } catch (exception) {
+      throw new HttpException(exception.message, 409);
+    }
   }
 
   @Mutation(() => Boolean, { name: 'stateDelete' })

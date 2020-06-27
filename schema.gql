@@ -66,6 +66,15 @@ type OrganizationEntity {
   dateEnd: Date
 }
 
+type CityEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  description: String!
+  stateId: Float
+  state: StateEntity
+}
+
 type Query {
   customer(id: Float!): Customer!
   customerAll: [Customer!]!
@@ -80,6 +89,8 @@ type Query {
   permissionAll: [PermissionEntity!]!
   organization(id: Float!): OrganizationEntity!
   organizationAll: [OrganizationEntity!]!
+  city(id: Float!): CityEntity!
+  cityAll: [CityEntity!]!
 }
 
 type Mutation {
@@ -101,6 +112,9 @@ type Mutation {
   organizationCreate(createData: CreateOrganizationInput!): OrganizationEntity!
   organizationUpdate(updateData: CreateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationDelete(id: Float!): Boolean!
+  cityCreate(createData: CreateCityInput!): CityEntity!
+  cityUpdate(updateData: CreateCityInput!, id: Float!): CityEntity!
+  cityDelete(id: Float!): Boolean!
 }
 
 input CreateCustomerInput {
@@ -139,6 +153,11 @@ input CreateOrganizationInput {
   description: String!
   dateBegin: Date
   dateEnd: Date
+}
+
+input CreateCityInput {
+  description: String!
+  stateId: Float
 }
 
 type Subscription {
