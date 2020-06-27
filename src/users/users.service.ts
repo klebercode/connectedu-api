@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common';
+import { Inject, GoneException } from '@nestjs/common';
 import { CreateUsersInput } from './types/create-user.input';
 import { UserEntity } from './entities/user.entity';
 import { Repository, Connection } from 'typeorm';
@@ -31,9 +31,16 @@ export class UsersService {
     return await this.usersRepository.findOne({ email });
   }
 
-  async create(user: CreateUsersInput): Promise<UserEntity> {
-    const createdUser = await this.usersRepository.save(user);
-    return createdUser;
+  async create(user: CreateUsersInput, idUser: any): Promise<UserEntity> {
+    try {
+      const obj = await this.usersRepository.save({
+        ...user,
+        userCreatedId: idUser,
+      });
+      return obj;
+    } catch (error) {
+      throw new GoneException(error);
+    }
   }
 
   async remove(id: number): Promise<boolean> {
@@ -48,8 +55,16 @@ export class UsersService {
   async update(
     id: number,
     user: Partial<CreateUsersInput>,
+    idUser: any,
   ): Promise<UserEntity> {
-    await this.usersRepository.update(id, { ...user });
-    return this.findOneById(id);
+    try {
+      await this.usersRepository.update(id, {
+        ...user,
+        userUpdatedId: idUser,
+      });
+      return this.findOneById(id);
+    } catch (error) {
+      throw new GoneException(error);
+    }
   }
 }

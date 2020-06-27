@@ -82,10 +82,11 @@ export class StudentsResolver {
     return false;
   }
 
-  @Subscription(() => StudentEntity)
+  /*@Subscription(() => StudentEntity)
   studentAdded() {
     return pubSub.asyncIterator('createData');
   }
+  */
 
   @ResolveField('state')
   async state(@Parent() student: StudentEntity) {

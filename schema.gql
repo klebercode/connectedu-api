@@ -7,8 +7,16 @@ type UserEntity {
   createdAt: Date
   updatedAt: Date
   name: String!
-  email: String!
+  nickName: String
+  login: String
+  email: String
   password: String!
+  profile: String
+  codeToken: Float
+  userCreatedId: Float
+  userUpdatedId: Float
+  userCreated: UserEntity
+  userUpdated: UserEntity
 }
 
 """Date custom scalar type"""
@@ -125,9 +133,13 @@ input CreateCustomerInput {
 }
 
 input CreateUsersInput {
-  name: String!
-  email: String!
-  password: String!
+  name: String
+  nickName: String
+  login: String
+  profile: String
+  codeToken: Float
+  email: String
+  password: String
 }
 
 input CreateStudentInput {
@@ -158,8 +170,4 @@ input CreateOrganizationInput {
 input CreateCityInput {
   description: String!
   stateId: Float
-}
-
-type Subscription {
-  studentAdded: StudentEntity!
 }

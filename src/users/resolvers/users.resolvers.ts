@@ -1,9 +1,18 @@
-import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { UseGuards, HttpException } from '@nestjs/common';
+import {
+  Args,
+  Mutation,
+  Query,
+  Resolver,
+  ResolveField,
+  Context,
+  Parent,
+} from '@nestjs/graphql';
 
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { CreateUsersInput } from '../types/create-user.input';
+import { MyContext } from '../../common/types/myContext';
 import { UserEntity } from '../entities/user.entity';
 import { UsersService } from '../users.service';
 
@@ -24,10 +33,16 @@ export class UsersResolver {
 
   @Mutation(() => UserEntity, { name: 'userCreate' })
   async createUser(
+    @Context() context: MyContext,
     @Args('createData') createData: CreateUsersInput,
   ): Promise<UserEntity> {
-    const obj = await this.usersService.create({ ...createData });
-    return obj;
+    try {
+      const { user } = context.req;
+      const obj = await this.usersService.create(createData, user['id']);
+      return obj;
+    } catch (exception) {
+      throw new HttpException(exception.message, 409);
+    }
   }
 
   @Mutation(() => Boolean, { name: 'userDelete' })
@@ -42,10 +57,32 @@ export class UsersResolver {
 
   @Mutation(() => UserEntity, { name: 'userUpdate' })
   async updateUser(
+    @Context() context: MyContext,
     @Args('id') id: number,
     @Args('updateData') updateData: CreateUsersInput,
   ): Promise<UserEntity> {
-    const obj = await this.usersService.update(id, { ...updateData });
-    return obj;
+    try {
+      const { user } = context.req;
+      const obj = await this.usersService.update(
+        id,
+        { ...updateData },
+        user['id'],
+      );
+      return obj;
+    } catch (exception) {
+      throw new HttpException(exception.message, 409);
+    }
+  }
+
+  @ResolveField('userCreated')
+  async userCreated(@Parent() user: UserEntity): Promise<any> {
+    const id = user.userCreatedId;
+    return this.usersService.findOneById(id);
+  }
+
+  @ResolveField('userUpdated')
+  async userUpdated(@Parent() user: UserEntity) {
+    const id = user.userUpdatedId;
+    return this.usersService.findOneById(id);
   }
 }
