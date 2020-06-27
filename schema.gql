@@ -14,20 +14,22 @@ type UserEntity {
 """Date custom scalar type"""
 scalar Date
 
-type StateEntity {
+type Customer {
   id: ID!
-  description: String!
-  uf: String!
+  createdAt: Date
+  updatedAt: Date
+  host: String!
+  domain: String!
+  name: String!
+  organizationId: Float
 }
 
-type GroupEntity {
+type StateEntity {
   id: ID!
   createdAt: Date
   updatedAt: Date
   description: String!
-  tipo: Boolean!
-  dateBegin: Date
-  dateEnd: Date
+  uf: String!
 }
 
 type StudentEntity {
@@ -47,49 +49,71 @@ type StudentEntity {
   userUpdated: UserEntity
 }
 
+type PermissionEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  code: String!
+  description: String!
+}
+
+type OrganizationEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  description: String!
+  dateBegin: Date
+  dateEnd: Date
+}
+
 type Query {
+  customer(id: Float!): Customer!
+  customerAll: [Customer!]!
   user(id: Float!): UserEntity!
   userAll: [UserEntity!]!
   userLogin(password: String!, email: String!): String!
-  state(id: Float!): StateEntity!
-  stateAll: [StateEntity!]!
-  group(id: Float!): GroupEntity!
-  groupAll: [GroupEntity!]!
   student(id: Float!): StudentEntity!
   studentAll(skip: Int = 0, take: Int = 25): [StudentEntity!]!
+  state(id: Float!): StateEntity!
+  stateAll: [StateEntity!]!
+  permission(id: Float!): PermissionEntity!
+  permissionAll: [PermissionEntity!]!
+  organization(id: Float!): OrganizationEntity!
+  organizationAll: [OrganizationEntity!]!
 }
 
 type Mutation {
+  customerCreate(createData: CreateCustomerInput!): Customer!
+  customerUpdate(updateData: CreateCustomerInput!, id: Float!): Customer!
+  customerDelete(id: Float!): Boolean!
   userCreate(createData: CreateUsersInput!): UserEntity!
   userDelete(id: Float!): Boolean!
   userUpdate(updateData: CreateUsersInput!, id: Float!): UserEntity!
-  stateCreate(createData: CreateStateInput!): StateEntity!
-  stateUpdate(updateData: CreateStateInput!, id: Float!): StateEntity!
-  stateDelete(id: Float!): Boolean!
-  groupCreate(createData: CreateGroupInput!): GroupEntity!
-  groupUpdate(updateData: CreateGroupInput!, id: Float!): GroupEntity!
-  groupDelete(id: Float!): Boolean!
   studentCreate(createData: CreateStudentInput!): StudentEntity!
   studentUpdate(updateData: CreateStudentInput!, id: Float!): StudentEntity!
   studentDelete(id: Float!): Boolean!
+  stateCreate(createData: CreateStateInput!): StateEntity!
+  stateUpdate(updateData: CreateStateInput!, id: Float!): StateEntity!
+  stateDelete(id: Float!): Boolean!
+  permissionCreate(createData: CreatePermissionInput!): PermissionEntity!
+  permissionUpdate(updateData: CreatePermissionInput!, id: Float!): PermissionEntity!
+  permissionDelete(id: Float!): Boolean!
+  organizationCreate(createData: CreateOrganizationInput!): OrganizationEntity!
+  organizationUpdate(updateData: CreateOrganizationInput!, id: Float!): OrganizationEntity!
+  organizationDelete(id: Float!): Boolean!
+}
+
+input CreateCustomerInput {
+  host: String!
+  domain: String!
+  name: String!
+  organizationId: Float
 }
 
 input CreateUsersInput {
   name: String!
   email: String!
   password: String!
-}
-
-input CreateStateInput {
-  description: String!
-  uf: String!
-}
-
-input CreateGroupInput {
-  description: String!
-  tipo: Boolean
-  dateBegin: Date
-  dateEnd: Date
 }
 
 input CreateStudentInput {
@@ -99,6 +123,22 @@ input CreateStudentInput {
   cidade: String
   stateId: Float
   image: String
+}
+
+input CreateStateInput {
+  description: String!
+  uf: String!
+}
+
+input CreatePermissionInput {
+  code: String!
+  description: String!
+}
+
+input CreateOrganizationInput {
+  description: String!
+  dateBegin: Date
+  dateEnd: Date
 }
 
 type Subscription {

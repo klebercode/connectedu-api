@@ -2,20 +2,16 @@ import { Field, InputType } from '@nestjs/graphql';
 import { IsOptional, MaxLength } from 'class-validator';
 
 @InputType()
-export class CreateGroupInput {
+export class CreateOrganizationInput {
   @Field({ nullable: false })
   @MaxLength(100)
   description: string;
 
   @Field({ nullable: true })
   @IsOptional()
-  tipo?: boolean;
+  dateBegin?: Date;
 
-  @Field({ name: 'dateBegin', nullable: true })
+  @Field({ nullable: true })
   @IsOptional()
-  date_begin?: Date;
-
-  @Field({ name: 'dateEnd', nullable: true })
-  @IsOptional()
-  date_end?: Date;
+  dateEnd?: Date;
 }

@@ -1,27 +1,27 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateStateInput } from './types/create-state.input';
 import { StateEntity } from './entities/state.object';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
-export class StateService {
+export class StatesService {
   constructor(
     @InjectRepository(StateEntity)
     private stateRepository: Repository<StateEntity>,
   ) {}
 
   async create(state: CreateStateInput): Promise<StateEntity> {
-    const stateCreated = await this.stateRepository.save(state);
-    return stateCreated;
+    const obj = await this.stateRepository.save(state);
+    return obj;
   }
 
   async findOneById(id: number): Promise<StateEntity> {
-    const state = await this.stateRepository.findOne(id);
-    if (!state) {
+    const obj = await this.stateRepository.findOne(id);
+    if (!obj) {
       return null;
     }
-    return state;
+    return obj;
   }
 
   async findAll(): Promise<StateEntity[]> {
@@ -32,8 +32,8 @@ export class StateService {
     await this.stateRepository.delete(id);
   }
 
-  async update(id: number, group: Partial<StateEntity>) {
-    await this.stateRepository.update(id, group);
+  async update(id: number, state: Partial<StateEntity>) {
+    await this.stateRepository.update(id, state);
     return this.findOneById(id);
   }
 }

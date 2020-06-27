@@ -18,7 +18,7 @@ import { StudentArgs } from '../types/student.args';
 import { StudentEntity } from '../entities/student.entity';
 import { StudentsService } from '../students.service';
 import { MyContext } from '../../common/types/myContext';
-import { StateService } from '../../states/states.service';
+import { StatesService } from '../../states/states.service';
 import { UsersService } from '../../users/users.service';
 import { UserEntity } from '../../users/entities/user.entity';
 
@@ -30,7 +30,7 @@ export class StudentsResolver {
   constructor(
     private readonly studentsService: StudentsService,
     private readonly usersService: UsersService,
-    private readonly stateService: StateService,
+    private readonly stateService: StatesService,
   ) {}
 
   @Query(() => StudentEntity, { name: 'student' })

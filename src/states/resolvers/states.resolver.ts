@@ -4,12 +4,12 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { CreateStateInput } from '../types/create-state.input';
 import { StateEntity } from '../entities/state.object';
-import { StateService } from '../states.service';
+import { StatesService } from '../states.service';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(of => StateEntity)
 export class StatesResolver {
-  constructor(private readonly statesService: StateService) {}
+  constructor(private readonly statesService: StatesService) {}
 
   @Query(() => StateEntity, { name: 'state' })
   async getState(@Args('id') id: number): Promise<StateEntity> {

@@ -1,11 +1,11 @@
-import { Inject, NotFoundException } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { CreateUsersInput } from './types/create-user.input';
 import { UserEntity } from './entities/user.entity';
 import { Repository, Connection } from 'typeorm';
-import { CustomersService } from '../customers/customers-service.decorator';
+import { CustomersServiceDecorator } from '../customers/customers-service.decorator';
 import { CUSTOMER_CONNECTION } from '../customers/customers.module';
 
-@CustomersService()
+@CustomersServiceDecorator()
 export class UsersService {
   private usersRepository: Repository<UserEntity>;
   constructor(@Inject(CUSTOMER_CONNECTION) private connection: Connection) {

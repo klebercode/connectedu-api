@@ -29,7 +29,7 @@ export class StudentEntity extends BaseEntity {
   cidade?: string;
 
   @Field({ nullable: true })
-  @Column({ nullable: true })
+  @Column({ name: 'state_id', nullable: true })
   @IsOptional()
   stateId?: number;
 

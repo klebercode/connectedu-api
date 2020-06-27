@@ -1,4 +1,4 @@
 import { applyDecorators, Injectable, Scope } from '@nestjs/common';
 
-export const CustomersService = () =>
+export const CustomersServiceDecorator = () =>
   applyDecorators(Injectable({ scope: Scope.REQUEST }));

@@ -3,10 +3,10 @@ import { CreateStudentInput } from './types/create-student.input';
 import { StudentArgs } from './types/student.args';
 import { StudentEntity } from './entities/student.entity';
 import { Repository, Connection } from 'typeorm';
-import { CustomersService } from '../customers/customers-service.decorator';
+import { CustomersServiceDecorator } from '../customers/customers-service.decorator';
 import { CUSTOMER_CONNECTION } from '../customers/customers.module';
 
-@CustomersService()
+@CustomersServiceDecorator()
 export class StudentsService {
   private studentsRepository: Repository<StudentEntity>;
   constructor(@Inject(CUSTOMER_CONNECTION) private connection: Connection) {

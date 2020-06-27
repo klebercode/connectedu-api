@@ -9,14 +9,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { FileUploadModule } from './fileUpload/fileUpload.module';
-import { StatesModule } from './states/states.module';
-import { StateEntity } from './states/entities/state.object';
-import { GroupsModule } from './groups/groups.module';
 import { StudentsModule } from './students/students.module';
 
+// Modulos Publicos
+import { PermisisonsModule } from './permissions/permissions.module';
+import { PermissionEntity } from './permissions/entities/permission.object';
+import { OrganizationsModule } from './organizations/organizations.module';
+import { OrganizationEntity } from './organizations/entities/organization.object';
+import { StatesModule } from './states/states.module';
+import { StateEntity } from './states/entities/state.object';
 // Schema do postgres
 import { CustomersModule } from './customers/customers.module';
-import { Customer } from './customers/customer.object';
+import { Customer } from './customers/entities/customer.object';
 
 @Module({
   imports: [
@@ -33,7 +37,7 @@ import { Customer } from './customers/customer.object';
         port: configService.get<number>('DB_PORT'),
         host: configService.get<string>('DB_HOST'),
         database: configService.get<any>('DB_NAME'),
-        entities: [Customer, StateEntity],
+        entities: [Customer, StateEntity, OrganizationEntity, PermissionEntity],
       }),
       inject: [ConfigService],
     }),
@@ -47,8 +51,9 @@ import { Customer } from './customers/customer.object';
     CustomersModule,
     UsersModule,
     StudentsModule,
-    GroupsModule,
     FileUploadModule,
+    OrganizationsModule,
+    PermisisonsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

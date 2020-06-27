@@ -8,7 +8,11 @@ import { REQUEST } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection, createConnection, getConnection } from 'typeorm';
 
-import { Customer } from './customer.object';
+import { Customer } from './entities/customer.object';
+import { CustomersService } from './customers.service';
+import { CustomersResolver } from './resolvers/customers.resolver';
+
+import { AuthModule } from '../auth/auth.module';
 
 export const CUSTOMER_CONNECTION = 'CUSTOMER_CONNECTION';
 
@@ -23,9 +27,11 @@ export const CUSTOMER_CONNECTION = 'CUSTOMER_CONNECTION';
         const customer: Customer = await connection
           .getRepository(Customer)
           .findOne({ where: { host: request.req.headers.host } });
-        return getConnection(customer.name);
+        return getConnection(customer.domain);
       },
     },
+    CustomersService,
+    CustomersResolver,
   ],
   exports: [CUSTOMER_CONNECTION],
 })
@@ -47,18 +53,18 @@ export class CustomersModule {
         }
 
         try {
-          getConnection(customer.name);
+          getConnection(customer.domain);
           next();
         } catch (e) {
           const createdConnection: Connection = await createConnection({
-            name: customer.name,
+            name: customer.domain,
             type: 'postgres',
             username: process.env.DB_USER,
             password: process.env.DB_PASS,
             port: parseInt(process.env.DB_PORT, 10) || 5433,
             host: process.env.DB_HOST,
             database: process.env.DB_NAME,
-            schema: customer.name,
+            schema: customer.domain,
             entities: [__dirname + '/../**/*.entity{.ts,.js}'],
             synchronize: true,
             // logging: true,
