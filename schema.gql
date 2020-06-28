@@ -84,15 +84,6 @@ type UserPermissionEntity {
   userUpdated: UserEntity
 }
 
-type OrganizationEntity {
-  id: ID!
-  createdAt: Date
-  updatedAt: Date
-  description: String!
-  dateBegin: Date
-  dateEnd: Date
-}
-
 type CityEntity {
   id: ID!
   createdAt: Date
@@ -100,6 +91,47 @@ type CityEntity {
   description: String!
   stateId: Float
   state: StateEntity
+}
+
+type CompanyEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  socialReason: String
+  nameFantasy: String
+  adress: String
+  district: String
+  complemt: String
+  stateId: Float
+  state: StateEntity
+  cityId: Float
+  city: CityEntity
+  zipCode: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cnpj: String
+  recognition: String
+  publication: String
+  numberInep: String
+  principal: String
+  secretary: String
+  note: String
+  image: String
+  userCreatedId: Float
+  userUpdatedId: Float
+  userCreated: UserEntity
+  userUpdated: UserEntity
+}
+
+type OrganizationEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  description: String!
+  dateBegin: Date
+  dateEnd: Date
 }
 
 type Query {
@@ -116,10 +148,12 @@ type Query {
   userPermissionAll: [UserPermissionEntity!]!
   permission(id: Float!): PermissionEntity!
   permissionAll: [PermissionEntity!]!
-  organization(id: Float!): OrganizationEntity!
-  organizationAll: [OrganizationEntity!]!
+  company(id: Float!): CompanyEntity!
+  companyAll: [CompanyEntity!]!
   city(id: Float!): CityEntity!
   cityAll: [CityEntity!]!
+  organization(id: Float!): OrganizationEntity!
+  organizationAll: [OrganizationEntity!]!
 }
 
 type Mutation {
@@ -141,12 +175,15 @@ type Mutation {
   permissionCreate(createData: CreatePermissionInput!): PermissionEntity!
   permissionUpdate(updateData: CreatePermissionInput!, id: Float!): PermissionEntity!
   permissionDelete(id: Float!): Boolean!
-  organizationCreate(createData: CreateOrganizationInput!): OrganizationEntity!
-  organizationUpdate(updateData: CreateOrganizationInput!, id: Float!): OrganizationEntity!
-  organizationDelete(id: Float!): Boolean!
+  companyCreate(createData: CreateCompanyInput!): CompanyEntity!
+  companyUpdate(updateData: CreateCompanyInput!, id: Float!): CompanyEntity!
+  companyDelete(id: Float!): Boolean!
   cityCreate(createData: CreateCityInput!): CityEntity!
   cityUpdate(updateData: CreateCityInput!, id: Float!): CityEntity!
   cityDelete(id: Float!): Boolean!
+  organizationCreate(createData: CreateOrganizationInput!): OrganizationEntity!
+  organizationUpdate(updateData: CreateOrganizationInput!, id: Float!): OrganizationEntity!
+  organizationDelete(id: Float!): Boolean!
 }
 
 input CreateCustomerInput {
@@ -195,13 +232,36 @@ input CreatePermissionInput {
   description: String!
 }
 
-input CreateOrganizationInput {
-  description: String!
-  dateBegin: Date
-  dateEnd: Date
+input CreateCompanyInput {
+  socialReason: String!
+  nameFantasy: String!
+  adress: String
+  district: String
+  complemt: String
+  stateId: Float
+  cityId: Float
+  zipCode: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cnpj: String
+  recognition: String
+  publication: String
+  numberInep: String
+  principal: String
+  secretary: String
+  note: String
+  image: String
 }
 
 input CreateCityInput {
   description: String!
   stateId: Float
+}
+
+input CreateOrganizationInput {
+  description: String!
+  dateBegin: Date
+  dateEnd: Date
 }

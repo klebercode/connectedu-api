@@ -1,4 +1,4 @@
-import { Inject, NotFoundException } from '@nestjs/common';
+import { Inject, GoneException } from '@nestjs/common';
 import { CreateStudentInput } from './types/create-student.input';
 import { StudentArgs } from './types/student.args';
 import { StudentEntity } from './entities/student.entity';
@@ -17,19 +17,23 @@ export class StudentsService {
     student: CreateStudentInput,
     idUser: any,
   ): Promise<StudentEntity> {
-    const studentCreated = await this.studentsRepository.save({
-      ...student,
-      userCreatedId: idUser,
-    });
-    return studentCreated;
+    try {
+      const obj = await this.studentsRepository.save({
+        ...student,
+        userCreatedId: idUser,
+      });
+      return obj;
+    } catch (error) {
+      throw new GoneException(error);
+    }
   }
 
   async findOneById(id: number): Promise<StudentEntity> {
-    const student = await this.studentsRepository.findOne(id);
-    if (!student) {
+    const obj = await this.studentsRepository.findOne(id);
+    if (!obj) {
       return null;
     }
-    return student;
+    return obj;
   }
 
   async findAll(studentArgs: StudentArgs): Promise<StudentEntity[]> {
@@ -45,10 +49,14 @@ export class StudentsService {
     student: Partial<CreateStudentInput>,
     idUser: any,
   ): Promise<StudentEntity> {
-    await this.studentsRepository.update(id, {
-      ...student,
-      userUpdatedId: idUser,
-    });
-    return this.findOneById(id);
+    try {
+      await this.studentsRepository.update(id, {
+        ...student,
+        userUpdatedId: idUser,
+      });
+      return this.findOneById(id);
+    } catch (error) {
+      throw new GoneException(error);
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, HttpException } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -20,7 +20,6 @@ import { StudentsService } from '../students.service';
 import { MyContext } from '../../common/types/myContext';
 import { StatesService } from '../../states/states.service';
 import { UsersService } from '../../users/users.service';
-import { UserEntity } from '../../users/entities/user.entity';
 
 const pubSub = new PubSub();
 
@@ -50,10 +49,15 @@ export class StudentsResolver {
     @Context() context: MyContext,
     @Args('createData') createData: CreateStudentInput,
   ): Promise<StudentEntity> {
-    const { user } = context.req;
-    const student = await this.studentsService.create(createData, user['id']);
-    pubSub.publish('studentAdded', { studentAdded: student });
-    return student;
+    try {
+      const { user } = context.req;
+      const student = await this.studentsService.create(createData, user['id']);
+      pubSub.publish('studentAdded', { studentAdded: student });
+
+      return student;
+    } catch (exception) {
+      throw new HttpException(exception.message, 409);
+    }
   }
 
   @Mutation(() => StudentEntity, { name: 'studentUpdate' })
@@ -62,14 +66,19 @@ export class StudentsResolver {
     @Args('id') id: number,
     @Args('updateData') updateData: CreateStudentInput,
   ): Promise<StudentEntity> {
-    const { user } = context.req;
-    const student = await this.studentsService.update(
-      id,
-      { ...updateData },
-      user['id'],
-    );
-    pubSub.publish('updateData', { studentAdded: student });
-    return student;
+    try {
+      const { user } = context.req;
+      const student = await this.studentsService.update(
+        id,
+        { ...updateData },
+        user['id'],
+      );
+      pubSub.publish('updateData', { studentAdded: student });
+
+      return student;
+    } catch (exception) {
+      throw new HttpException(exception.message, 409);
+    }
   }
 
   @Mutation(() => Boolean, { name: 'studentDelete' })
