@@ -1,13 +1,13 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
-import { IsOptional } from 'class-validator';
+import { IsOptional, isEmail } from 'class-validator';
 import { BaseEntity } from 'src/base-entity';
 
 @ObjectType()
 @Entity('user')
 @Unique(['name'])
 export class UserEntity extends BaseEntity {
-  @Field()
+  @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: false })
   name: string;
 

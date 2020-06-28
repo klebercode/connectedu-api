@@ -10,6 +10,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { FileUploadModule } from './fileUpload/fileUpload.module';
 import { StudentsModule } from './students/students.module';
+import { UserPermissionsModule } from './userpermissions/userpermissions.module';
 
 // Modulos Publicos
 import { PermisisonsModule } from './permissions/permissions.module';
@@ -64,6 +65,7 @@ import { Customer } from './customers/entities/customer.object';
     OrganizationsModule,
     PermisisonsModule,
     CitiesModule,
+    UserPermissionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

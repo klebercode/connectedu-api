@@ -6,7 +6,7 @@ type UserEntity {
   id: ID!
   createdAt: Date
   updatedAt: Date
-  name: String!
+  name: String
   nickName: String
   login: String
   email: String
@@ -65,6 +65,25 @@ type PermissionEntity {
   description: String!
 }
 
+type UserPermissionEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  userId: Float!
+  user: UserEntity
+  codeId: Float!
+  code: PermissionEntity
+  create: Boolean
+  edit: Boolean
+  delete: Boolean
+  list: Boolean
+  visible: Boolean
+  userCreatedId: Float
+  userUpdatedId: Float
+  userCreated: UserEntity
+  userUpdated: UserEntity
+}
+
 type OrganizationEntity {
   id: ID!
   createdAt: Date
@@ -93,6 +112,8 @@ type Query {
   studentAll(skip: Int = 0, take: Int = 25): [StudentEntity!]!
   state(id: Float!): StateEntity!
   stateAll: [StateEntity!]!
+  userPermission(id: Float!): UserPermissionEntity!
+  userPermissionAll: [UserPermissionEntity!]!
   permission(id: Float!): PermissionEntity!
   permissionAll: [PermissionEntity!]!
   organization(id: Float!): OrganizationEntity!
@@ -114,6 +135,9 @@ type Mutation {
   stateCreate(createData: CreateStateInput!): StateEntity!
   stateUpdate(updateData: CreateStateInput!, id: Float!): StateEntity!
   stateDelete(id: Float!): Boolean!
+  userPermissionCreate(createData: CreateUserPermissionInput!): UserPermissionEntity!
+  userPermissionDelete(id: Float!): Boolean!
+  userPermissionUpdate(updateData: CreateUserPermissionInput!, id: Float!): UserPermissionEntity!
   permissionCreate(createData: CreatePermissionInput!): PermissionEntity!
   permissionUpdate(updateData: CreatePermissionInput!, id: Float!): PermissionEntity!
   permissionDelete(id: Float!): Boolean!
@@ -154,6 +178,16 @@ input CreateStudentInput {
 input CreateStateInput {
   description: String!
   uf: String!
+}
+
+input CreateUserPermissionInput {
+  userId: Float!
+  codeId: Float!
+  create: Boolean
+  edit: Boolean
+  delete: Boolean
+  list: Boolean
+  visible: Boolean
 }
 
 input CreatePermissionInput {
