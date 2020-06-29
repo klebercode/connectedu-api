@@ -125,6 +125,23 @@ type CompanyEntity {
   userUpdated: UserEntity
 }
 
+type YearEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  year: String
+  dateBegin: Date
+  dateEnd: Date
+  dateModule1: Date
+  dateModule2: Date
+  dateModule3: Date
+  dateModule4: Date
+  userCreatedId: Float
+  userUpdatedId: Float
+  userCreated: UserEntity
+  userUpdated: UserEntity
+}
+
 type OrganizationEntity {
   id: ID!
   createdAt: Date
@@ -152,6 +169,8 @@ type Query {
   companyAll: [CompanyEntity!]!
   city(id: Float!): CityEntity!
   cityAll: [CityEntity!]!
+  year(id: Float!): YearEntity!
+  yearAll: [YearEntity!]!
   organization(id: Float!): OrganizationEntity!
   organizationAll: [OrganizationEntity!]!
 }
@@ -181,6 +200,9 @@ type Mutation {
   cityCreate(createData: CreateCityInput!): CityEntity!
   cityUpdate(updateData: CreateCityInput!, id: Float!): CityEntity!
   cityDelete(id: Float!): Boolean!
+  yearCreate(createData: CreateYearInput!): YearEntity!
+  yearDelete(id: Float!): Boolean!
+  yearUpdate(updateData: CreateYearInput!, id: Float!): YearEntity!
   organizationCreate(createData: CreateOrganizationInput!): OrganizationEntity!
   organizationUpdate(updateData: CreateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationDelete(id: Float!): Boolean!
@@ -258,6 +280,16 @@ input CreateCompanyInput {
 input CreateCityInput {
   description: String!
   stateId: Float
+}
+
+input CreateYearInput {
+  year: String
+  dateBegin: Date
+  dateEnd: Date
+  dateModule1: Date
+  dateModule2: Date
+  dateModule3: Date
+  dateModule4: Date
 }
 
 input CreateOrganizationInput {

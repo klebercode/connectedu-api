@@ -12,6 +12,7 @@ import { FileUploadModule } from './fileUpload/fileUpload.module';
 import { StudentsModule } from './students/students.module';
 import { UserPermissionsModule } from './userpermissions/userpermissions.module';
 import { CompaniesModule } from './companies/companies.module';
+import { YearsModule } from './years/years.module';
 
 // Modulos Publicos
 import { PermisisonsModule } from './permissions/permissions.module';
@@ -68,6 +69,7 @@ import { Customer } from './customers/entities/customer.object';
     CitiesModule,
     UserPermissionsModule,
     CompaniesModule,
+    YearsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
