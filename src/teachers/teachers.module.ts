@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { DateScalar } from '../common/scalars/date.scalar';
 
-import { CompaniesResolver } from './resolvers/companies.resolver';
-import { CompaniesService } from './companies.service';
+import { TeachersResolver } from './resolvers/teachers.resolver';
+import { TeachersService } from './teachers.service';
 
 import { UsersModule } from '../users/users.module';
 import { StatesModule } from '../states/states.module';
@@ -11,7 +11,7 @@ import { CustomersModule } from '../customers/customers.module';
 
 @Module({
   imports: [UsersModule, CustomersModule, StatesModule, CitiesModule],
-  providers: [CompaniesResolver, CompaniesService, DateScalar],
-  exports: [CompaniesService],
+  providers: [TeachersResolver, TeachersService, DateScalar],
+  exports: [TeachersService],
 })
-export class CompaniesModule {}
+export class TeachersModule {}

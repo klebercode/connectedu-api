@@ -142,6 +142,50 @@ type YearEntity {
   userUpdated: UserEntity
 }
 
+type SubjectEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  description: String
+  abbreviation: String
+  descriptionMinutes: String
+  status: Boolean
+  userCreatedId: Float
+  userUpdatedId: Float
+  userCreated: UserEntity
+  userUpdated: UserEntity
+}
+
+type TeacherEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  name: String
+  nickName: String
+  adress: String
+  district: String
+  complemt: String
+  stateId: Float
+  state: StateEntity
+  cityId: Float
+  city: CityEntity
+  zipCode: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cpf: String
+  identity: String
+  OrgIdentity: String
+  status: Boolean
+  note: String
+  profile: String
+  userCreatedId: Float
+  userUpdatedId: Float
+  userCreated: UserEntity
+  userUpdated: UserEntity
+}
+
 type OrganizationEntity {
   id: ID!
   createdAt: Date
@@ -171,6 +215,10 @@ type Query {
   cityAll: [CityEntity!]!
   year(id: Float!): YearEntity!
   yearAll: [YearEntity!]!
+  subject(id: Float!): SubjectEntity!
+  subjectAll: [SubjectEntity!]!
+  teacher(id: Float!): TeacherEntity!
+  teacherAll: [TeacherEntity!]!
   organization(id: Float!): OrganizationEntity!
   organizationAll: [OrganizationEntity!]!
 }
@@ -203,6 +251,12 @@ type Mutation {
   yearCreate(createData: CreateYearInput!): YearEntity!
   yearDelete(id: Float!): Boolean!
   yearUpdate(updateData: CreateYearInput!, id: Float!): YearEntity!
+  subjectCreate(createData: CreateSubjectInput!): SubjectEntity!
+  subjectDelete(id: Float!): Boolean!
+  subjectUpdate(updateData: CreateSubjectInput!, id: Float!): SubjectEntity!
+  teacherCreate(createData: CreateTeacherInput!): TeacherEntity!
+  teacherUpdate(updateData: CreateTeacherInput!, id: Float!): TeacherEntity!
+  teacherDelete(id: Float!): Boolean!
   organizationCreate(createData: CreateOrganizationInput!): OrganizationEntity!
   organizationUpdate(updateData: CreateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationDelete(id: Float!): Boolean!
@@ -290,6 +344,34 @@ input CreateYearInput {
   dateModule2: Date
   dateModule3: Date
   dateModule4: Date
+}
+
+input CreateSubjectInput {
+  description: String
+  abbreviation: String
+  descriptionMinutes: String
+  status: Boolean
+}
+
+input CreateTeacherInput {
+  name: String!
+  nickName: String!
+  adress: String
+  district: String
+  complemt: String
+  stateId: Float
+  cityId: Float
+  zipCode: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cpf: String
+  identity: String
+  OrgIdentity: String
+  status: Boolean
+  note: String
+  profile: String
 }
 
 input CreateOrganizationInput {

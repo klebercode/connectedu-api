@@ -13,6 +13,8 @@ import { StudentsModule } from './students/students.module';
 import { UserPermissionsModule } from './userpermissions/userpermissions.module';
 import { CompaniesModule } from './companies/companies.module';
 import { YearsModule } from './years/years.module';
+import { SubjectsModule } from './subjects/subjects.module';
+import { TeachersModule } from './teachers/teachers.module';
 
 // Modulos Publicos
 import { PermisisonsModule } from './permissions/permissions.module';
@@ -70,6 +72,8 @@ import { Customer } from './customers/entities/customer.object';
     UserPermissionsModule,
     CompaniesModule,
     YearsModule,
+    SubjectsModule,
+    TeachersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
