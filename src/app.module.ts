@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { GraphQLModule } from '@nestjs/graphql';
-import { config } from './orm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
 
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { config } from './orm.config';
+
+// Import moulos
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 import { FileUploadModule } from './fileUpload/fileUpload.module';
 import { StudentsModule } from './students/students.module';
 import { UserPermissionsModule } from './userpermissions/userpermissions.module';
@@ -16,6 +18,7 @@ import { YearsModule } from './years/years.module';
 import { SubjectsModule } from './subjects/subjects.module';
 import { TeachersModule } from './teachers/teachers.module';
 import { ClassRoomsModule } from './classrooms/classrooms.module';
+import { ClassRoomItemsModule } from './classroomitems/classroomitems.module';
 
 // Modulos Publicos
 import { PermisisonsModule } from './permissions/permissions.module';
@@ -76,6 +79,7 @@ import { Customer } from './customers/entities/customer.object';
     SubjectsModule,
     TeachersModule,
     ClassRoomsModule,
+    ClassRoomItemsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

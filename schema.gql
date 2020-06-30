@@ -2,6 +2,19 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Customer {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  host: String!
+  domain: String!
+  name: String!
+  organizationId: Float
+}
+
+"""Date custom scalar type"""
+scalar Date
+
 type UserEntity {
   id: ID!
   createdAt: Date
@@ -17,19 +30,6 @@ type UserEntity {
   userUpdatedId: Float
   userCreated: UserEntity
   userUpdated: UserEntity
-}
-
-"""Date custom scalar type"""
-scalar Date
-
-type Customer {
-  id: ID!
-  createdAt: Date
-  updatedAt: Date
-  host: String!
-  domain: String!
-  name: String!
-  organizationId: Float
 }
 
 type StateEntity {
@@ -208,6 +208,32 @@ type ClassRoomEntity {
   userUpdated: UserEntity
 }
 
+type ClassRoomItemEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  classroomId: Float
+  classroom: ClassRoomEntity
+  subjectId: Float
+  subject: SubjectEntity
+  teacherId: Float
+  teacher: TeacherEntity
+  workHours: Float
+  visibleReport: Boolean
+  visibleMinute: Boolean
+  registerCall: Boolean
+  registerContent: Boolean
+  registerOccurrence: Boolean
+  type: String
+  numberGrades: Float
+  gradeMin: Float
+  gradeMax: Float
+  userCreatedId: Float
+  userUpdatedId: Float
+  userCreated: UserEntity
+  userUpdated: UserEntity
+}
+
 type OrganizationEntity {
   id: ID!
   createdAt: Date
@@ -243,6 +269,8 @@ type Query {
   teacherAll: [TeacherEntity!]!
   classRoom(id: Float!): ClassRoomEntity!
   classRoomAll: [ClassRoomEntity!]!
+  classRoomItem(id: Float!): ClassRoomItemEntity!
+  classRoomItemAll: [ClassRoomItemEntity!]!
   organization(id: Float!): OrganizationEntity!
   organizationAll: [OrganizationEntity!]!
 }
@@ -284,6 +312,9 @@ type Mutation {
   classRoomCreate(createData: CreateClassRoomInput!): ClassRoomEntity!
   classRoomDelete(id: Float!): Boolean!
   classRoomUpdate(updateData: CreateClassRoomInput!, id: Float!): ClassRoomEntity!
+  classRoomItemCreate(createData: CreateClassRoomItemInput!): ClassRoomItemEntity!
+  classRoomItemDelete(id: Float!): Boolean!
+  classRoomItemUpdate(updateData: CreateClassRoomItemInput!, id: Float!): ClassRoomItemEntity!
   organizationCreate(createData: CreateOrganizationInput!): OrganizationEntity!
   organizationUpdate(updateData: CreateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationDelete(id: Float!): Boolean!
@@ -409,9 +440,25 @@ input CreateClassRoomInput {
   type: String
   level: String
   classification: String
-  status: Boolean = true
+  status: Boolean
   companyId: Float
   yearId: Float
+}
+
+input CreateClassRoomItemInput {
+  classroomId: Float
+  subjectId: Float
+  teacherId: Float
+  workHours: Float
+  visibleReport: Boolean
+  visibleMinute: Boolean
+  registerCall: Boolean
+  registerContent: Boolean
+  registerOccurrence: Boolean
+  type: String
+  numberGrades: Float
+  gradeMin: Float
+  gradeMax: Float
 }
 
 input CreateOrganizationInput {
