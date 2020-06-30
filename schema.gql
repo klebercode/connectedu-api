@@ -186,6 +186,28 @@ type TeacherEntity {
   userUpdated: UserEntity
 }
 
+type ClassRoomEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  description: String
+  abbreviation: String
+  descriptionMinutes: String
+  shift: String
+  type: String
+  level: String
+  classification: String
+  status: Boolean
+  companyId: Float
+  company: CompanyEntity
+  yearId: Float
+  year: YearEntity
+  userCreatedId: Float
+  userUpdatedId: Float
+  userCreated: UserEntity
+  userUpdated: UserEntity
+}
+
 type OrganizationEntity {
   id: ID!
   createdAt: Date
@@ -219,6 +241,8 @@ type Query {
   subjectAll: [SubjectEntity!]!
   teacher(id: Float!): TeacherEntity!
   teacherAll: [TeacherEntity!]!
+  classRoom(id: Float!): ClassRoomEntity!
+  classRoomAll: [ClassRoomEntity!]!
   organization(id: Float!): OrganizationEntity!
   organizationAll: [OrganizationEntity!]!
 }
@@ -257,6 +281,9 @@ type Mutation {
   teacherCreate(createData: CreateTeacherInput!): TeacherEntity!
   teacherUpdate(updateData: CreateTeacherInput!, id: Float!): TeacherEntity!
   teacherDelete(id: Float!): Boolean!
+  classRoomCreate(createData: CreateClassRoomInput!): ClassRoomEntity!
+  classRoomDelete(id: Float!): Boolean!
+  classRoomUpdate(updateData: CreateClassRoomInput!, id: Float!): ClassRoomEntity!
   organizationCreate(createData: CreateOrganizationInput!): OrganizationEntity!
   organizationUpdate(updateData: CreateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationDelete(id: Float!): Boolean!
@@ -372,6 +399,19 @@ input CreateTeacherInput {
   status: Boolean
   note: String
   profile: String
+}
+
+input CreateClassRoomInput {
+  description: String
+  abbreviation: String
+  descriptionMinutes: String
+  shift: String
+  type: String
+  level: String
+  classification: String
+  status: Boolean = true
+  companyId: Float
+  yearId: Float
 }
 
 input CreateOrganizationInput {

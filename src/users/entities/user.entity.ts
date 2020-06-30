@@ -32,7 +32,7 @@ export class UserEntity extends BaseEntity {
   profile: string;
 
   @Field({ nullable: true })
-  @Column({ name: 'code_token', nullable: true, default: 1 })
+  @Column({ name: 'code_token', nullable: true })
   codeToken: number;
 
   @Field({ nullable: true })

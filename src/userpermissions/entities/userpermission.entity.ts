@@ -30,27 +30,27 @@ export class UserPermissionEntity extends BaseEntity {
   code?: PermissionEntity;
 
   @Field({ nullable: true })
-  @Column({ nullable: true, default: false })
+  @Column({ nullable: true })
   @IsOptional()
   create?: boolean;
 
   @Field({ nullable: true })
-  @Column({ nullable: true, default: false })
+  @Column({ nullable: true })
   @IsOptional()
   edit?: boolean;
 
   @Field({ nullable: true })
-  @Column({ nullable: true, default: false })
+  @Column({ nullable: true })
   @IsOptional()
   delete?: boolean;
 
   @Field({ nullable: true })
-  @Column({ nullable: true, default: false })
+  @Column({ nullable: true })
   @IsOptional()
   list?: boolean;
 
   @Field({ nullable: true })
-  @Column({ nullable: true, default: false })
+  @Column({ nullable: true })
   @IsOptional()
   visible?: boolean;
 

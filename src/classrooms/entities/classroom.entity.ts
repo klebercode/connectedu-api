@@ -3,10 +3,12 @@ import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { BaseEntity } from 'src/base-entity';
 import { UserEntity } from '../../users/entities/user.entity';
+import { CompanyEntity } from '../../companies/entities/company.entity';
+import { YearEntity } from '../../years/entities/year.entity';
 
 @ObjectType()
-@Entity('subject')
-export class SubjectEntity extends BaseEntity {
+@Entity('classroom')
+export class ClassRoomEntity extends BaseEntity {
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 50, nullable: false })
   @IsOptional()
@@ -28,9 +30,51 @@ export class SubjectEntity extends BaseEntity {
   descriptionMinutes?: string;
 
   @Field({ nullable: true })
+  @Column({ type: 'varchar', nullable: true, length: 1 })
+  @IsOptional()
+  shift?: string;
+
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', nullable: true, length: 10 })
+  @IsOptional()
+  type?: string;
+
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', nullable: true, length: 1 })
+  @IsOptional()
+  level?: string;
+
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', nullable: true, length: 2 })
+  @IsOptional()
+  classification?: string;
+
+  @Field({ nullable: true })
   @Column({ nullable: true })
   @IsOptional()
   status?: boolean;
+
+  @Field({ nullable: true })
+  @Column({ name: 'company_id', nullable: false })
+  @IsOptional()
+  companyId?: number;
+
+  @Field(type => CompanyEntity, { nullable: true })
+  @ManyToOne(type => CompanyEntity, { nullable: true })
+  @JoinColumn({ name: 'company' })
+  @IsOptional()
+  company?: CompanyEntity;
+
+  @Field({ nullable: true })
+  @Column({ name: 'year_id', nullable: false })
+  @IsOptional()
+  yearId?: number;
+
+  @Field(type => YearEntity, { nullable: true })
+  @ManyToOne(type => YearEntity, { nullable: true })
+  @JoinColumn({ name: 'year' })
+  @IsOptional()
+  year?: YearEntity;
 
   @Field({ nullable: true })
   @Column({ name: 'user_created_id', nullable: true })

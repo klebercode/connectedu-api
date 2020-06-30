@@ -101,7 +101,7 @@ export class TeacherEntity extends BaseEntity {
   OrgIdentity?: string;
 
   @Field({ nullable: true })
-  @Column({ nullable: true, default: true })
+  @Column({ nullable: true })
   @IsOptional()
   status?: boolean;
 

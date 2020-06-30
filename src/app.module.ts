@@ -15,6 +15,7 @@ import { CompaniesModule } from './companies/companies.module';
 import { YearsModule } from './years/years.module';
 import { SubjectsModule } from './subjects/subjects.module';
 import { TeachersModule } from './teachers/teachers.module';
+import { ClassRoomsModule } from './classrooms/classrooms.module';
 
 // Modulos Publicos
 import { PermisisonsModule } from './permissions/permissions.module';
@@ -74,6 +75,7 @@ import { Customer } from './customers/entities/customer.object';
     YearsModule,
     SubjectsModule,
     TeachersModule,
+    ClassRoomsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
