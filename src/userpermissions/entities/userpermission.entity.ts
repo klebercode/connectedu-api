@@ -9,22 +9,24 @@ import { UserEntity } from '../../users/entities/user.entity';
 @Entity('user_permission')
 @Unique(['userId', 'codeId'])
 export class UserPermissionEntity extends BaseEntity {
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   @Column({ name: 'user_id', nullable: false })
+  @JoinColumn({ name: 'user_id' })
+  @ManyToOne(type => UserEntity)
   @IsOptional()
   userId?: number;
 
   @Field(type => UserEntity, { nullable: true })
-  @ManyToOne(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'user' })
   @IsOptional()
   user?: UserEntity;
 
+  // usando com tabale  publica
   @Field({ nullable: false })
   @Column({ name: 'code_id', nullable: false })
   @IsOptional()
   codeId?: number;
 
+  // usando com tabale  publica
   @Field(type => PermissionEntity, { nullable: true })
   @IsOptional()
   code?: PermissionEntity;
@@ -54,25 +56,26 @@ export class UserPermissionEntity extends BaseEntity {
   @IsOptional()
   visible?: boolean;
 
+  //Campos de usuario padrão
   @Field({ nullable: true })
-  @Column({ name: 'user_created_id', nullable: true })
+  @Column({ name: 'user_created_id', nullable: false })
+  @JoinColumn({ name: 'user_created_id' })
+  @ManyToOne(type => UserEntity)
   @IsOptional()
   userCreatedId?: number;
 
+  @Field(type => UserEntity, { nullable: true })
+  @IsOptional()
+  userCreated?: UserEntity;
+
   @Field({ nullable: true })
   @Column({ name: 'user_updated_id', nullable: true })
+  @JoinColumn({ name: 'user_updated_id' })
+  @ManyToOne(type => UserEntity)
   @IsOptional()
   userUpdatedId?: number;
 
   @Field(type => UserEntity, { nullable: true })
-  @ManyToOne(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'user_created' })
-  @IsOptional()
-  userCreated?: UserEntity;
-
-  @Field(type => UserEntity, { nullable: true })
-  @ManyToOne(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'user_updated' })
   @IsOptional()
   userUpdated?: UserEntity;
 }

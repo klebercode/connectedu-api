@@ -3,12 +3,12 @@ import { IsOptional, IsEmail, MaxLength } from 'class-validator';
 
 @InputType()
 export class CreateCompanyInput {
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   @MaxLength(100)
   @IsOptional()
   socialReason: string;
 
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   @MaxLength(100)
   @IsOptional()
   nameFantasy: string;

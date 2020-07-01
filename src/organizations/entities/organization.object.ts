@@ -6,8 +6,8 @@ import { IsOptional } from 'class-validator';
 @ObjectType()
 @Entity('organization')
 export class OrganizationEntity extends BaseEntity {
-  @Field()
-  @Column({ length: 100, nullable: false })
+  @Field({ nullable: true })
+  @Column({ length: 100, nullable: true })
   description: string;
 
   @Field({ nullable: true })

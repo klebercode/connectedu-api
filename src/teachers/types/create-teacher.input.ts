@@ -3,12 +3,12 @@ import { IsOptional, IsEmail, MaxLength } from 'class-validator';
 
 @InputType()
 export class CreateTeacherInput {
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   @MaxLength(100)
   @IsOptional()
   name: string;
 
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   @MaxLength(40)
   @IsOptional()
   nickName: string;

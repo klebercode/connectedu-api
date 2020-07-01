@@ -3,7 +3,7 @@ import { IsOptional, MaxLength } from 'class-validator';
 
 @InputType()
 export class CreateCityInput {
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   @MaxLength(100)
   description: string;
 

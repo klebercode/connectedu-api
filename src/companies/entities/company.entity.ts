@@ -130,25 +130,26 @@ export class CompanyEntity extends BaseEntity {
   @IsOptional()
   image?: string;
 
+  //Campos de usuario padrão
   @Field({ nullable: true })
-  @Column({ name: 'user_created_id', nullable: true })
+  @Column({ name: 'user_created_id', nullable: false })
+  @JoinColumn({ name: 'user_created_id' })
+  @ManyToOne(type => UserEntity)
   @IsOptional()
   userCreatedId?: number;
 
+  @Field(type => UserEntity, { nullable: true })
+  @IsOptional()
+  userCreated?: UserEntity;
+
   @Field({ nullable: true })
   @Column({ name: 'user_updated_id', nullable: true })
+  @JoinColumn({ name: 'user_updated_id' })
+  @ManyToOne(type => UserEntity)
   @IsOptional()
   userUpdatedId?: number;
 
   @Field(type => UserEntity, { nullable: true })
-  @ManyToOne(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'user_created' })
-  @IsOptional()
-  userCreated?: UserEntity;
-
-  @Field(type => UserEntity, { nullable: true })
-  @ManyToOne(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'user_updated' })
   @IsOptional()
   userUpdated?: UserEntity;
 }

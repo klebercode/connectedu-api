@@ -8,18 +8,18 @@ import { StateEntity } from '../../states/entities/state.object';
 @Entity('city')
 @Unique(['description'])
 export class CityEntity extends BaseEntity {
-  @Field()
+  @Field({ nullable: true })
   @Column({ length: 100, nullable: false })
   description: string;
 
   @Field({ nullable: true })
   @Column({ name: 'state_id', nullable: true })
+  @JoinColumn({ name: 'state_id' })
+  @ManyToOne(type => StateEntity)
   @IsOptional()
   stateId?: number;
 
   @Field(type => StateEntity, { nullable: true })
-  @ManyToOne(type => StateEntity, { nullable: true })
-  @JoinColumn({ name: 'state' })
   @IsOptional()
   state?: StateEntity;
 }

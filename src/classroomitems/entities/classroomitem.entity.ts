@@ -12,9 +12,9 @@ import { TeacherEntity } from '../../teachers/entities/teacher.entity';
 @Unique(['classroomId', 'subjectId'])
 export class ClassRoomItemEntity extends BaseEntity {
   @Field({ nullable: true })
-  @ManyToOne(type => ClassRoomEntity)
   @Column({ name: 'classroom_id', nullable: false })
   @JoinColumn({ name: 'classroom_id' })
+  @ManyToOne(type => ClassRoomEntity)
   @IsOptional()
   classroomId?: number;
 
@@ -23,9 +23,9 @@ export class ClassRoomItemEntity extends BaseEntity {
   classroom?: ClassRoomEntity;
 
   @Field({ nullable: true })
-  @ManyToOne(type => SubjectEntity)
   @Column({ name: 'subject_id', nullable: false })
   @JoinColumn({ name: 'subject_id' })
+  @ManyToOne(type => SubjectEntity)
   @IsOptional()
   subjectId?: number;
 
@@ -102,16 +102,16 @@ export class ClassRoomItemEntity extends BaseEntity {
   @IsOptional()
   userCreatedId?: number;
 
-  @Field({ nullable: true })
-  @Column({ name: 'user_updated_id', nullable: true })
-  @ManyToOne(type => UserEntity)
-  @JoinColumn({ name: 'user_updated_id' })
-  @IsOptional()
-  userUpdatedId?: number;
-
   @Field(type => UserEntity, { nullable: true })
   @IsOptional()
   userCreated?: UserEntity;
+
+  @Field({ nullable: true })
+  @Column({ name: 'user_updated_id', nullable: true })
+  @JoinColumn({ name: 'user_updated_id' })
+  @ManyToOne(type => UserEntity)
+  @IsOptional()
+  userUpdatedId?: number;
 
   @Field(type => UserEntity, { nullable: true })
   @IsOptional()
