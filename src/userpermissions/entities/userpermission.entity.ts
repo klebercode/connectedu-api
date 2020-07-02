@@ -58,7 +58,7 @@ export class UserPermissionEntity extends BaseEntity {
 
   //Campos de usuario padrão
   @Field({ nullable: true })
-  @Column({ name: 'user_created_id', nullable: false })
+  @Column({ name: 'user_created_id', nullable: true })
   @JoinColumn({ name: 'user_created_id' })
   @ManyToOne(type => UserEntity)
   @IsOptional()

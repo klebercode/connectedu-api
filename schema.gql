@@ -27,8 +27,8 @@ type UserEntity {
   profile: String
   codeToken: Float
   userCreatedId: Float
-  userUpdatedId: Float
   userCreated: UserEntity
+  userUpdatedId: Float
   userUpdated: UserEntity
 }
 
@@ -69,7 +69,7 @@ type UserPermissionEntity {
   id: ID!
   createdAt: Date
   updatedAt: Date
-  userId: Float!
+  userId: Float
   user: UserEntity
   codeId: Float!
   code: PermissionEntity
@@ -79,8 +79,8 @@ type UserPermissionEntity {
   list: Boolean
   visible: Boolean
   userCreatedId: Float
-  userUpdatedId: Float
   userCreated: UserEntity
+  userUpdatedId: Float
   userUpdated: UserEntity
 }
 
@@ -88,7 +88,7 @@ type CityEntity {
   id: ID!
   createdAt: Date
   updatedAt: Date
-  description: String!
+  description: String
   stateId: Float
   state: StateEntity
 }
@@ -120,8 +120,8 @@ type CompanyEntity {
   note: String
   image: String
   userCreatedId: Float
-  userUpdatedId: Float
   userCreated: UserEntity
+  userUpdatedId: Float
   userUpdated: UserEntity
 }
 
@@ -137,8 +137,8 @@ type YearEntity {
   dateModule3: Date
   dateModule4: Date
   userCreatedId: Float
-  userUpdatedId: Float
   userCreated: UserEntity
+  userUpdatedId: Float
   userUpdated: UserEntity
 }
 
@@ -151,8 +151,8 @@ type SubjectEntity {
   descriptionMinutes: String
   status: Boolean
   userCreatedId: Float
-  userUpdatedId: Float
   userCreated: UserEntity
+  userUpdatedId: Float
   userUpdated: UserEntity
 }
 
@@ -181,8 +181,8 @@ type TeacherEntity {
   note: String
   profile: String
   userCreatedId: Float
-  userUpdatedId: Float
   userCreated: UserEntity
+  userUpdatedId: Float
   userUpdated: UserEntity
 }
 
@@ -203,8 +203,8 @@ type ClassRoomEntity {
   yearId: Float
   year: YearEntity
   userCreatedId: Float
-  userUpdatedId: Float
   userCreated: UserEntity
+  userUpdatedId: Float
   userUpdated: UserEntity
 }
 
@@ -229,8 +229,29 @@ type ClassRoomItemEntity {
   gradeMin: Float
   gradeMax: Float
   userCreatedId: Float
-  userUpdatedId: Float
   userCreated: UserEntity
+  userUpdatedId: Float
+  userUpdated: UserEntity
+}
+
+type ClassRoomInjectEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  classroomItemId: Float
+  classroomItem: ClassRoomItemEntity
+  subject1Id: Float
+  subject1: SubjectEntity
+  subject2Id: Float
+  subject2: SubjectEntity
+  subject3Id: Float
+  subject3: SubjectEntity
+  subject4Id: Float
+  subject4: SubjectEntity
+  average: Float
+  userCreatedId: Float
+  userCreated: UserEntity
+  userUpdatedId: Float
   userUpdated: UserEntity
 }
 
@@ -238,7 +259,7 @@ type OrganizationEntity {
   id: ID!
   createdAt: Date
   updatedAt: Date
-  description: String!
+  description: String
   dateBegin: Date
   dateEnd: Date
 }
@@ -271,6 +292,8 @@ type Query {
   classRoomAll: [ClassRoomEntity!]!
   classRoomItem(id: Float!): ClassRoomItemEntity!
   classRoomItemAll: [ClassRoomItemEntity!]!
+  classRoomInject(id: Float!): ClassRoomInjectEntity!
+  classRoomInjectAll: [ClassRoomInjectEntity!]!
   organization(id: Float!): OrganizationEntity!
   organizationAll: [OrganizationEntity!]!
 }
@@ -315,6 +338,9 @@ type Mutation {
   classRoomItemCreate(createData: CreateClassRoomItemInput!): ClassRoomItemEntity!
   classRoomItemDelete(id: Float!): Boolean!
   classRoomItemUpdate(updateData: CreateClassRoomItemInput!, id: Float!): ClassRoomItemEntity!
+  classRoomInjectCreate(createData: CreateClassRoomInjectInput!): ClassRoomInjectEntity!
+  classRoomInjectDelete(id: Float!): Boolean!
+  classRoomInjectUpdate(updateData: CreateClassRoomInjectInput!, id: Float!): ClassRoomInjectEntity!
   organizationCreate(createData: CreateOrganizationInput!): OrganizationEntity!
   organizationUpdate(updateData: CreateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationDelete(id: Float!): Boolean!
@@ -367,8 +393,8 @@ input CreatePermissionInput {
 }
 
 input CreateCompanyInput {
-  socialReason: String!
-  nameFantasy: String!
+  socialReason: String
+  nameFantasy: String
   adress: String
   district: String
   complemt: String
@@ -390,7 +416,7 @@ input CreateCompanyInput {
 }
 
 input CreateCityInput {
-  description: String!
+  description: String
   stateId: Float
 }
 
@@ -412,8 +438,8 @@ input CreateSubjectInput {
 }
 
 input CreateTeacherInput {
-  name: String!
-  nickName: String!
+  name: String
+  nickName: String
   adress: String
   district: String
   complemt: String
@@ -461,8 +487,17 @@ input CreateClassRoomItemInput {
   gradeMax: Float
 }
 
+input CreateClassRoomInjectInput {
+  classroomItemId: Float
+  subject1Id: Float
+  subject2Id: Float
+  subject3Id: Float
+  subject4Id: Float
+  average: Float
+}
+
 input CreateOrganizationInput {
-  description: String!
+  description: String
   dateBegin: Date
   dateEnd: Date
 }

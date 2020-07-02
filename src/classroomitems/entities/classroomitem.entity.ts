@@ -13,8 +13,8 @@ import { TeacherEntity } from '../../teachers/entities/teacher.entity';
 export class ClassRoomItemEntity extends BaseEntity {
   @Field({ nullable: true })
   @Column({ name: 'classroom_id', nullable: false })
-  @JoinColumn({ name: 'classroom_id' })
   @ManyToOne(type => ClassRoomEntity)
+  @JoinColumn({ name: 'classroom_id' })
   @IsOptional()
   classroomId?: number;
 
@@ -96,7 +96,7 @@ export class ClassRoomItemEntity extends BaseEntity {
 
   //Campos de usuario padrão
   @Field({ nullable: true })
-  @Column({ name: 'user_created_id', nullable: false })
+  @Column({ name: 'user_created_id', nullable: true })
   @JoinColumn({ name: 'user_created_id' })
   @ManyToOne(type => UserEntity)
   @IsOptional()
