@@ -1,9 +1,8 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType, GraphQLISODateTime } from '@nestjs/graphql';
 import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  Column,
 } from 'typeorm';
 import { IsOptional } from 'class-validator';
 
@@ -14,12 +13,12 @@ export class BaseEntity {
   @IsOptional()
   id: number;
 
-  @Field({ nullable: true })
+  @Field(() => GraphQLISODateTime, { nullable: true })
   @CreateDateColumn({ name: 'created_at', nullable: true })
   @IsOptional()
   createdAt?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => GraphQLISODateTime, { nullable: true })
   @UpdateDateColumn({ name: 'updated_at', nullable: true })
   @IsOptional()
   updatedAt?: Date;

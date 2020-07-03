@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, GraphQLISODateTime } from '@nestjs/graphql';
 import { Entity, Column } from 'typeorm';
 import { BaseEntity } from '../../base-entity';
 import { IsOptional } from 'class-validator';
@@ -15,13 +15,12 @@ export class GroupEntity extends BaseEntity {
   @IsOptional()
   tipo?: boolean;
 
-  @Field({ nullable: true })
+  @Field(() => GraphQLISODateTime, { nullable: true })
   @Column({ name: 'date_begin', nullable: true })
   @IsOptional()
   dateBegin?: Date;
 
-  @Field()
-  @Field({ nullable: true })
+  @Field(() => GraphQLISODateTime, { nullable: true })
   @Column({ name: 'date_end', nullable: true })
   @IsOptional()
   dateEnd?: Date;
