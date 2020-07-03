@@ -5,7 +5,7 @@ import { BaseEntity } from 'src/base-entity';
 
 @ObjectType()
 @Entity('user')
-@Unique(['name'])
+@Unique(['login'])
 export class UserEntity extends BaseEntity {
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: false })

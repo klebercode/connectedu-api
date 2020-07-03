@@ -8,25 +8,37 @@ import { UserEntity } from '../../users/entities/user.entity';
 import { CityEntity } from '../../cities/entities/city.object';
 
 @ObjectType()
-@Entity('company')
-export class CompanyEntity extends BaseEntity {
+@Entity('responsible')
+export class ResponsibleEntity extends BaseEntity {
   @Field({ nullable: true })
-  @Column({
-    name: 'social_reason',
-    type: 'varchar',
-    length: 100,
-    nullable: false,
-  })
-  socialReason: string;
+  @Column({ type: 'varchar', length: 100, nullable: false })
+  @IsOptional()
+  name: string;
+
+  @Field({ nullable: true })
+  @Column({ name: 'date_birth', nullable: true })
+  @IsOptional()
+  dateBirth: Date;
+
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', length: 1, nullable: true })
+  @IsOptional()
+  gender?: string;
 
   @Field({ nullable: true })
   @Column({
-    name: 'name_fantasy',
+    name: 'code_nationality',
     type: 'varchar',
-    length: 100,
-    nullable: false,
+    length: 1,
+    nullable: true,
   })
-  nameFantasy: string;
+  @IsOptional()
+  codeNationality?: string;
+
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', length: 30, nullable: true })
+  @IsOptional()
+  nationality?: string;
 
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: true })
@@ -91,34 +103,24 @@ export class CompanyEntity extends BaseEntity {
   whatsapp?: string;
 
   @Field({ nullable: true })
-  @Column({ type: 'varchar', length: 18, nullable: true })
+  @Column({ type: 'varchar', length: 14, nullable: true })
   @IsOptional()
-  cnpj?: string;
+  cpf?: string;
 
   @Field({ nullable: true })
-  @Column({ type: 'varchar', length: 100, nullable: true })
+  @Column({ type: 'varchar', length: 15, nullable: true })
   @IsOptional()
-  recognition?: string;
+  identity?: string;
 
   @Field({ nullable: true })
-  @Column({ type: 'varchar', length: 100, nullable: true })
+  @Column({ name: 'org_identity', type: 'varchar', length: 15, nullable: true })
   @IsOptional()
-  publication?: string;
+  OrgIdentity?: string;
 
   @Field({ nullable: true })
-  @Column({ name: 'number_inep', type: 'varchar', length: 40, nullable: true })
+  @Column({ name: 'civil_status', nullable: true })
   @IsOptional()
-  numberInep?: string;
-
-  @Field({ nullable: true })
-  @Column({ type: 'varchar', length: 100, nullable: true })
-  @IsOptional()
-  principal?: string;
-
-  @Field({ nullable: true })
-  @Column({ type: 'varchar', length: 100, nullable: true })
-  @IsOptional()
-  secretary?: string;
+  civilStatus?: boolean;
 
   @Field({ nullable: true })
   @Column({ type: 'text', nullable: true })
@@ -126,9 +128,34 @@ export class CompanyEntity extends BaseEntity {
   note?: string;
 
   @Field({ nullable: true })
+  @Column({ name: 'profession', type: 'varchar', length: 100, nullable: true })
+  @IsOptional()
+  profession?: string;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'work_company',
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+  })
+  @IsOptional()
+  workCompany?: string;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'work_phone',
+    type: 'varchar',
+    length: 14,
+    nullable: true,
+  })
+  @IsOptional()
+  workPhone?: string;
+
+  @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: true })
   @IsOptional()
-  image?: string;
+  profile?: string;
 
   //Campos de usuario padrão
   @Field({ nullable: true })

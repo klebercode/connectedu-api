@@ -26,7 +26,7 @@ export class CreateTeacherInput {
   @Field({ nullable: true })
   @IsOptional()
   @MaxLength(60)
-  complemt?: string;
+  complement?: string;
 
   @Field({ nullable: true })
   @IsOptional()

@@ -101,7 +101,7 @@ type CompanyEntity {
   nameFantasy: String
   adress: String
   district: String
-  complemt: String
+  complement: String
   stateId: Float
   state: StateEntity
   cityId: Float
@@ -164,7 +164,7 @@ type TeacherEntity {
   nickName: String
   adress: String
   district: String
-  complemt: String
+  complement: String
   stateId: Float
   state: StateEntity
   cityId: Float
@@ -255,6 +255,42 @@ type ClassRoomInjectEntity {
   userUpdated: UserEntity
 }
 
+type ResponsibleEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  name: String
+  dateBirth: Date
+  gender: String
+  codeNationality: String
+  nationality: String
+  adress: String
+  district: String
+  complement: String
+  stateId: Float
+  state: StateEntity
+  cityId: Float
+  city: CityEntity
+  zipCode: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cpf: String
+  identity: String
+  OrgIdentity: String
+  civilStatus: Boolean
+  note: String
+  profession: String
+  workCompany: String
+  workPhone: String
+  profile: String
+  userCreatedId: Float
+  userCreated: UserEntity
+  userUpdatedId: Float
+  userUpdated: UserEntity
+}
+
 type OrganizationEntity {
   id: ID!
   createdAt: Date
@@ -294,6 +330,8 @@ type Query {
   classRoomItemAll: [ClassRoomItemEntity!]!
   classRoomInject(id: Float!): ClassRoomInjectEntity!
   classRoomInjectAll: [ClassRoomInjectEntity!]!
+  responsible(id: Float!): ResponsibleEntity!
+  responsibleAll: [ResponsibleEntity!]!
   organization(id: Float!): OrganizationEntity!
   organizationAll: [OrganizationEntity!]!
 }
@@ -302,7 +340,7 @@ type Mutation {
   customerCreate(input: CreateCustomerInput!): Customer!
   customerUpdate(input: CreateCustomerInput!, id: Float!): Customer!
   customerDelete(id: Float!): Boolean!
-  input(input: CreateUsersInput!): UserEntity!
+  userCreate(input: CreateUsersInput!): UserEntity!
   userDelete(id: Float!): Boolean!
   userUpdate(input: CreateUsersInput!, id: Float!): UserEntity!
   studentCreate(createData: CreateStudentInput!): StudentEntity!
@@ -341,6 +379,9 @@ type Mutation {
   classRoomInjectCreate(input: CreateClassRoomInjectInput!): ClassRoomInjectEntity!
   classRoomInjectDelete(id: Float!): Boolean!
   classRoomInjectUpdate(input: CreateClassRoomInjectInput!, id: Float!): ClassRoomInjectEntity!
+  responsibleCreate(input: CreateResponsibleInput!): ResponsibleEntity!
+  responsibleUpdate(input: CreateResponsibleInput!, id: Float!): ResponsibleEntity!
+  responsibleDelete(id: Float!): Boolean!
   organizationCreate(input: CreateOrganizationInput!): OrganizationEntity!
   organizationUpdate(input: CreateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationDelete(id: Float!): Boolean!
@@ -397,7 +438,7 @@ input CreateCompanyInput {
   nameFantasy: String
   adress: String
   district: String
-  complemt: String
+  complement: String
   stateId: Float
   cityId: Float
   zipCode: String
@@ -442,7 +483,7 @@ input CreateTeacherInput {
   nickName: String
   adress: String
   district: String
-  complemt: String
+  complement: String
   stateId: Float
   cityId: Float
   zipCode: String
@@ -494,6 +535,33 @@ input CreateClassRoomInjectInput {
   subject3Id: Float
   subject4Id: Float
   average: Float
+}
+
+input CreateResponsibleInput {
+  name: String
+  dateBirth: Date
+  gender: String
+  codeNationality: String
+  nationality: String
+  adress: String
+  district: String
+  complement: String
+  stateId: Float
+  cityId: Float
+  zipCode: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cpf: String
+  identity: String
+  OrgIdentity: String
+  civilStatus: Boolean
+  note: String
+  profession: String
+  workCompany: String
+  workPhone: String
+  profile: String
 }
 
 input CreateOrganizationInput {

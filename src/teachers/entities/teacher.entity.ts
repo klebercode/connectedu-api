@@ -36,7 +36,7 @@ export class TeacherEntity extends BaseEntity {
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 60, nullable: true })
   @IsOptional()
-  complemt?: string;
+  complement?: string;
 
   @Field({ nullable: true })
   @Column({ name: 'state_id', nullable: true })

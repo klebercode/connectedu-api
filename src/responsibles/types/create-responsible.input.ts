@@ -2,30 +2,44 @@ import { Field, InputType } from '@nestjs/graphql';
 import { IsOptional, IsEmail, MaxLength } from 'class-validator';
 
 @InputType()
-export class CreateCompanyInput {
+export class CreateResponsibleInput {
   @Field({ nullable: true })
   @MaxLength(100)
   @IsOptional()
-  socialReason: string;
+  name: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  dateBirth: Date;
+
+  @Field({ nullable: true })
+  @MaxLength(1)
+  @IsOptional()
+  gender?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(1)
+  @IsOptional()
+  codeNationality?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(30)
+  @IsOptional()
+  nationality?: string;
 
   @Field({ nullable: true })
   @MaxLength(100)
   @IsOptional()
-  nameFantasy: string;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  @MaxLength(100)
   adress?: string;
 
   @Field({ nullable: true })
-  @IsOptional()
   @MaxLength(60)
+  @IsOptional()
   district?: string;
 
   @Field({ nullable: true })
-  @IsOptional()
   @MaxLength(60)
+  @IsOptional()
   complement?: string;
 
   @Field({ nullable: true })
@@ -38,14 +52,14 @@ export class CreateCompanyInput {
 
   // campo CEP
   @Field({ nullable: true })
-  @IsOptional()
   @MaxLength(10)
+  @IsOptional()
   zipCode?: string;
 
   @Field({ nullable: true })
+  @MaxLength(100)
   @IsOptional()
   @IsEmail()
-  @MaxLength(100)
   email?: string;
 
   @Field({ nullable: true })
@@ -64,34 +78,23 @@ export class CreateCompanyInput {
   whatsapp?: string;
 
   @Field({ nullable: true })
-  @MaxLength(18)
+  @MaxLength(14)
   @IsOptional()
-  cnpj?: string;
+  cpf?: string;
 
   @Field({ nullable: true })
-  @MaxLength(100)
+  @MaxLength(15)
   @IsOptional()
-  recognition?: string;
+  identity?: string;
 
   @Field({ nullable: true })
-  @MaxLength(100)
+  @MaxLength(15)
   @IsOptional()
-  publication?: string;
+  OrgIdentity?: string;
 
   @Field({ nullable: true })
-  @MaxLength(40)
   @IsOptional()
-  numberInep?: string;
-
-  @Field({ nullable: true })
-  @MaxLength(100)
-  @IsOptional()
-  principal?: string;
-
-  @Field({ nullable: true })
-  @MaxLength(100)
-  @IsOptional()
-  secretary?: string;
+  civilStatus?: boolean;
 
   @Field({ nullable: true })
   @IsOptional()
@@ -100,5 +103,20 @@ export class CreateCompanyInput {
   @Field({ nullable: true })
   @MaxLength(100)
   @IsOptional()
-  image?: string;
+  profession?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(100)
+  @IsOptional()
+  workCompany?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(14)
+  @IsOptional()
+  workPhone?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(100)
+  @IsOptional()
+  profile?: string;
 }

@@ -31,7 +31,7 @@ export class UsersResolver {
     return this.usersService.findAll();
   }
 
-  @Mutation(() => UserEntity, { name: 'input' })
+  @Mutation(() => UserEntity, { name: 'userCreate' })
   async createUser(
     @Context() context: MyContext,
     @Args('input') input: CreateUsersInput,
