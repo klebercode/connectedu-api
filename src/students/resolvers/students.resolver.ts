@@ -4,55 +4,52 @@ import {
   Mutation,
   Query,
   Resolver,
-  Subscription,
   Context,
   Parent,
   ResolveField,
 } from '@nestjs/graphql';
-import { PubSub } from 'apollo-server-express';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
-import { CreateStudentInput } from '../types/create-student.input';
-import { StudentArgs } from '../types/student.args';
 import { StudentEntity } from '../entities/student.entity';
 import { StudentsService } from '../students.service';
+import { CreateStudentInput } from '../types/create-student.input';
+
 import { MyContext } from '../../common/types/myContext';
 import { StatesService } from '../../states/states.service';
 import { UsersService } from '../../users/users.service';
-
-const pubSub = new PubSub();
+import { CitiesService } from '../../cities/cities.service';
+import { ResponsiblesService } from '../../responsibles/responsibles.service';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => StudentEntity)
-export class StudentsResolver {
+export class studentsResolver {
   constructor(
-    private readonly studentsService: StudentsService,
+    private readonly studentsblesService: StudentsService,
     private readonly usersService: UsersService,
-    private readonly stateService: StatesService,
+    private readonly statesService: StatesService,
+    private readonly citiesService: CitiesService,
+    private readonly responsiblesService: ResponsiblesService,
   ) {}
 
   @Query(() => StudentEntity, { name: 'student' })
   async getStudent(@Args('id') id: number): Promise<StudentEntity> {
-    return await this.studentsService.findOneById(id);
+    return await this.studentsblesService.findOneById(id);
   }
 
   @Query(() => [StudentEntity], { name: 'studentAll' })
-  async getStudents(
-    @Args() studentsArgs: StudentArgs,
-  ): Promise<StudentEntity[]> {
-    return await this.studentsService.findAll(studentsArgs);
+  async getStudents(): Promise<StudentEntity[]> {
+    return await this.studentsblesService.findAll();
   }
 
   @Mutation(() => StudentEntity, { name: 'studentCreate' })
   async createStudent(
     @Context() context: MyContext,
-    @Args('createData') createData: CreateStudentInput,
+    @Args('input') input: CreateStudentInput,
   ): Promise<StudentEntity> {
     try {
       const { user } = context.req;
-      const student = await this.studentsService.create(createData, user['id']);
-      pubSub.publish('studentAdded', { studentAdded: student });
+      const student = await this.studentsblesService.create(input, user['id']);
 
       return student;
     } catch (exception) {
@@ -64,16 +61,15 @@ export class StudentsResolver {
   async updateStudent(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('updateData') updateData: CreateStudentInput,
+    @Args('input') input: CreateStudentInput,
   ): Promise<StudentEntity> {
     try {
       const { user } = context.req;
-      const student = await this.studentsService.update(
+      const student = await this.studentsblesService.update(
         id,
-        { ...updateData },
+        { ...input },
         user['id'],
       );
-      pubSub.publish('updateData', { studentAdded: student });
 
       return student;
     } catch (exception) {
@@ -83,19 +79,58 @@ export class StudentsResolver {
 
   @Mutation(() => Boolean, { name: 'studentDelete' })
   async deteleStudent(@Args('id') id: number): Promise<boolean> {
-    await this.studentsService.remove(id);
-    const student = await this.studentsService.findOneById(id);
+    await this.studentsblesService.remove(id);
+    const student = await this.studentsblesService.findOneById(id);
     if (!student) {
       return true;
     }
     return false;
   }
 
-  /*@Subscription(() => StudentEntity)
-  studentAdded() {
-    return pubSub.asyncIterator('createData');
+  @ResolveField('mother')
+  async mother(@Parent() student: StudentEntity) {
+    const id = student.motherId;
+    if (!id) {
+      return null;
+    }
+    return this.responsiblesService.findOneById(id);
   }
-  */
+
+  @ResolveField('father')
+  async father(@Parent() student: StudentEntity) {
+    const id = student.fatherId;
+    if (!id) {
+      return null;
+    }
+    return this.responsiblesService.findOneById(id);
+  }
+
+  @ResolveField('resideResponsable')
+  async resideResponsable(@Parent() student: StudentEntity) {
+    const id = student.resideResponsableId;
+    if (!id) {
+      return null;
+    }
+    return this.responsiblesService.findOneById(id);
+  }
+
+  @ResolveField('stateNaturalness')
+  async stateNaturalness(@Parent() student: StudentEntity) {
+    const id = student.stateNaturalnessId;
+    if (!id) {
+      return null;
+    }
+    return this.statesService.findOneById(id);
+  }
+
+  @ResolveField('cityNaturalness')
+  async cityNaturalness(@Parent() student: StudentEntity) {
+    const id = student.cityNaturalnessId;
+    if (!id) {
+      return null;
+    }
+    return this.citiesService.findOneById(id);
+  }
 
   @ResolveField('state')
   async state(@Parent() student: StudentEntity) {
@@ -103,7 +138,16 @@ export class StudentsResolver {
     if (!id) {
       return null;
     }
-    return this.stateService.findOneById(id);
+    return this.statesService.findOneById(id);
+  }
+
+  @ResolveField('city')
+  async city(@Parent() student: StudentEntity) {
+    const id = student.cityId;
+    if (!id) {
+      return null;
+    }
+    return this.citiesService.findOneById(id);
   }
 
   @ResolveField('userCreated')

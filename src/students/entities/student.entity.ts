@@ -2,50 +2,236 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm';
 
 import { StateEntity } from '../../states/entities/state.object';
-import { IsOptional } from 'class-validator';
+import { IsOptional, IsEmail } from 'class-validator';
 import { BaseEntity } from '../../base-entity';
 import { UserEntity } from '../../users/entities/user.entity';
+import { CityEntity } from '../../cities/entities/city.object';
+import { ResponsibleEntity } from '../../responsibles/entities/responsible.entity';
 
 @ObjectType()
 @Entity('student')
 export class StudentEntity extends BaseEntity {
-  @Field()
-  @Column({ type: 'varchar', length: 100 })
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: false })
+  @IsOptional()
   name: string;
+
+  @Field({ nullable: true })
+  @Column({ name: 'use_nick_name', nullable: true })
+  @IsOptional()
+  useNickName: boolean;
+
+  @Field({ nullable: true })
+  @Column({ name: 'nick_name', type: 'varchar', length: 100, nullable: true })
+  @IsOptional()
+  nickName: string;
+
+  @Field({ nullable: true })
+  @Column({ name: 'date_birth', nullable: true })
+  @IsOptional()
+  dateBirth: Date;
+
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', length: 1, nullable: true })
+  @IsOptional()
+  gender?: string;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'code_nationality',
+    type: 'varchar',
+    length: 1,
+    nullable: true,
+  })
+  @IsOptional()
+  codeNationality?: string;
+
+  @Field({ nullable: true })
+  @Column({ name: 'state_naturalness_id', nullable: true })
+  @IsOptional()
+  stateNaturalnessId?: number;
+
+  // usando com tabale  publica
+  @Field(type => StateEntity, { nullable: true })
+  @IsOptional()
+  stateNaturalness?: StateEntity;
+
+  @Field({ nullable: true })
+  @Column({ name: 'city_naturalness_id', nullable: true })
+  @IsOptional()
+  cityNaturalnessId?: number;
+
+  // usando com tabale  publica
+  @Field(type => CityEntity, { nullable: true })
+  @IsOptional()
+  cityNaturalness?: CityEntity;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'state_naturalness_foreign',
+    type: 'varchar',
+    length: 30,
+    nullable: true,
+  })
+  @IsOptional()
+  stateNaturalnessForeign?: string;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'naturalness_foreign',
+    type: 'varchar',
+    length: 30,
+    nullable: true,
+  })
+  @IsOptional()
+  naturalnessForeign?: string;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'nationality_foreign',
+    type: 'varchar',
+    length: 30,
+    nullable: true,
+  })
+  @IsOptional()
+  nationalityForeign?: string;
+
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', length: 1, nullable: true })
+  @IsOptional()
+  reside?: string;
+
+  @Field({ nullable: true })
+  @Column({ name: 'reside_responsable_id', nullable: true })
+  @IsOptional()
+  resideResponsableId?: number;
+
+  @Field(type => ResponsibleEntity, { nullable: true })
+  @JoinColumn({ name: 'reside_responsable_id' })
+  @ManyToOne(type => ResponsibleEntity)
+  @IsOptional()
+  resideResponsable?: ResponsibleEntity;
+
+  @Field({ nullable: true })
+  @Column({ name: 'father_id', nullable: true })
+  @IsOptional()
+  fatherId?: number;
+
+  @Field(type => ResponsibleEntity, { nullable: true })
+  @JoinColumn({ name: 'father_id' })
+  @ManyToOne(type => ResponsibleEntity)
+  @IsOptional()
+  father?: ResponsibleEntity;
+
+  @Field({ nullable: true })
+  @Column({ name: 'mother_id', nullable: true })
+  @IsOptional()
+  motherId?: number;
+
+  @Field(type => ResponsibleEntity, { nullable: true })
+  @JoinColumn({ name: 'mother_id' })
+  @ManyToOne(type => ResponsibleEntity)
+  @IsOptional()
+  mother?: ResponsibleEntity;
 
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: true })
   @IsOptional()
-  endereco?: string;
+  adress?: string;
 
   @Field({ nullable: true })
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column({ type: 'varchar', length: 60, nullable: true })
   @IsOptional()
-  bairro?: string;
+  district?: string;
 
   @Field({ nullable: true })
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column({ type: 'varchar', length: 60, nullable: true })
   @IsOptional()
-  cidade?: string;
+  complement?: string;
 
   @Field({ nullable: true })
   @Column({ name: 'state_id', nullable: true })
   @IsOptional()
   stateId?: number;
 
+  // usando com tabale  publica
   @Field(type => StateEntity, { nullable: true })
   @IsOptional()
   state?: StateEntity;
 
   @Field({ nullable: true })
+  @Column({ name: 'city_id', nullable: true })
+  @IsOptional()
+  cityId?: number;
+
+  // usando com tabale  publica
+  @Field(type => CityEntity, { nullable: true })
+  @IsOptional()
+  city?: CityEntity;
+
+  // campo CEP
+  @Field({ nullable: true })
+  @Column({ name: 'zip_code', type: 'varchar', length: 10, nullable: true })
+  @IsOptional()
+  zipCode?: string;
+
+  @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: true })
   @IsOptional()
-  image?: string;
+  @IsEmail()
+  email?: string;
 
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', length: 14, nullable: true })
+  @IsOptional()
+  phone?: string;
+
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', length: 15, nullable: true })
+  @IsOptional()
+  cellphone?: string;
+
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', length: 15, nullable: true })
+  @IsOptional()
+  whatsapp?: string;
+
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', length: 14, nullable: true })
+  @IsOptional()
+  cpf?: string;
+
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', length: 15, nullable: true })
+  @IsOptional()
+  identity?: string;
+
+  @Field({ nullable: true })
+  @Column({ name: 'org_identity', type: 'varchar', length: 15, nullable: true })
+  @IsOptional()
+  OrgIdentity?: string;
+
+  @Field({ nullable: true })
+  @Column({ type: 'text', nullable: true })
+  @IsOptional()
+  note?: string;
+
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  @IsOptional()
+  profile?: string;
+
+  //Campos de usuario padrão
   @Field({ nullable: true })
   @Column({ name: 'user_created_id', nullable: true })
   @IsOptional()
   userCreatedId?: number;
+
+  @Field(type => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'user_created_id' })
+  @ManyToOne(type => UserEntity)
+  @IsOptional()
+  userCreated?: UserEntity;
 
   @Field({ nullable: true })
   @Column({ name: 'user_updated_id', nullable: true })
@@ -53,14 +239,8 @@ export class StudentEntity extends BaseEntity {
   userUpdatedId?: number;
 
   @Field(type => UserEntity, { nullable: true })
-  @ManyToOne(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'user_created' })
-  @IsOptional()
-  userCreated?: UserEntity;
-
-  @Field(type => UserEntity, { nullable: true })
-  @ManyToOne(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'user_updated' })
+  @JoinColumn({ name: 'user_updated_id' })
+  @ManyToOne(type => UserEntity)
   @IsOptional()
   userUpdated?: UserEntity;
 }

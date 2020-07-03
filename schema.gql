@@ -40,20 +40,95 @@ type StateEntity {
   uf: String!
 }
 
+type CityEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  description: String
+  stateId: Float
+  state: StateEntity
+}
+
+type ResponsibleEntity {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  name: String
+  dateBirth: Date
+  gender: String
+  codeNationality: String
+  nationality: String
+  adress: String
+  district: String
+  complement: String
+  stateId: Float
+  state: StateEntity
+  cityId: Float
+  city: CityEntity
+  zipCode: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cpf: String
+  identity: String
+  OrgIdentity: String
+  civilStatus: Boolean
+  note: String
+  profession: String
+  workCompany: String
+  workPhone: String
+  profile: String
+  userCreatedId: Float
+  userCreated: UserEntity
+  userUpdatedId: Float
+  userUpdated: UserEntity
+}
+
 type StudentEntity {
   id: ID!
   createdAt: Date
   updatedAt: Date
-  name: String!
-  endereco: String
-  bairro: String
-  cidade: String
+  name: String
+  useNickName: Boolean
+  nickName: String
+  dateBirth: Date
+  gender: String
+  codeNationality: String
+  stateNaturalnessId: Float
+  stateNaturalness: StateEntity
+  cityNaturalnessId: Float
+  cityNaturalness: CityEntity
+  stateNaturalnessForeign: String
+  naturalnessForeign: String
+  nationalityForeign: String
+  reside: String
+  resideResponsableId: Float
+  resideResponsable: ResponsibleEntity
+  fatherId: Float
+  father: ResponsibleEntity
+  motherId: Float
+  mother: ResponsibleEntity
+  adress: String
+  district: String
+  complement: String
   stateId: Float
   state: StateEntity
-  image: String
+  cityId: Float
+  city: CityEntity
+  zipCode: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cpf: String
+  identity: String
+  OrgIdentity: String
+  note: String
+  profile: String
   userCreatedId: Float
-  userUpdatedId: Float
   userCreated: UserEntity
+  userUpdatedId: Float
   userUpdated: UserEntity
 }
 
@@ -82,15 +157,6 @@ type UserPermissionEntity {
   userCreated: UserEntity
   userUpdatedId: Float
   userUpdated: UserEntity
-}
-
-type CityEntity {
-  id: ID!
-  createdAt: Date
-  updatedAt: Date
-  description: String
-  stateId: Float
-  state: StateEntity
 }
 
 type CompanyEntity {
@@ -255,42 +321,6 @@ type ClassRoomInjectEntity {
   userUpdated: UserEntity
 }
 
-type ResponsibleEntity {
-  id: ID!
-  createdAt: Date
-  updatedAt: Date
-  name: String
-  dateBirth: Date
-  gender: String
-  codeNationality: String
-  nationality: String
-  adress: String
-  district: String
-  complement: String
-  stateId: Float
-  state: StateEntity
-  cityId: Float
-  city: CityEntity
-  zipCode: String
-  email: String
-  phone: String
-  cellphone: String
-  whatsapp: String
-  cpf: String
-  identity: String
-  OrgIdentity: String
-  civilStatus: Boolean
-  note: String
-  profession: String
-  workCompany: String
-  workPhone: String
-  profile: String
-  userCreatedId: Float
-  userCreated: UserEntity
-  userUpdatedId: Float
-  userUpdated: UserEntity
-}
-
 type OrganizationEntity {
   id: ID!
   createdAt: Date
@@ -307,17 +337,19 @@ type Query {
   userAll: [UserEntity!]!
   userLogin(password: String!, email: String!): String!
   student(id: Float!): StudentEntity!
-  studentAll(skip: Int = 0, take: Int = 25): [StudentEntity!]!
+  studentAll: [StudentEntity!]!
   state(id: Float!): StateEntity!
   stateAll: [StateEntity!]!
+  city(id: Float!): CityEntity!
+  cityAll: [CityEntity!]!
+  responsible(id: Float!): ResponsibleEntity!
+  responsibleAll: [ResponsibleEntity!]!
   userPermission(id: Float!): UserPermissionEntity!
   userPermissionAll: [UserPermissionEntity!]!
   permission(id: Float!): PermissionEntity!
   permissionAll: [PermissionEntity!]!
   company(id: Float!): CompanyEntity!
   companyAll: [CompanyEntity!]!
-  city(id: Float!): CityEntity!
-  cityAll: [CityEntity!]!
   year(id: Float!): YearEntity!
   yearAll: [YearEntity!]!
   subject(id: Float!): SubjectEntity!
@@ -330,8 +362,6 @@ type Query {
   classRoomItemAll: [ClassRoomItemEntity!]!
   classRoomInject(id: Float!): ClassRoomInjectEntity!
   classRoomInjectAll: [ClassRoomInjectEntity!]!
-  responsible(id: Float!): ResponsibleEntity!
-  responsibleAll: [ResponsibleEntity!]!
   organization(id: Float!): OrganizationEntity!
   organizationAll: [OrganizationEntity!]!
 }
@@ -343,12 +373,18 @@ type Mutation {
   userCreate(input: CreateUsersInput!): UserEntity!
   userDelete(id: Float!): Boolean!
   userUpdate(input: CreateUsersInput!, id: Float!): UserEntity!
-  studentCreate(createData: CreateStudentInput!): StudentEntity!
-  studentUpdate(updateData: CreateStudentInput!, id: Float!): StudentEntity!
+  studentCreate(input: CreateStudentInput!): StudentEntity!
+  studentUpdate(input: CreateStudentInput!, id: Float!): StudentEntity!
   studentDelete(id: Float!): Boolean!
   stateCreate(input: CreateStateInput!): StateEntity!
   stateUpdate(input: CreateStateInput!, id: Float!): StateEntity!
   stateDelete(id: Float!): Boolean!
+  cityCreate(input: CreateCityInput!): CityEntity!
+  cityUpdate(input: CreateCityInput!, id: Float!): CityEntity!
+  cityDelete(id: Float!): Boolean!
+  responsibleCreate(input: CreateResponsibleInput!): ResponsibleEntity!
+  responsibleUpdate(input: CreateResponsibleInput!, id: Float!): ResponsibleEntity!
+  responsibleDelete(id: Float!): Boolean!
   userPermissionCreate(input: CreateUserPermissionInput!): UserPermissionEntity!
   userPermissionDelete(id: Float!): Boolean!
   userPermissionUpdate(input: CreateUserPermissionInput!, id: Float!): UserPermissionEntity!
@@ -358,9 +394,6 @@ type Mutation {
   companyCreate(input: CreateCompanyInput!): CompanyEntity!
   companyUpdate(input: CreateCompanyInput!, id: Float!): CompanyEntity!
   companyDelete(id: Float!): Boolean!
-  cityCreate(input: CreateCityInput!): CityEntity!
-  cityUpdate(input: CreateCityInput!, id: Float!): CityEntity!
-  cityDelete(id: Float!): Boolean!
   yearCreate(input: CreateYearInput!): YearEntity!
   yearDelete(id: Float!): Boolean!
   yearUpdate(input: CreateYearInput!, id: Float!): YearEntity!
@@ -379,9 +412,6 @@ type Mutation {
   classRoomInjectCreate(input: CreateClassRoomInjectInput!): ClassRoomInjectEntity!
   classRoomInjectDelete(id: Float!): Boolean!
   classRoomInjectUpdate(input: CreateClassRoomInjectInput!, id: Float!): ClassRoomInjectEntity!
-  responsibleCreate(input: CreateResponsibleInput!): ResponsibleEntity!
-  responsibleUpdate(input: CreateResponsibleInput!, id: Float!): ResponsibleEntity!
-  responsibleDelete(id: Float!): Boolean!
   organizationCreate(input: CreateOrganizationInput!): OrganizationEntity!
   organizationUpdate(input: CreateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationDelete(id: Float!): Boolean!
@@ -405,17 +435,73 @@ input CreateUsersInput {
 }
 
 input CreateStudentInput {
-  name: String!
-  endereco: String
-  bairro: String
-  cidade: String
+  name: String
+  useNickName: Boolean
+  nickName: String
+  dateBirth: Date
+  gender: String
+  codeNationality: String
+  stateNaturalnessId: Float
+  cityNaturalnessId: Float
+  stateNaturalnessForeign: String
+  naturalnessForeign: String
+  nationalityForeign: String
+  reside: String
+  resideResponsableId: Float
+  fatherId: Float
+  motherId: Float
+  adress: String
+  district: String
+  complement: String
   stateId: Float
-  image: String
+  cityId: Float
+  zipCode: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cpf: String
+  identity: String
+  OrgIdentity: String
+  note: String
+  profile: String
 }
 
 input CreateStateInput {
   description: String!
   uf: String!
+}
+
+input CreateCityInput {
+  description: String
+  stateId: Float
+}
+
+input CreateResponsibleInput {
+  name: String
+  dateBirth: Date
+  gender: String
+  codeNationality: String
+  nationality: String
+  adress: String
+  district: String
+  complement: String
+  stateId: Float
+  cityId: Float
+  zipCode: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cpf: String
+  identity: String
+  OrgIdentity: String
+  civilStatus: Boolean
+  note: String
+  profession: String
+  workCompany: String
+  workPhone: String
+  profile: String
 }
 
 input CreateUserPermissionInput {
@@ -454,11 +540,6 @@ input CreateCompanyInput {
   secretary: String
   note: String
   image: String
-}
-
-input CreateCityInput {
-  description: String
-  stateId: Float
 }
 
 input CreateYearInput {
@@ -535,33 +616,6 @@ input CreateClassRoomInjectInput {
   subject3Id: Float
   subject4Id: Float
   average: Float
-}
-
-input CreateResponsibleInput {
-  name: String
-  dateBirth: Date
-  gender: String
-  codeNationality: String
-  nationality: String
-  adress: String
-  district: String
-  complement: String
-  stateId: Float
-  cityId: Float
-  zipCode: String
-  email: String
-  phone: String
-  cellphone: String
-  whatsapp: String
-  cpf: String
-  identity: String
-  OrgIdentity: String
-  civilStatus: Boolean
-  note: String
-  profession: String
-  workCompany: String
-  workPhone: String
-  profile: String
 }
 
 input CreateOrganizationInput {

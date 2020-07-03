@@ -1,10 +1,10 @@
 import { Inject, GoneException } from '@nestjs/common';
-import { CreateStudentInput } from './types/create-student.input';
-import { StudentArgs } from './types/student.args';
-import { StudentEntity } from './entities/student.entity';
 import { Repository, Connection } from 'typeorm';
 import { CustomersServiceDecorator } from '../customers/customers-service.decorator';
 import { CUSTOMER_CONNECTION } from '../customers/customers.module';
+
+import { CreateStudentInput } from './types/create-student.input';
+import { StudentEntity } from './entities/student.entity';
 
 @CustomersServiceDecorator()
 export class StudentsService {
@@ -36,7 +36,7 @@ export class StudentsService {
     return obj;
   }
 
-  async findAll(studentArgs: StudentArgs): Promise<StudentEntity[]> {
+  async findAll(): Promise<StudentEntity[]> {
     return await this.studentsRepository.find();
   }
 
