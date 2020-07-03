@@ -23,10 +23,10 @@ export class PermissionsResolver {
 
   @Mutation(() => PermissionEntity, { name: 'permissionCreate' })
   async createPermission(
-    @Args('createData') createData: CreatePermissionInput,
+    @Args('input') input: CreatePermissionInput,
   ): Promise<PermissionEntity> {
     try {
-      const obj = await this.permissionsService.create({ ...createData });
+      const obj = await this.permissionsService.create({ ...input });
       return obj;
     } catch (exception) {
       throw new HttpException(exception.message, 409);
@@ -36,10 +36,10 @@ export class PermissionsResolver {
   @Mutation(() => PermissionEntity, { name: 'permissionUpdate' })
   async updatePermission(
     @Args('id') id: number,
-    @Args('updateData') updateData: CreatePermissionInput,
+    @Args('input') input: CreatePermissionInput,
   ): Promise<PermissionEntity> {
     try {
-      const obj = await this.permissionsService.update(id, { ...updateData });
+      const obj = await this.permissionsService.update(id, { ...input });
       return obj;
     } catch (exception) {
       throw new HttpException(exception.message, 409);

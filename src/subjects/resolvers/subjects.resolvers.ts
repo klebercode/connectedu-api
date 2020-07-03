@@ -38,11 +38,11 @@ export class SubjectsResolver {
   @Mutation(() => SubjectEntity, { name: 'subjectCreate' })
   async createSubject(
     @Context() context: MyContext,
-    @Args('createData') createData: CreateSubjectInput,
+    @Args('input') input: CreateSubjectInput,
   ): Promise<SubjectEntity> {
     try {
       const { user } = context.req;
-      const obj = await this.subjectsService.create(createData, user['id']);
+      const obj = await this.subjectsService.create(input, user['id']);
       return obj;
     } catch (exception) {
       throw new HttpException(exception.message, 409);
@@ -63,13 +63,13 @@ export class SubjectsResolver {
   async updateSubject(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('updateData') updateData: CreateSubjectInput,
+    @Args('input') input: CreateSubjectInput,
   ): Promise<SubjectEntity> {
     try {
       const { user } = context.req;
       const obj = await this.subjectsService.update(
         id,
-        { ...updateData },
+        { ...input },
         user['id'],
       );
       return obj;

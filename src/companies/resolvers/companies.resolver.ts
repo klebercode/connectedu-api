@@ -43,14 +43,11 @@ export class CompaniesResolver {
   @Mutation(() => CompanyEntity, { name: 'companyCreate' })
   async createCompany(
     @Context() context: MyContext,
-    @Args('createData') createData: CreateCompanyInput,
+    @Args('input') input: CreateCompanyInput,
   ): Promise<CompanyEntity> {
     try {
       const { user } = context.req;
-      const company = await this.companiesService.create(
-        createData,
-        user['id'],
-      );
+      const company = await this.companiesService.create(input, user['id']);
 
       return company;
     } catch (exception) {
@@ -62,13 +59,13 @@ export class CompaniesResolver {
   async updateCompany(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('updateData') updateData: CreateCompanyInput,
+    @Args('input') input: CreateCompanyInput,
   ): Promise<CompanyEntity> {
     try {
       const { user } = context.req;
       const company = await this.companiesService.update(
         id,
-        { ...updateData },
+        { ...input },
         user['id'],
       );
 

@@ -23,18 +23,18 @@ export class OrganizationsResolver {
 
   @Mutation(() => OrganizationEntity, { name: 'organizationCreate' })
   async createOrganization(
-    @Args('createData') createData: CreateOrganizationInput,
+    @Args('input') input: CreateOrganizationInput,
   ): Promise<OrganizationEntity> {
-    const obj = await this.organizationsService.create({ ...createData });
+    const obj = await this.organizationsService.create({ ...input });
     return obj;
   }
 
   @Mutation(() => OrganizationEntity, { name: 'organizationUpdate' })
   async updateOrganization(
     @Args('id') id: number,
-    @Args('updateData') updateData: CreateOrganizationInput,
+    @Args('input') input: CreateOrganizationInput,
   ): Promise<OrganizationEntity> {
-    const obj = await this.organizationsService.update(id, { ...updateData });
+    const obj = await this.organizationsService.update(id, { ...input });
     return obj;
   }
 

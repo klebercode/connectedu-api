@@ -23,10 +23,10 @@ export class StatesResolver {
 
   @Mutation(() => StateEntity, { name: 'stateCreate' })
   async createState(
-    @Args('createData') createData: CreateStateInput,
+    @Args('input') input: CreateStateInput,
   ): Promise<StateEntity> {
     try {
-      const obj = await this.statesService.create({ ...createData });
+      const obj = await this.statesService.create({ ...input });
       return obj;
     } catch (exception) {
       throw new HttpException(exception.message, 409);
@@ -36,10 +36,10 @@ export class StatesResolver {
   @Mutation(() => StateEntity, { name: 'stateUpdate' })
   async updateState(
     @Args('id') id: number,
-    @Args('updateData') updateData: CreateStateInput,
+    @Args('input') input: CreateStateInput,
   ): Promise<StateEntity> {
     try {
-      const obj = await this.statesService.update(id, { ...updateData });
+      const obj = await this.statesService.update(id, { ...input });
       return obj;
     } catch (exception) {
       throw new HttpException(exception.message, 409);

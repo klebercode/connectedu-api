@@ -38,11 +38,11 @@ export class YearsResolver {
   @Mutation(() => YearEntity, { name: 'yearCreate' })
   async createYear(
     @Context() context: MyContext,
-    @Args('createData') createData: CreateYearInput,
+    @Args('input') input: CreateYearInput,
   ): Promise<YearEntity> {
     try {
       const { user } = context.req;
-      const obj = await this.yearsService.create(createData, user['id']);
+      const obj = await this.yearsService.create(input, user['id']);
       return obj;
     } catch (exception) {
       throw new HttpException(exception.message, 409);
@@ -63,15 +63,11 @@ export class YearsResolver {
   async updateYear(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('updateData') updateData: CreateYearInput,
+    @Args('input') input: CreateYearInput,
   ): Promise<YearEntity> {
     try {
       const { user } = context.req;
-      const obj = await this.yearsService.update(
-        id,
-        { ...updateData },
-        user['id'],
-      );
+      const obj = await this.yearsService.update(id, { ...input }, user['id']);
       return obj;
     } catch (exception) {
       throw new HttpException(exception.message, 409);

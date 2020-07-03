@@ -33,11 +33,9 @@ export class CitiesResolver {
   }
 
   @Mutation(() => CityEntity, { name: 'cityCreate' })
-  async createCity(
-    @Args('createData') createData: CreateCityInput,
-  ): Promise<CityEntity> {
+  async createCity(@Args('input') input: CreateCityInput): Promise<CityEntity> {
     try {
-      const obj = await this.citiesService.create({ ...createData });
+      const obj = await this.citiesService.create({ ...input });
       return obj;
     } catch (exception) {
       throw new HttpException(exception.message, 409);
@@ -47,10 +45,10 @@ export class CitiesResolver {
   @Mutation(() => CityEntity, { name: 'cityUpdate' })
   async updateCity(
     @Args('id') id: number,
-    @Args('updateData') updateData: CreateCityInput,
+    @Args('input') input: CreateCityInput,
   ): Promise<CityEntity> {
     try {
-      const obj = await this.citiesService.update(id, { ...updateData });
+      const obj = await this.citiesService.update(id, { ...input });
       return obj;
     } catch (exception) {
       throw new HttpException(exception.message, 409);

@@ -14,12 +14,12 @@ export class CityEntity extends BaseEntity {
 
   @Field({ nullable: true })
   @Column({ name: 'state_id', nullable: true })
-  @JoinColumn({ name: 'state_id' })
-  @ManyToOne(type => StateEntity)
   @IsOptional()
   stateId?: number;
 
   @Field(type => StateEntity, { nullable: true })
+  @JoinColumn({ name: 'state_id' })
+  @ManyToOne(type => StateEntity)
   @IsOptional()
   state?: StateEntity;
 }

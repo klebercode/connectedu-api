@@ -42,11 +42,11 @@ export class ClassRoomsResolver {
   @Mutation(() => ClassRoomEntity, { name: 'classRoomCreate' })
   async createClassRoom(
     @Context() context: MyContext,
-    @Args('createData') createData: CreateClassRoomInput,
+    @Args('input') input: CreateClassRoomInput,
   ): Promise<ClassRoomEntity> {
     try {
       const { user } = context.req;
-      const obj = await this.classRoomsService.create(createData, user['id']);
+      const obj = await this.classRoomsService.create(input, user['id']);
       return obj;
     } catch (exception) {
       throw new HttpException(exception.message, 409);
@@ -67,13 +67,13 @@ export class ClassRoomsResolver {
   async updateClassRoom(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('updateData') updateData: CreateClassRoomInput,
+    @Args('input') input: CreateClassRoomInput,
   ): Promise<ClassRoomEntity> {
     try {
       const { user } = context.req;
       const obj = await this.classRoomsService.update(
         id,
-        { ...updateData },
+        { ...input },
         user['id'],
       );
       return obj;

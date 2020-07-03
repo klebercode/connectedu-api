@@ -31,14 +31,14 @@ export class UsersResolver {
     return this.usersService.findAll();
   }
 
-  @Mutation(() => UserEntity, { name: 'userCreate' })
+  @Mutation(() => UserEntity, { name: 'input' })
   async createUser(
     @Context() context: MyContext,
-    @Args('createData') createData: CreateUsersInput,
+    @Args('input') input: CreateUsersInput,
   ): Promise<UserEntity> {
     try {
       const { user } = context.req;
-      const obj = await this.usersService.create(createData, user['id']);
+      const obj = await this.usersService.create(input, user['id']);
       return obj;
     } catch (exception) {
       throw new HttpException(exception.message, 409);
@@ -59,15 +59,11 @@ export class UsersResolver {
   async updateUser(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('updateData') updateData: CreateUsersInput,
+    @Args('input') input: CreateUsersInput,
   ): Promise<UserEntity> {
     try {
       const { user } = context.req;
-      const obj = await this.usersService.update(
-        id,
-        { ...updateData },
-        user['id'],
-      );
+      const obj = await this.usersService.update(id, { ...input }, user['id']);
       return obj;
     } catch (exception) {
       throw new HttpException(exception.message, 409);

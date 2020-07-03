@@ -30,18 +30,18 @@ export class CustomersResolver {
 
   @Mutation(() => Customer, { name: 'customerCreate' })
   async createCustomer(
-    @Args('createData') createData: CreateCustomerInput,
+    @Args('input') input: CreateCustomerInput,
   ): Promise<Customer> {
-    const obj = await this.customersService.create({ ...createData });
+    const obj = await this.customersService.create({ ...input });
     return obj;
   }
 
   @Mutation(() => Customer, { name: 'customerUpdate' })
   async updateCustomer(
     @Args('id') id: number,
-    @Args('updateData') updateData: CreateCustomerInput,
+    @Args('input') input: CreateCustomerInput,
   ): Promise<Customer> {
-    const obj = await this.customersService.update(id, { ...updateData });
+    const obj = await this.customersService.update(id, { ...input });
     return obj;
   }
 

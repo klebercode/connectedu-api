@@ -13,34 +13,34 @@ import { TeacherEntity } from '../../teachers/entities/teacher.entity';
 export class ClassRoomItemEntity extends BaseEntity {
   @Field({ nullable: true })
   @Column({ name: 'classroom_id', nullable: false })
-  @ManyToOne(type => ClassRoomEntity)
-  @JoinColumn({ name: 'classroom_id' })
   @IsOptional()
   classroomId?: number;
 
   @Field(type => ClassRoomEntity, { nullable: true })
+  @ManyToOne(type => ClassRoomEntity)
+  @JoinColumn({ name: 'classroom_id' })
   @IsOptional()
   classroom?: ClassRoomEntity;
 
   @Field({ nullable: true })
   @Column({ name: 'subject_id', nullable: false })
-  @JoinColumn({ name: 'subject_id' })
-  @ManyToOne(type => SubjectEntity)
   @IsOptional()
   subjectId?: number;
 
   @Field(type => SubjectEntity, { nullable: true })
+  @JoinColumn({ name: 'subject_id' })
+  @ManyToOne(type => SubjectEntity)
   @IsOptional()
   subject?: SubjectEntity;
 
   @Field({ nullable: true })
   @Column({ name: 'teacher_id', nullable: false })
-  @JoinColumn({ name: 'teacher_id' })
-  @ManyToOne(type => TeacherEntity)
   @IsOptional()
   teacherId?: number;
 
   @Field(type => TeacherEntity, { nullable: true })
+  @JoinColumn({ name: 'teacher_id' })
+  @ManyToOne(type => TeacherEntity)
   @IsOptional()
   teacher?: TeacherEntity;
 
@@ -97,23 +97,23 @@ export class ClassRoomItemEntity extends BaseEntity {
   //Campos de usuario padrão
   @Field({ nullable: true })
   @Column({ name: 'user_created_id', nullable: true })
-  @JoinColumn({ name: 'user_created_id' })
-  @ManyToOne(type => UserEntity)
   @IsOptional()
   userCreatedId?: number;
 
   @Field(type => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'user_created_id' })
+  @ManyToOne(type => UserEntity)
   @IsOptional()
   userCreated?: UserEntity;
 
   @Field({ nullable: true })
   @Column({ name: 'user_updated_id', nullable: true })
-  @JoinColumn({ name: 'user_updated_id' })
-  @ManyToOne(type => UserEntity)
   @IsOptional()
   userUpdatedId?: number;
 
   @Field(type => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'user_updated_id' })
+  @ManyToOne(type => UserEntity)
   @IsOptional()
   userUpdated?: UserEntity;
 }

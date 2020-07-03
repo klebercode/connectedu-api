@@ -11,56 +11,56 @@ import { ClassRoomItemEntity } from '../../classroomitems/entities/classroomitem
 export class ClassRoomInjectEntity extends BaseEntity {
   @Field({ nullable: true })
   @Column({ name: 'classroom_item_id', nullable: false })
-  @ManyToOne(type => ClassRoomItemEntity)
-  @JoinColumn({ name: 'classroom_item_id' })
   @IsOptional()
   classroomItemId?: number;
 
   @Field(type => ClassRoomItemEntity, { nullable: true })
+  @ManyToOne(type => ClassRoomItemEntity)
+  @JoinColumn({ name: 'classroom_item_id' })
   @IsOptional()
   classroomItem?: ClassRoomItemEntity;
 
   @Field({ nullable: true })
   @Column({ name: 'subject1_id', nullable: true })
-  @JoinColumn({ name: 'subject1_id' })
-  @ManyToOne(type => SubjectEntity)
   @IsOptional()
   subject1Id?: number;
 
   @Field(type => SubjectEntity, { nullable: true })
+  @JoinColumn({ name: 'subject1_id' })
+  @ManyToOne(type => SubjectEntity)
   @IsOptional()
   subject1?: SubjectEntity;
 
   @Field({ nullable: true })
   @Column({ name: 'subject2_id', nullable: true })
-  @JoinColumn({ name: 'subject2_id' })
-  @ManyToOne(type => SubjectEntity)
   @IsOptional()
   subject2Id?: number;
 
   @Field(type => SubjectEntity, { nullable: true })
+  @JoinColumn({ name: 'subject2_id' })
+  @ManyToOne(type => SubjectEntity)
   @IsOptional()
   subject2?: SubjectEntity;
 
   @Field({ nullable: true })
   @Column({ name: 'subject3_id', nullable: true })
-  @JoinColumn({ name: 'subject3_id' })
-  @ManyToOne(type => SubjectEntity)
   @IsOptional()
   subject3Id?: number;
 
   @Field(type => SubjectEntity, { nullable: true })
   @IsOptional()
+  @JoinColumn({ name: 'subject3_id' })
+  @ManyToOne(type => SubjectEntity)
   subject3?: SubjectEntity;
 
   @Field({ nullable: true })
   @Column({ name: 'subject4_id', nullable: true })
-  @JoinColumn({ name: 'subject4_id' })
-  @ManyToOne(type => SubjectEntity)
   @IsOptional()
   subject4Id?: number;
 
   @Field(type => SubjectEntity, { nullable: true })
+  @JoinColumn({ name: 'subject4_id' })
+  @ManyToOne(type => SubjectEntity)
   @IsOptional()
   subject4?: SubjectEntity;
 
@@ -72,23 +72,23 @@ export class ClassRoomInjectEntity extends BaseEntity {
   //Campos de usuario padrão
   @Field({ nullable: true })
   @Column({ name: 'user_created_id', nullable: true })
-  @JoinColumn({ name: 'user_created_id' })
-  @ManyToOne(type => UserEntity)
   @IsOptional()
   userCreatedId?: number;
 
   @Field(type => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'user_created_id' })
+  @ManyToOne(type => UserEntity)
   @IsOptional()
   userCreated?: UserEntity;
 
   @Field({ nullable: true })
   @Column({ name: 'user_updated_id', nullable: true })
-  @JoinColumn({ name: 'user_updated_id' })
-  @ManyToOne(type => UserEntity)
   @IsOptional()
   userUpdatedId?: number;
 
   @Field(type => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'user_updated_id' })
+  @ManyToOne(type => UserEntity)
   @IsOptional()
   userUpdated?: UserEntity;
 }

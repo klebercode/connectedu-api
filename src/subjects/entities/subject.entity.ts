@@ -35,23 +35,23 @@ export class SubjectEntity extends BaseEntity {
   //Campos de usuario padrão
   @Field({ nullable: true })
   @Column({ name: 'user_created_id', nullable: true })
-  @JoinColumn({ name: 'user_created_id' })
-  @ManyToOne(type => UserEntity)
   @IsOptional()
   userCreatedId?: number;
 
   @Field(type => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'user_created_id' })
+  @ManyToOne(type => UserEntity)
   @IsOptional()
   userCreated?: UserEntity;
 
   @Field({ nullable: true })
   @Column({ name: 'user_updated_id', nullable: true })
-  @JoinColumn({ name: 'user_updated_id' })
-  @ManyToOne(type => UserEntity)
   @IsOptional()
   userUpdatedId?: number;
 
   @Field(type => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'user_updated_id' })
+  @ManyToOne(type => UserEntity)
   @IsOptional()
   userUpdated?: UserEntity;
 }

@@ -42,14 +42,11 @@ export class UserPermissionsResolver {
   @Mutation(() => UserPermissionEntity, { name: 'userPermissionCreate' })
   async createUserPermission(
     @Context() context: MyContext,
-    @Args('createData') createData: CreateUserPermissionInput,
+    @Args('input') input: CreateUserPermissionInput,
   ): Promise<UserPermissionEntity> {
     try {
       const { user } = context.req;
-      const obj = await this.userPermissionsService.create(
-        createData,
-        user['id'],
-      );
+      const obj = await this.userPermissionsService.create(input, user['id']);
       return obj;
     } catch (exception) {
       throw new HttpException(exception.message, 409);
@@ -70,13 +67,13 @@ export class UserPermissionsResolver {
   async updateUserPermission(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('updateData') updateData: CreateUserPermissionInput,
+    @Args('input') input: CreateUserPermissionInput,
   ): Promise<UserPermissionEntity> {
     try {
       const { user } = context.req;
       const obj = await this.userPermissionsService.update(
         id,
-        { ...updateData },
+        { ...input },
         user['id'],
       );
       return obj;

@@ -56,46 +56,46 @@ export class ClassRoomEntity extends BaseEntity {
 
   @Field({ nullable: true })
   @Column({ name: 'company_id', nullable: false })
-  @JoinColumn({ name: 'company_id' })
-  @ManyToOne(type => CompanyEntity)
   @IsOptional()
   companyId?: number;
 
   @Field(type => CompanyEntity, { nullable: true })
+  @JoinColumn({ name: 'company_id' })
+  @ManyToOne(type => CompanyEntity)
   @IsOptional()
   company?: CompanyEntity;
 
   @Field({ nullable: true })
   @Column({ name: 'year_id', nullable: false })
-  @JoinColumn({ name: 'year_id' })
-  @ManyToOne(type => YearEntity)
   @IsOptional()
   yearId?: number;
 
   @Field(type => YearEntity, { nullable: true })
+  @JoinColumn({ name: 'year_id' })
+  @ManyToOne(type => YearEntity)
   @IsOptional()
   year?: YearEntity;
 
   //Campos de usuario padrão
   @Field({ nullable: true })
   @Column({ name: 'user_created_id', nullable: true })
-  @JoinColumn({ name: 'user_created_id' })
-  @ManyToOne(type => UserEntity)
   @IsOptional()
   userCreatedId?: number;
 
   @Field(type => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'user_created_id' })
+  @ManyToOne(type => UserEntity)
   @IsOptional()
   userCreated?: UserEntity;
 
   @Field({ nullable: true })
   @Column({ name: 'user_updated_id', nullable: true })
-  @JoinColumn({ name: 'user_updated_id' })
-  @ManyToOne(type => UserEntity)
   @IsOptional()
   userUpdatedId?: number;
 
   @Field(type => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'user_updated_id' })
+  @ManyToOne(type => UserEntity)
   @IsOptional()
   userUpdated?: UserEntity;
 }

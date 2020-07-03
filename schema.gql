@@ -299,50 +299,50 @@ type Query {
 }
 
 type Mutation {
-  customerCreate(createData: CreateCustomerInput!): Customer!
-  customerUpdate(updateData: CreateCustomerInput!, id: Float!): Customer!
+  customerCreate(input: CreateCustomerInput!): Customer!
+  customerUpdate(input: CreateCustomerInput!, id: Float!): Customer!
   customerDelete(id: Float!): Boolean!
-  userCreate(createData: CreateUsersInput!): UserEntity!
+  input(input: CreateUsersInput!): UserEntity!
   userDelete(id: Float!): Boolean!
-  userUpdate(updateData: CreateUsersInput!, id: Float!): UserEntity!
+  userUpdate(input: CreateUsersInput!, id: Float!): UserEntity!
   studentCreate(createData: CreateStudentInput!): StudentEntity!
   studentUpdate(updateData: CreateStudentInput!, id: Float!): StudentEntity!
   studentDelete(id: Float!): Boolean!
-  stateCreate(createData: CreateStateInput!): StateEntity!
-  stateUpdate(updateData: CreateStateInput!, id: Float!): StateEntity!
+  stateCreate(input: CreateStateInput!): StateEntity!
+  stateUpdate(input: CreateStateInput!, id: Float!): StateEntity!
   stateDelete(id: Float!): Boolean!
-  userPermissionCreate(createData: CreateUserPermissionInput!): UserPermissionEntity!
+  userPermissionCreate(input: CreateUserPermissionInput!): UserPermissionEntity!
   userPermissionDelete(id: Float!): Boolean!
-  userPermissionUpdate(updateData: CreateUserPermissionInput!, id: Float!): UserPermissionEntity!
-  permissionCreate(createData: CreatePermissionInput!): PermissionEntity!
-  permissionUpdate(updateData: CreatePermissionInput!, id: Float!): PermissionEntity!
+  userPermissionUpdate(input: CreateUserPermissionInput!, id: Float!): UserPermissionEntity!
+  permissionCreate(input: CreatePermissionInput!): PermissionEntity!
+  permissionUpdate(input: CreatePermissionInput!, id: Float!): PermissionEntity!
   permissionDelete(id: Float!): Boolean!
-  companyCreate(createData: CreateCompanyInput!): CompanyEntity!
-  companyUpdate(updateData: CreateCompanyInput!, id: Float!): CompanyEntity!
+  companyCreate(input: CreateCompanyInput!): CompanyEntity!
+  companyUpdate(input: CreateCompanyInput!, id: Float!): CompanyEntity!
   companyDelete(id: Float!): Boolean!
-  cityCreate(createData: CreateCityInput!): CityEntity!
-  cityUpdate(updateData: CreateCityInput!, id: Float!): CityEntity!
+  cityCreate(input: CreateCityInput!): CityEntity!
+  cityUpdate(input: CreateCityInput!, id: Float!): CityEntity!
   cityDelete(id: Float!): Boolean!
-  yearCreate(createData: CreateYearInput!): YearEntity!
+  yearCreate(input: CreateYearInput!): YearEntity!
   yearDelete(id: Float!): Boolean!
-  yearUpdate(updateData: CreateYearInput!, id: Float!): YearEntity!
-  subjectCreate(createData: CreateSubjectInput!): SubjectEntity!
+  yearUpdate(input: CreateYearInput!, id: Float!): YearEntity!
+  subjectCreate(input: CreateSubjectInput!): SubjectEntity!
   subjectDelete(id: Float!): Boolean!
-  subjectUpdate(updateData: CreateSubjectInput!, id: Float!): SubjectEntity!
-  teacherCreate(createData: CreateTeacherInput!): TeacherEntity!
-  teacherUpdate(updateData: CreateTeacherInput!, id: Float!): TeacherEntity!
+  subjectUpdate(input: CreateSubjectInput!, id: Float!): SubjectEntity!
+  teacherCreate(input: CreateTeacherInput!): TeacherEntity!
+  teacherUpdate(input: CreateTeacherInput!, id: Float!): TeacherEntity!
   teacherDelete(id: Float!): Boolean!
-  classRoomCreate(createData: CreateClassRoomInput!): ClassRoomEntity!
+  classRoomCreate(input: CreateClassRoomInput!): ClassRoomEntity!
   classRoomDelete(id: Float!): Boolean!
-  classRoomUpdate(updateData: CreateClassRoomInput!, id: Float!): ClassRoomEntity!
-  classRoomItemCreate(createData: CreateClassRoomItemInput!): ClassRoomItemEntity!
+  classRoomUpdate(input: CreateClassRoomInput!, id: Float!): ClassRoomEntity!
+  classRoomItemCreate(input: CreateClassRoomItemInput!): ClassRoomItemEntity!
   classRoomItemDelete(id: Float!): Boolean!
-  classRoomItemUpdate(updateData: CreateClassRoomItemInput!, id: Float!): ClassRoomItemEntity!
-  classRoomInjectCreate(createData: CreateClassRoomInjectInput!): ClassRoomInjectEntity!
+  classRoomItemUpdate(input: CreateClassRoomItemInput!, id: Float!): ClassRoomItemEntity!
+  classRoomInjectCreate(input: CreateClassRoomInjectInput!): ClassRoomInjectEntity!
   classRoomInjectDelete(id: Float!): Boolean!
-  classRoomInjectUpdate(updateData: CreateClassRoomInjectInput!, id: Float!): ClassRoomInjectEntity!
-  organizationCreate(createData: CreateOrganizationInput!): OrganizationEntity!
-  organizationUpdate(updateData: CreateOrganizationInput!, id: Float!): OrganizationEntity!
+  classRoomInjectUpdate(input: CreateClassRoomInjectInput!, id: Float!): ClassRoomInjectEntity!
+  organizationCreate(input: CreateOrganizationInput!): OrganizationEntity!
+  organizationUpdate(input: CreateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationDelete(id: Float!): Boolean!
 }
 

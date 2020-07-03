@@ -45,14 +45,11 @@ export class ClassRoomInjectsResolver {
   @Mutation(() => ClassRoomInjectEntity, { name: 'classRoomInjectCreate' })
   async createClassRoomInject(
     @Context() context: MyContext,
-    @Args('createData') createData: CreateClassRoomInjectInput,
+    @Args('input') input: CreateClassRoomInjectInput,
   ): Promise<ClassRoomInjectEntity> {
     try {
       const { user } = context.req;
-      const obj = await this.classRoomInjectsService.create(
-        createData,
-        user['id'],
-      );
+      const obj = await this.classRoomInjectsService.create(input, user['id']);
       return obj;
     } catch (exception) {
       throw new HttpException(exception.message, 409);
@@ -73,13 +70,13 @@ export class ClassRoomInjectsResolver {
   async updateClassRoomInject(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('updateData') updateData: CreateClassRoomInjectInput,
+    @Args('input') input: CreateClassRoomInjectInput,
   ): Promise<ClassRoomInjectEntity> {
     try {
       const { user } = context.req;
       const obj = await this.classRoomInjectsService.update(
         id,
-        { ...updateData },
+        { ...input },
         user['id'],
       );
       return obj;

@@ -43,11 +43,11 @@ export class TeachersResolver {
   @Mutation(() => TeacherEntity, { name: 'teacherCreate' })
   async createTeacher(
     @Context() context: MyContext,
-    @Args('createData') createData: CreateTeacherInput,
+    @Args('input') input: CreateTeacherInput,
   ): Promise<TeacherEntity> {
     try {
       const { user } = context.req;
-      const teacher = await this.teachersService.create(createData, user['id']);
+      const teacher = await this.teachersService.create(input, user['id']);
 
       return teacher;
     } catch (exception) {
@@ -59,13 +59,13 @@ export class TeachersResolver {
   async updateTeacher(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('updateData') updateData: CreateTeacherInput,
+    @Args('input') input: CreateTeacherInput,
   ): Promise<TeacherEntity> {
     try {
       const { user } = context.req;
       const teacher = await this.teachersService.update(
         id,
-        { ...updateData },
+        { ...input },
         user['id'],
       );
 

@@ -11,12 +11,12 @@ import { UserEntity } from '../../users/entities/user.entity';
 export class UserPermissionEntity extends BaseEntity {
   @Field({ nullable: true })
   @Column({ name: 'user_id', nullable: false })
-  @JoinColumn({ name: 'user_id' })
-  @ManyToOne(type => UserEntity)
   @IsOptional()
   userId?: number;
 
   @Field(type => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'user_id' })
+  @ManyToOne(type => UserEntity)
   @IsOptional()
   user?: UserEntity;
 
@@ -59,23 +59,23 @@ export class UserPermissionEntity extends BaseEntity {
   //Campos de usuario padrão
   @Field({ nullable: true })
   @Column({ name: 'user_created_id', nullable: true })
-  @JoinColumn({ name: 'user_created_id' })
-  @ManyToOne(type => UserEntity)
   @IsOptional()
   userCreatedId?: number;
 
   @Field(type => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'user_created_id' })
+  @ManyToOne(type => UserEntity)
   @IsOptional()
   userCreated?: UserEntity;
 
   @Field({ nullable: true })
   @Column({ name: 'user_updated_id', nullable: true })
-  @JoinColumn({ name: 'user_updated_id' })
-  @ManyToOne(type => UserEntity)
   @IsOptional()
   userUpdatedId?: number;
 
   @Field(type => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'user_updated_id' })
+  @ManyToOne(type => UserEntity)
   @IsOptional()
   userUpdated?: UserEntity;
 }
