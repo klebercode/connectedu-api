@@ -22,6 +22,7 @@ import { ClassRoomItemsModule } from './classroomitems/classroomitems.module';
 import { ClassRoomInjectsModule } from './classroominjects/classroominjects.module';
 import { ResponsiblesModule } from './responsibles/responsibles.module';
 import { StudentInformationsModule } from './studentinformations/studentinformations.module';
+import { EmmployeesModule } from './employees/employees.module';
 
 // Modulos Publicos
 import { PermisisonsModule } from './permissions/permissions.module';
@@ -86,6 +87,7 @@ import { Customer } from './customers/entities/customer.object';
     ClassRoomInjectsModule,
     ResponsiblesModule,
     StudentInformationsModule,
+    EmmployeesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

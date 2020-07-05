@@ -360,6 +360,38 @@ type StudentInformationEntity {
   relationshipPedag: Float
 }
 
+type EmployeeEntity {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userCreated: UserEntity!
+  userUpdatedId: Float
+  userUpdated: UserEntity!
+  name: String
+  nickName: String
+  adress: String
+  district: String
+  complement: String
+  stateId: Float
+  state: StateEntity
+  cityId: Float
+  city: CityEntity
+  zipCode: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cpf: String
+  identity: String
+  OrgIdentity: String
+  status: Boolean
+  setor: Float
+  function: Float
+  note: String
+  profile: String
+}
+
 type OrganizationEntity {
   id: ID!
   createdAt: Date
@@ -403,6 +435,8 @@ type Query {
   classRoomInjectAll: [ClassRoomInjectEntity!]!
   studentInformation(id: Float!): StudentInformationEntity!
   studentInformationAll: [StudentInformationEntity!]!
+  employee(id: Float!): EmployeeEntity!
+  employeeAll: [EmployeeEntity!]!
   organization(id: Float!): OrganizationEntity!
   organizationAll: [OrganizationEntity!]!
 }
@@ -456,6 +490,9 @@ type Mutation {
   studentInformationCreate(input: CreatStudentInformationInput!): StudentInformationEntity!
   studentInformationDelete(id: Float!): Boolean!
   studentInformationUpdate(input: CreatStudentInformationInput!, id: Float!): StudentInformationEntity!
+  employeeCreate(input: CreateEmploeeInput!): EmployeeEntity!
+  employeeUpdate(input: CreateEmploeeInput!, id: Float!): EmployeeEntity!
+  employeeDelete(id: Float!): Boolean!
   organizationCreate(input: CreateOrganizationInput!): OrganizationEntity!
   organizationUpdate(input: CreateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationDelete(id: Float!): Boolean!
@@ -681,6 +718,29 @@ input CreatStudentInformationInput {
   relationship2: Float
   responsiblePedagId: Float
   relationshipPedag: Float
+}
+
+input CreateEmploeeInput {
+  name: String
+  nickName: String
+  adress: String
+  district: String
+  complement: String
+  stateId: Float
+  cityId: Float
+  zipCode: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cpf: String
+  identity: String
+  OrgIdentity: String
+  status: Boolean
+  setor: Float
+  function: Float
+  note: String
+  profile: String
 }
 
 input CreateOrganizationInput {
