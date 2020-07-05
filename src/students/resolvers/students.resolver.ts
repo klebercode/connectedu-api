@@ -20,6 +20,7 @@ import { StatesService } from '../../states/states.service';
 import { UsersService } from '../../users/users.service';
 import { CitiesService } from '../../cities/cities.service';
 import { ResponsiblesService } from '../../responsibles/responsibles.service';
+import { UserEntity } from '../../users/entities/user.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => StudentEntity)
@@ -150,13 +151,13 @@ export class studentsResolver {
     return this.citiesService.findOneById(id);
   }
 
-  @ResolveField('userCreated')
+  @ResolveField(type => UserEntity)
   async userCreated(@Parent() student: StudentEntity): Promise<any> {
     const id = student.userCreatedId;
     return this.usersService.findOneById(id);
   }
 
-  @ResolveField('userUpdated')
+  @ResolveField(type => UserEntity)
   async userUpdated(@Parent() student: StudentEntity) {
     const id = student.userUpdatedId;
     return this.usersService.findOneById(id);

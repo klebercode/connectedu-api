@@ -17,6 +17,7 @@ import { UserPermissionEntity } from '../entities/userpermission.entity';
 import { UserPermissionsService } from '../userpermissions.service';
 import { UsersService } from '../../users/users.service';
 import { PermissionsService } from '../../permissions/permissions.service';
+import { UserEntity } from '../../users/entities/user.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => UserPermissionEntity)
@@ -94,7 +95,7 @@ export class UserPermissionsResolver {
     return this.permissionsService.findOneById(id);
   }
 
-  @ResolveField('userCreated')
+  @ResolveField(() => UserEntity)
   async userCreated(
     @Parent() userPermission: UserPermissionEntity,
   ): Promise<any> {
@@ -102,7 +103,7 @@ export class UserPermissionsResolver {
     return this.userPermissionsService.findOneById(id);
   }
 
-  @ResolveField('userUpdated')
+  @ResolveField(() => UserEntity)
   async userUpdated(@Parent() userPermission: UserPermissionEntity) {
     const id = userPermission.userUpdatedId;
     return this.userPermissionsService.findOneById(id);

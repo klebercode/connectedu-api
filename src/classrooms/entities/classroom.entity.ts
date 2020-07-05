@@ -1,14 +1,14 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
-import { BaseEntity } from 'src/base-entity';
+import { UserBaseEntity } from 'src/users/entities/user-base-entity';
 import { UserEntity } from '../../users/entities/user.entity';
 import { CompanyEntity } from '../../companies/entities/company.entity';
 import { YearEntity } from '../../years/entities/year.entity';
 
 @ObjectType()
 @Entity('classroom')
-export class ClassRoomEntity extends BaseEntity {
+export class ClassRoomEntity extends UserBaseEntity {
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 50, nullable: false })
   @IsOptional()
@@ -75,27 +75,4 @@ export class ClassRoomEntity extends BaseEntity {
   @ManyToOne(type => YearEntity)
   @IsOptional()
   year?: YearEntity;
-
-  //Campos de usuario padrão
-  @Field({ nullable: true })
-  @Column({ name: 'user_created_id', nullable: true })
-  @IsOptional()
-  userCreatedId?: number;
-
-  @Field(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'user_created_id' })
-  @ManyToOne(type => UserEntity)
-  @IsOptional()
-  userCreated?: UserEntity;
-
-  @Field({ nullable: true })
-  @Column({ name: 'user_updated_id', nullable: true })
-  @IsOptional()
-  userUpdatedId?: number;
-
-  @Field(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'user_updated_id' })
-  @ManyToOne(type => UserEntity)
-  @IsOptional()
-  userUpdated?: UserEntity;
 }

@@ -16,7 +16,7 @@ import { MyContext } from '../../common/types/myContext';
 import { UserEntity } from '../entities/user.entity';
 import { UsersService } from '../users.service';
 
-@UseGuards(GqlAuthGuard, UserAuthGuard)
+@UseGuards(GqlAuthGuard)
 @Resolver(of => UserEntity)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}

@@ -35,6 +35,7 @@ export class ClassRoomsService {
       const obj = await this.classRoomRepository.save({
         ...classroom,
         userCreatedId: idUser,
+        userUpdatedId: idUser,
       });
       return obj;
     } catch (error) {

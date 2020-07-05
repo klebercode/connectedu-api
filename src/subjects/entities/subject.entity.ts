@@ -1,12 +1,11 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, PartialType } from '@nestjs/graphql';
 import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
-import { BaseEntity } from 'src/base-entity';
-import { UserEntity } from '../../users/entities/user.entity';
+import { UserBaseEntity } from 'src/users/entities/user-base-entity';
 
 @ObjectType()
 @Entity('subject')
-export class SubjectEntity extends BaseEntity {
+export class SubjectEntity extends UserBaseEntity {
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 50, nullable: false })
   @IsOptional()
@@ -31,27 +30,4 @@ export class SubjectEntity extends BaseEntity {
   @Column({ nullable: true })
   @IsOptional()
   status?: boolean;
-
-  //Campos de usuario padrão
-  @Field({ nullable: true })
-  @Column({ name: 'user_created_id', nullable: true })
-  @IsOptional()
-  userCreatedId?: number;
-
-  @Field(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'user_created_id' })
-  @ManyToOne(type => UserEntity)
-  @IsOptional()
-  userCreated?: UserEntity;
-
-  @Field({ nullable: true })
-  @Column({ name: 'user_updated_id', nullable: true })
-  @IsOptional()
-  userUpdatedId?: number;
-
-  @Field(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'user_updated_id' })
-  @ManyToOne(type => UserEntity)
-  @IsOptional()
-  userUpdated?: UserEntity;
 }

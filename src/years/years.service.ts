@@ -35,6 +35,7 @@ export class YearsService {
       const obj = await this.yearRepository.save({
         ...userPermission,
         userCreatedId: idUser,
+        userUpdatedId: idUser,
       });
       return obj;
     } catch (error) {

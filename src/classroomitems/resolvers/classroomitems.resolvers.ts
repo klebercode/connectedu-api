@@ -16,6 +16,7 @@ import { MyContext } from '../../common/types/myContext';
 import { ClassRoomItemEntity } from '../entities/classroomitem.entity';
 import { ClassRoomItemsService } from '../classroomitems.service';
 import { UsersService } from '../../users/users.service';
+import { UserEntity } from '../../users/entities/user.entity';
 
 import { ClassRoomsService } from '../../classrooms/classrooms.service';
 import { SubjectsService } from '../../subjects/subjects.service';
@@ -109,7 +110,7 @@ export class ClassRoomItemsResolver {
     return this.teachersService.findOneById(id);
   }
 
-  @ResolveField('userCreated')
+  @ResolveField(type => UserEntity)
   async userCreated(
     @Parent() classRoomItemEntity: ClassRoomItemEntity,
   ): Promise<any> {
@@ -117,7 +118,7 @@ export class ClassRoomItemsResolver {
     return this.usersService.findOneById(id);
   }
 
-  @ResolveField('userUpdated')
+  @ResolveField(type => UserEntity)
   async userUpdated(@Parent() classRoomItemEntity: ClassRoomItemEntity) {
     const id = classRoomItemEntity.userUpdatedId;
     return this.usersService.findOneById(id);

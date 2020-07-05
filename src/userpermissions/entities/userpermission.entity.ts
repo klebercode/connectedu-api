@@ -1,14 +1,14 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
-import { BaseEntity } from 'src/base-entity';
+import { UserBaseEntity } from 'src/users/entities/user-base-entity';
 import { PermissionEntity } from '../../permissions/entities/permission.object';
 import { UserEntity } from '../../users/entities/user.entity';
 
 @ObjectType()
 @Entity('user_permission')
 @Unique(['userId', 'codeId'])
-export class UserPermissionEntity extends BaseEntity {
+export class UserPermissionEntity extends UserBaseEntity {
   @Field({ nullable: true })
   @Column({ name: 'user_id', nullable: false })
   @IsOptional()
@@ -55,27 +55,4 @@ export class UserPermissionEntity extends BaseEntity {
   @Column({ nullable: true })
   @IsOptional()
   visible?: boolean;
-
-  //Campos de usuario padrão
-  @Field({ nullable: true })
-  @Column({ name: 'user_created_id', nullable: true })
-  @IsOptional()
-  userCreatedId?: number;
-
-  @Field(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'user_created_id' })
-  @ManyToOne(type => UserEntity)
-  @IsOptional()
-  userCreated?: UserEntity;
-
-  @Field({ nullable: true })
-  @Column({ name: 'user_updated_id', nullable: true })
-  @IsOptional()
-  userUpdatedId?: number;
-
-  @Field(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'user_updated_id' })
-  @ManyToOne(type => UserEntity)
-  @IsOptional()
-  userUpdated?: UserEntity;
 }

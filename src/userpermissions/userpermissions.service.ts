@@ -37,6 +37,7 @@ export class UserPermissionsService {
       const obj = await this.userPermissionsRepository.save({
         ...userPermission,
         userCreatedId: idUser,
+        userUpdatedId: idUser,
       });
       return obj;
     } catch (error) {

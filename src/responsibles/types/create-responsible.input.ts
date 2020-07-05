@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, GraphQLISODateTime } from '@nestjs/graphql';
 import { IsOptional, IsEmail, MaxLength } from 'class-validator';
 
 @InputType()
@@ -8,7 +8,7 @@ export class CreateResponsibleInput {
   @IsOptional()
   name: string;
 
-  @Field({ nullable: true })
+  @Field(() => GraphQLISODateTime, { nullable: true })
   @IsOptional()
   dateBirth: Date;
 

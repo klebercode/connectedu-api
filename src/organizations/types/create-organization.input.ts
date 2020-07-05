@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, GraphQLISODateTime } from '@nestjs/graphql';
 import { IsOptional, MaxLength } from 'class-validator';
 
 @InputType()
@@ -7,11 +7,11 @@ export class CreateOrganizationInput {
   @MaxLength(100)
   description: string;
 
-  @Field({ nullable: true })
+  @Field(() => GraphQLISODateTime, { nullable: true })
   @IsOptional()
   dateBegin?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => GraphQLISODateTime, { nullable: true })
   @IsOptional()
   dateEnd?: Date;
 }

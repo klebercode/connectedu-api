@@ -35,6 +35,7 @@ export class SubjectsService {
       const obj = await this.subjectRepository.save({
         ...subject,
         userCreatedId: idUser,
+        userUpdatedId: idUser,
       });
       return obj;
     } catch (error) {

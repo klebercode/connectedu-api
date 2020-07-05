@@ -37,6 +37,7 @@ export class ClassRoomInjectsService {
       const obj = await this.classRoomInjectRepository.save({
         ...classRoomInject,
         userCreatedId: idUser,
+        userUpdatedId: idUser,
       });
       return obj;
     } catch (error) {

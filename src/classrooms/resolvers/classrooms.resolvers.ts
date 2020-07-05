@@ -18,6 +18,7 @@ import { ClassRoomsService } from '../classrooms.service';
 import { UsersService } from '../../users/users.service';
 import { CompaniesService } from '../../companies/companies.service';
 import { YearsService } from '../../years/years.service';
+import { UserEntity } from '../../users/entities/user.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ClassRoomEntity)
@@ -94,13 +95,13 @@ export class ClassRoomsResolver {
     return this.companiesService.findOneById(id);
   }
 
-  @ResolveField('userCreated')
+  @ResolveField(type => UserEntity)
   async userCreated(@Parent() classRoomEntity: ClassRoomEntity): Promise<any> {
     const id = classRoomEntity.userCreatedId;
     return this.usersService.findOneById(id);
   }
 
-  @ResolveField('userUpdated')
+  @ResolveField(type => UserEntity)
   async userUpdated(@Parent() classRoomEntity: ClassRoomEntity) {
     const id = classRoomEntity.userUpdatedId;
     return this.usersService.findOneById(id);

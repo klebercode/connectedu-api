@@ -21,6 +21,7 @@ export class CompaniesService {
       const obj = await this.companiesRepository.save({
         ...company,
         userCreatedId: idUser,
+        userUpdatedId: idUser,
       });
       return obj;
     } catch (error) {

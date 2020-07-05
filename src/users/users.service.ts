@@ -36,6 +36,7 @@ export class UsersService {
       const obj = await this.usersRepository.save({
         ...user,
         userCreatedId: idUser,
+        userUpdatedId: idUser,
       });
       return obj;
     } catch (error) {

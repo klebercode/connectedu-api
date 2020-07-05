@@ -37,6 +37,7 @@ export class ClassRoomItemsService {
       const obj = await this.classRoomItemRepository.save({
         ...classRoomItem,
         userCreatedId: idUser,
+        userUpdatedId: idUser,
       });
       return obj;
     } catch (error) {

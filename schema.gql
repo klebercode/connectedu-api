@@ -17,8 +17,8 @@ scalar Date
 
 type UserEntity {
   id: ID!
-  createdAt: Date
-  updatedAt: Date
+  createdAt: DateTime
+  updatedAt: DateTime
   name: String
   nickName: String
   login: String
@@ -31,6 +31,11 @@ type UserEntity {
   userUpdatedId: Float
   userUpdated: UserEntity
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type StateEntity {
   id: ID!
@@ -51,10 +56,14 @@ type CityEntity {
 
 type ResponsibleEntity {
   id: ID!
-  createdAt: Date
-  updatedAt: Date
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userCreated: UserEntity!
+  userUpdatedId: Float
+  userUpdated: UserEntity!
   name: String
-  dateBirth: Date
+  dateBirth: DateTime
   gender: String
   codeNationality: String
   nationality: String
@@ -79,20 +88,20 @@ type ResponsibleEntity {
   workCompany: String
   workPhone: String
   profile: String
-  userCreatedId: Float
-  userCreated: UserEntity
-  userUpdatedId: Float
-  userUpdated: UserEntity
 }
 
 type StudentEntity {
   id: ID!
-  createdAt: Date
-  updatedAt: Date
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userCreated: UserEntity!
+  userUpdatedId: Float
+  userUpdated: UserEntity!
   name: String
   useNickName: Boolean
   nickName: String
-  dateBirth: Date
+  dateBirth: DateTime
   gender: String
   codeNationality: String
   stateNaturalnessId: Float
@@ -126,10 +135,6 @@ type StudentEntity {
   OrgIdentity: String
   note: String
   profile: String
-  userCreatedId: Float
-  userCreated: UserEntity
-  userUpdatedId: Float
-  userUpdated: UserEntity
 }
 
 type PermissionEntity {
@@ -142,8 +147,12 @@ type PermissionEntity {
 
 type UserPermissionEntity {
   id: ID!
-  createdAt: Date
-  updatedAt: Date
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userCreated: UserEntity!
+  userUpdatedId: Float
+  userUpdated: UserEntity!
   userId: Float
   user: UserEntity
   codeId: Float!
@@ -153,16 +162,16 @@ type UserPermissionEntity {
   delete: Boolean
   list: Boolean
   visible: Boolean
-  userCreatedId: Float
-  userCreated: UserEntity
-  userUpdatedId: Float
-  userUpdated: UserEntity
 }
 
 type CompanyEntity {
   id: ID!
-  createdAt: Date
-  updatedAt: Date
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userCreated: UserEntity!
+  userUpdatedId: Float
+  userUpdated: UserEntity!
   socialReason: String
   nameFantasy: String
   adress: String
@@ -185,47 +194,47 @@ type CompanyEntity {
   secretary: String
   note: String
   image: String
-  userCreatedId: Float
-  userCreated: UserEntity
-  userUpdatedId: Float
-  userUpdated: UserEntity
 }
 
 type YearEntity {
   id: ID!
-  createdAt: Date
-  updatedAt: Date
-  year: String
-  dateBegin: Date
-  dateEnd: Date
-  dateModule1: Date
-  dateModule2: Date
-  dateModule3: Date
-  dateModule4: Date
+  createdAt: DateTime
+  updatedAt: DateTime
   userCreatedId: Float
-  userCreated: UserEntity
+  userCreated: UserEntity!
   userUpdatedId: Float
-  userUpdated: UserEntity
+  userUpdated: UserEntity!
+  year: String
+  dateBegin: DateTime
+  dateEnd: DateTime
+  dateModule1: DateTime
+  dateModule2: DateTime
+  dateModule3: DateTime
+  dateModule4: DateTime
 }
 
 type SubjectEntity {
   id: ID!
-  createdAt: Date
-  updatedAt: Date
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userCreated: UserEntity!
+  userUpdatedId: Float
+  userUpdated: UserEntity!
   description: String
   abbreviation: String
   descriptionMinutes: String
   status: Boolean
-  userCreatedId: Float
-  userCreated: UserEntity
-  userUpdatedId: Float
-  userUpdated: UserEntity
 }
 
 type TeacherEntity {
   id: ID!
-  createdAt: Date
-  updatedAt: Date
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userCreated: UserEntity!
+  userUpdatedId: Float
+  userUpdated: UserEntity!
   name: String
   nickName: String
   adress: String
@@ -246,16 +255,16 @@ type TeacherEntity {
   status: Boolean
   note: String
   profile: String
-  userCreatedId: Float
-  userCreated: UserEntity
-  userUpdatedId: Float
-  userUpdated: UserEntity
 }
 
 type ClassRoomEntity {
   id: ID!
-  createdAt: Date
-  updatedAt: Date
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userCreated: UserEntity!
+  userUpdatedId: Float
+  userUpdated: UserEntity!
   description: String
   abbreviation: String
   descriptionMinutes: String
@@ -268,16 +277,16 @@ type ClassRoomEntity {
   company: CompanyEntity
   yearId: Float
   year: YearEntity
-  userCreatedId: Float
-  userCreated: UserEntity
-  userUpdatedId: Float
-  userUpdated: UserEntity
 }
 
 type ClassRoomItemEntity {
   id: ID!
-  createdAt: Date
-  updatedAt: Date
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userCreated: UserEntity!
+  userUpdatedId: Float
+  userUpdated: UserEntity!
   classroomId: Float
   classroom: ClassRoomEntity
   subjectId: Float
@@ -294,16 +303,16 @@ type ClassRoomItemEntity {
   numberGrades: Float
   gradeMin: Float
   gradeMax: Float
-  userCreatedId: Float
-  userCreated: UserEntity
-  userUpdatedId: Float
-  userUpdated: UserEntity
 }
 
 type ClassRoomInjectEntity {
   id: ID!
-  createdAt: Date
-  updatedAt: Date
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userCreated: UserEntity!
+  userUpdatedId: Float
+  userUpdated: UserEntity!
   classroomItemId: Float
   classroomItem: ClassRoomItemEntity
   subject1Id: Float
@@ -315,10 +324,6 @@ type ClassRoomInjectEntity {
   subject4Id: Float
   subject4: SubjectEntity
   average: Float
-  userCreatedId: Float
-  userCreated: UserEntity
-  userUpdatedId: Float
-  userUpdated: UserEntity
 }
 
 type OrganizationEntity {
@@ -326,8 +331,8 @@ type OrganizationEntity {
   createdAt: Date
   updatedAt: Date
   description: String
-  dateBegin: Date
-  dateEnd: Date
+  dateBegin: DateTime
+  dateEnd: DateTime
 }
 
 type Query {
@@ -438,7 +443,7 @@ input CreateStudentInput {
   name: String
   useNickName: Boolean
   nickName: String
-  dateBirth: Date
+  dateBirth: DateTime
   gender: String
   codeNationality: String
   stateNaturalnessId: Float
@@ -479,7 +484,7 @@ input CreateCityInput {
 
 input CreateResponsibleInput {
   name: String
-  dateBirth: Date
+  dateBirth: DateTime
   gender: String
   codeNationality: String
   nationality: String
@@ -544,12 +549,12 @@ input CreateCompanyInput {
 
 input CreateYearInput {
   year: String
-  dateBegin: Date
-  dateEnd: Date
-  dateModule1: Date
-  dateModule2: Date
-  dateModule3: Date
-  dateModule4: Date
+  dateBegin: DateTime
+  dateEnd: DateTime
+  dateModule1: DateTime
+  dateModule2: DateTime
+  dateModule3: DateTime
+  dateModule4: DateTime
 }
 
 input CreateSubjectInput {
@@ -620,6 +625,6 @@ input CreateClassRoomInjectInput {
 
 input CreateOrganizationInput {
   description: String
-  dateBegin: Date
-  dateEnd: Date
+  dateBegin: DateTime
+  dateEnd: DateTime
 }

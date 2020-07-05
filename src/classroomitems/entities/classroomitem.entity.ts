@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
-import { BaseEntity } from 'src/base-entity';
+import { UserBaseEntity } from 'src/users/entities/user-base-entity';
 import { UserEntity } from '../../users/entities/user.entity';
 import { ClassRoomEntity } from '../../classrooms/entities/classroom.entity';
 import { SubjectEntity } from '../../subjects/entities/subject.entity';
@@ -10,7 +10,7 @@ import { TeacherEntity } from '../../teachers/entities/teacher.entity';
 @ObjectType()
 @Entity('classroomitem')
 @Unique(['classroomId', 'subjectId'])
-export class ClassRoomItemEntity extends BaseEntity {
+export class ClassRoomItemEntity extends UserBaseEntity {
   @Field({ nullable: true })
   @Column({ name: 'classroom_id', nullable: false })
   @IsOptional()
@@ -93,27 +93,4 @@ export class ClassRoomItemEntity extends BaseEntity {
   @Column({ name: 'garde_max', nullable: true })
   @IsOptional()
   gradeMax?: number;
-
-  //Campos de usuario padrão
-  @Field({ nullable: true })
-  @Column({ name: 'user_created_id', nullable: true })
-  @IsOptional()
-  userCreatedId?: number;
-
-  @Field(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'user_created_id' })
-  @ManyToOne(type => UserEntity)
-  @IsOptional()
-  userCreated?: UserEntity;
-
-  @Field({ nullable: true })
-  @Column({ name: 'user_updated_id', nullable: true })
-  @IsOptional()
-  userUpdatedId?: number;
-
-  @Field(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'user_updated_id' })
-  @ManyToOne(type => UserEntity)
-  @IsOptional()
-  userUpdated?: UserEntity;
 }

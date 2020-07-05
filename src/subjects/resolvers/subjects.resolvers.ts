@@ -16,6 +16,7 @@ import { MyContext } from '../../common/types/myContext';
 import { SubjectEntity } from '../entities/subject.entity';
 import { SubjectsService } from '../subjects.service';
 import { UsersService } from '../../users/users.service';
+import { UserEntity } from '../../users/entities/user.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => SubjectEntity)
@@ -78,14 +79,14 @@ export class SubjectsResolver {
     }
   }
 
-  @ResolveField('userCreated')
+  @ResolveField(() => UserEntity)
   async userCreated(@Parent() subjectEntity: SubjectEntity): Promise<any> {
     const id = subjectEntity.userCreatedId;
     return this.usersService.findOneById(id);
   }
 
-  @ResolveField('userUpdated')
-  async userUpdated(@Parent() subjectEntity: SubjectEntity) {
+  @ResolveField(() => UserEntity)
+  async userUpdated(@Parent() subjectEntity: SubjectEntity): Promise<any> {
     const id = subjectEntity.userUpdatedId;
     return this.usersService.findOneById(id);
   }

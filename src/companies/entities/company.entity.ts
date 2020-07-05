@@ -3,13 +3,13 @@ import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm';
 
 import { StateEntity } from '../../states/entities/state.object';
 import { IsOptional, IsEmail } from 'class-validator';
-import { BaseEntity } from '../../base-entity';
+import { UserBaseEntity } from '../../users/entities/user-base-entity';
 import { UserEntity } from '../../users/entities/user.entity';
 import { CityEntity } from '../../cities/entities/city.object';
 
 @ObjectType()
 @Entity('company')
-export class CompanyEntity extends BaseEntity {
+export class CompanyEntity extends UserBaseEntity {
   @Field({ nullable: true })
   @Column({
     name: 'social_reason',
@@ -129,27 +129,4 @@ export class CompanyEntity extends BaseEntity {
   @Column({ type: 'varchar', length: 100, nullable: true })
   @IsOptional()
   image?: string;
-
-  //Campos de usuario padrão
-  @Field({ nullable: true })
-  @Column({ name: 'user_created_id', nullable: true })
-  @IsOptional()
-  userCreatedId?: number;
-
-  @Field(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'user_created_id' })
-  @ManyToOne(type => UserEntity)
-  @IsOptional()
-  userCreated?: UserEntity;
-
-  @Field({ nullable: true })
-  @Column({ name: 'user_updated_id', nullable: true })
-  @IsOptional()
-  userUpdatedId?: number;
-
-  @Field(type => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'user_updated_id' })
-  @ManyToOne(type => UserEntity)
-  @IsOptional()
-  userUpdated?: UserEntity;
 }

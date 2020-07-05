@@ -21,6 +21,7 @@ export class StudentsService {
       const obj = await this.studentsRepository.save({
         ...student,
         userCreatedId: idUser,
+        userUpdatedId: idUser,
       });
       return obj;
     } catch (error) {

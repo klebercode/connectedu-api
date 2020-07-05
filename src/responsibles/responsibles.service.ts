@@ -23,6 +23,7 @@ export class ResponsiblesService {
       const obj = await this.responsiblesRepository.save({
         ...responsible,
         userCreatedId: idUser,
+        userUpdatedId: idUser,
       });
       return obj;
     } catch (error) {

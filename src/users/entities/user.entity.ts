@@ -1,7 +1,16 @@
-import { Field, ObjectType } from '@nestjs/graphql';
-import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
+import { Field, ObjectType, GraphQLISODateTime, ID } from '@nestjs/graphql';
+import {
+  Entity,
+  Column,
+  JoinColumn,
+  ManyToOne,
+  Unique,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { IsOptional, isEmail } from 'class-validator';
-import { BaseEntity } from 'src/base-entity';
+import { BaseEntity } from '../../base-entity';
 
 @ObjectType()
 @Entity('user')
@@ -43,7 +52,7 @@ export class UserEntity extends BaseEntity {
 
   @Field(type => UserEntity, { nullable: true })
   @JoinColumn({ name: 'user_created_id' })
-  @ManyToOne(type => UserEntity)
+  //@ManyToOne(type => UserEntity, { nullable: true })
   @IsOptional()
   userCreated?: UserEntity;
 
@@ -54,7 +63,13 @@ export class UserEntity extends BaseEntity {
 
   @Field(type => UserEntity, { nullable: true })
   @JoinColumn({ name: 'user_updated_id' })
-  @ManyToOne(type => UserEntity)
+  //@ManyToOne(type => UserEntity, { nullable: true })
   @IsOptional()
   userUpdated?: UserEntity;
+
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  createdAt?: Date;
+
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  updatedAt?: Date;
 }

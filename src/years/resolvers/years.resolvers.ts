@@ -16,6 +16,7 @@ import { MyContext } from '../../common/types/myContext';
 import { YearEntity } from '../entities/year.entity';
 import { YearsService } from '../years.service';
 import { UsersService } from '../../users/users.service';
+import { UserEntity } from '../../users/entities/user.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => YearEntity)
@@ -73,14 +74,12 @@ export class YearsResolver {
       throw new HttpException(exception.message, 409);
     }
   }
-
-  @ResolveField('userCreated')
+  @ResolveField(() => UserEntity)
   async userCreated(@Parent() yearEntity: YearEntity): Promise<any> {
     const id = yearEntity.userCreatedId;
     return this.usersService.findOneById(id);
   }
-
-  @ResolveField('userUpdated')
+  @ResolveField(() => UserEntity)
   async userUpdated(@Parent() yearEntity: YearEntity) {
     const id = yearEntity.userUpdatedId;
     return this.usersService.findOneById(id);
