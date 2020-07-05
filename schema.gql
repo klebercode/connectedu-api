@@ -392,6 +392,43 @@ type EmployeeEntity {
   profile: String
 }
 
+type OccurrenceEntity {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userCreated: UserEntity!
+  userUpdatedId: Float
+  userUpdated: UserEntity!
+  description: String
+  status: Boolean
+  type: Float
+  points: Float
+}
+
+type StudentOccurrenceEntity {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userCreated: UserEntity!
+  userUpdatedId: Float
+  userUpdated: UserEntity!
+  occurrenceId: Float
+  occurrence: OccurrenceEntity
+  studentId: Float
+  student: StudentEntity
+  date: DateTime
+  typeOrigin: Float
+  teacherId: Float
+  teacher: TeacherEntity
+  subjectId: Float
+  subject: SubjectEntity
+  employeeId: Float
+  employee: EmployeeEntity
+  note: String
+}
+
 type OrganizationEntity {
   id: ID!
   createdAt: Date
@@ -437,6 +474,10 @@ type Query {
   studentInformationAll: [StudentInformationEntity!]!
   employee(id: Float!): EmployeeEntity!
   employeeAll: [EmployeeEntity!]!
+  occurrence(id: Float!): OccurrenceEntity!
+  occurrenceAll: [OccurrenceEntity!]!
+  studentOccurrence(id: Float!): StudentOccurrenceEntity!
+  studentOccurrenceAll: [StudentOccurrenceEntity!]!
   organization(id: Float!): OrganizationEntity!
   organizationAll: [OrganizationEntity!]!
 }
@@ -493,6 +534,12 @@ type Mutation {
   employeeCreate(input: CreateEmploeeInput!): EmployeeEntity!
   employeeUpdate(input: CreateEmploeeInput!, id: Float!): EmployeeEntity!
   employeeDelete(id: Float!): Boolean!
+  occurrenceCreate(input: CreateOccurrenceInput!): OccurrenceEntity!
+  occurrenceDelete(id: Float!): Boolean!
+  occurrenceUpdate(input: CreateOccurrenceInput!, id: Float!): OccurrenceEntity!
+  studentOccurrenceCreate(input: CreatStudentOccurrenceInput!): StudentOccurrenceEntity!
+  studentOccurrenceDelete(id: Float!): Boolean!
+  studentOccurrenceUpdate(input: CreatStudentOccurrenceInput!, id: Float!): StudentOccurrenceEntity!
   organizationCreate(input: CreateOrganizationInput!): OrganizationEntity!
   organizationUpdate(input: CreateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationDelete(id: Float!): Boolean!
@@ -741,6 +788,24 @@ input CreateEmploeeInput {
   function: Float
   note: String
   profile: String
+}
+
+input CreateOccurrenceInput {
+  description: String
+  status: Boolean
+  type: Float
+  points: Float
+}
+
+input CreatStudentOccurrenceInput {
+  occurrenceId: Float
+  studentId: Float
+  date: DateTime
+  typeOrigin: Float
+  teacherId: Float
+  subjectId: Float
+  employeeId: Float
+  note: String
 }
 
 input CreateOrganizationInput {

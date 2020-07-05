@@ -14,4 +14,4 @@ import { CustomersModule } from '../customers/customers.module';
   providers: [EmployeesResolver, EmployeesService, DateScalar],
   exports: [EmployeesService],
 })
-export class EmmployeesModule {}
+export class EmployeesModule {}
