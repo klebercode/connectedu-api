@@ -86,12 +86,18 @@ export class UserPermissionsResolver {
   @ResolveField('user')
   async user(@Parent() userPermission: UserPermissionEntity): Promise<any> {
     const id = userPermission.userId;
+    if (!id) {
+      return null;
+    }
     return this.usersService.findOneById(id);
   }
 
   @ResolveField('code')
   async code(@Parent() userPermission: UserPermissionEntity): Promise<any> {
     const id = userPermission.codeId;
+    if (!id) {
+      return null;
+    }
     return this.permissionsService.findOneById(id);
   }
 
@@ -100,12 +106,18 @@ export class UserPermissionsResolver {
     @Parent() userPermission: UserPermissionEntity,
   ): Promise<any> {
     const id = userPermission.userCreatedId;
+    if (!id) {
+      return null;
+    }
     return this.userPermissionsService.findOneById(id);
   }
 
   @ResolveField(() => UserEntity)
   async userUpdated(@Parent() userPermission: UserPermissionEntity) {
     const id = userPermission.userUpdatedId;
+    if (!id) {
+      return null;
+    }
     return this.userPermissionsService.findOneById(id);
   }
 }

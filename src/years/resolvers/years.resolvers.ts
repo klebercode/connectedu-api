@@ -77,11 +77,17 @@ export class YearsResolver {
   @ResolveField(() => UserEntity)
   async userCreated(@Parent() yearEntity: YearEntity): Promise<any> {
     const id = yearEntity.userCreatedId;
+    if (!id) {
+      return null;
+    }
     return this.usersService.findOneById(id);
   }
   @ResolveField(() => UserEntity)
   async userUpdated(@Parent() yearEntity: YearEntity) {
     const id = yearEntity.userUpdatedId;
+    if (!id) {
+      return null;
+    }
     return this.usersService.findOneById(id);
   }
 }

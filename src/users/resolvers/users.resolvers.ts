@@ -73,12 +73,18 @@ export class UsersResolver {
   @ResolveField('userCreated')
   async userCreated(@Parent() user: UserEntity): Promise<any> {
     const id = user.userCreatedId;
+    if (!id) {
+      return null;
+    }
     return this.usersService.findOneById(id);
   }
 
   @ResolveField('userUpdated')
   async userUpdated(@Parent() user: UserEntity) {
     const id = user.userUpdatedId;
+    if (!id) {
+      return null;
+    }
     return this.usersService.findOneById(id);
   }
 }

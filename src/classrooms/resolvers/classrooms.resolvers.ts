@@ -86,24 +86,36 @@ export class ClassRoomsResolver {
   @ResolveField('year')
   async year(@Parent() classRoomEntity: ClassRoomEntity): Promise<any> {
     const id = classRoomEntity.yearId;
+    if (!id) {
+      return null;
+    }
     return this.yearsService.findOneById(id);
   }
 
   @ResolveField('company')
   async company(@Parent() classRoomEntity: ClassRoomEntity): Promise<any> {
     const id = classRoomEntity.companyId;
+    if (!id) {
+      return null;
+    }
     return this.companiesService.findOneById(id);
   }
 
   @ResolveField(type => UserEntity)
   async userCreated(@Parent() classRoomEntity: ClassRoomEntity): Promise<any> {
     const id = classRoomEntity.userCreatedId;
+    if (!id) {
+      return null;
+    }
     return this.usersService.findOneById(id);
   }
 
   @ResolveField(type => UserEntity)
   async userUpdated(@Parent() classRoomEntity: ClassRoomEntity) {
     const id = classRoomEntity.userUpdatedId;
+    if (!id) {
+      return null;
+    }
     return this.usersService.findOneById(id);
   }
 }

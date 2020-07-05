@@ -68,6 +68,9 @@ export class CitiesResolver {
   @ResolveField('state')
   async state(@Parent() city: CityEntity): Promise<any> {
     const id = city.stateId;
+    if (!id) {
+      return null;
+    }
     return this.statesService.findOneById(id);
   }
 }

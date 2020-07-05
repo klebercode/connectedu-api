@@ -326,6 +326,40 @@ type ClassRoomInjectEntity {
   average: Float
 }
 
+type StudentInformationEntity {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userCreated: UserEntity!
+  userUpdatedId: Float
+  userUpdated: UserEntity!
+  studentId: Float
+  student: StudentEntity
+  yearId: Float
+  year: YearEntity
+  dateRegistration: DateTime
+  classroomId: Float
+  classroom: ClassRoomEntity
+  situation: String
+  numberStudent: Float
+  payday: Float
+  formPayment: Float
+  monthlyDiscount: Float
+  dateExit: Date
+  reasonExit: String
+  descriptionReason: String
+  responsible1Id: Float
+  responsible1: ResponsibleEntity
+  relationship1: Float
+  responsible2Id: Float
+  responsible2: ResponsibleEntity
+  relationship2: Float
+  responsiblePedagId: Float
+  responsiblePedag: ResponsibleEntity
+  relationshipPedag: Float
+}
+
 type OrganizationEntity {
   id: ID!
   createdAt: Date
@@ -367,6 +401,8 @@ type Query {
   classRoomItemAll: [ClassRoomItemEntity!]!
   classRoomInject(id: Float!): ClassRoomInjectEntity!
   classRoomInjectAll: [ClassRoomInjectEntity!]!
+  studentInformation(id: Float!): StudentInformationEntity!
+  studentInformationAll: [StudentInformationEntity!]!
   organization(id: Float!): OrganizationEntity!
   organizationAll: [OrganizationEntity!]!
 }
@@ -417,6 +453,9 @@ type Mutation {
   classRoomInjectCreate(input: CreateClassRoomInjectInput!): ClassRoomInjectEntity!
   classRoomInjectDelete(id: Float!): Boolean!
   classRoomInjectUpdate(input: CreateClassRoomInjectInput!, id: Float!): ClassRoomInjectEntity!
+  studentInformationCreate(input: CreatStudentInformationInput!): StudentInformationEntity!
+  studentInformationDelete(id: Float!): Boolean!
+  studentInformationUpdate(input: CreatStudentInformationInput!, id: Float!): StudentInformationEntity!
   organizationCreate(input: CreateOrganizationInput!): OrganizationEntity!
   organizationUpdate(input: CreateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationDelete(id: Float!): Boolean!
@@ -621,6 +660,27 @@ input CreateClassRoomInjectInput {
   subject3Id: Float
   subject4Id: Float
   average: Float
+}
+
+input CreatStudentInformationInput {
+  studentId: Float
+  yearId: Float
+  dateRegistration: DateTime
+  classroomId: Float
+  situation: String
+  numberStudent: Float
+  payday: Float
+  formPayment: Float
+  monthlyDiscount: Float
+  dateExit: Date
+  reasonExit: String
+  descriptionReason: String
+  responsible1Id: Float
+  relationship1: Float
+  responsible2Id: Float
+  relationship2: Float
+  responsiblePedagId: Float
+  relationshipPedag: Float
 }
 
 input CreateOrganizationInput {

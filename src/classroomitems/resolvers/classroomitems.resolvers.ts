@@ -91,6 +91,9 @@ export class ClassRoomItemsResolver {
     @Parent() classRoomItemEntity: ClassRoomItemEntity,
   ): Promise<any> {
     const id = classRoomItemEntity.classroomId;
+    if (!id) {
+      return null;
+    }
     return this.classRoomsService.findOneById(id);
   }
 
@@ -99,6 +102,9 @@ export class ClassRoomItemsResolver {
     @Parent() classRoomItemEntity: ClassRoomItemEntity,
   ): Promise<any> {
     const id = classRoomItemEntity.subjectId;
+    if (!id) {
+      return null;
+    }
     return this.subjectsService.findOneById(id);
   }
 
@@ -107,6 +113,9 @@ export class ClassRoomItemsResolver {
     @Parent() classRoomItemEntity: ClassRoomItemEntity,
   ): Promise<any> {
     const id = classRoomItemEntity.teacherId;
+    if (!id) {
+      return null;
+    }
     return this.teachersService.findOneById(id);
   }
 
@@ -115,12 +124,18 @@ export class ClassRoomItemsResolver {
     @Parent() classRoomItemEntity: ClassRoomItemEntity,
   ): Promise<any> {
     const id = classRoomItemEntity.userCreatedId;
+    if (!id) {
+      return null;
+    }
     return this.usersService.findOneById(id);
   }
 
   @ResolveField(type => UserEntity)
   async userUpdated(@Parent() classRoomItemEntity: ClassRoomItemEntity) {
     const id = classRoomItemEntity.userUpdatedId;
+    if (!id) {
+      return null;
+    }
     return this.usersService.findOneById(id);
   }
 }

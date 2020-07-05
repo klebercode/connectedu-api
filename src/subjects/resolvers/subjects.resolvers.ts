@@ -82,12 +82,18 @@ export class SubjectsResolver {
   @ResolveField(() => UserEntity)
   async userCreated(@Parent() subjectEntity: SubjectEntity): Promise<any> {
     const id = subjectEntity.userCreatedId;
+    if (!id) {
+      return null;
+    }
     return this.usersService.findOneById(id);
   }
 
   @ResolveField(() => UserEntity)
   async userUpdated(@Parent() subjectEntity: SubjectEntity): Promise<any> {
     const id = subjectEntity.userUpdatedId;
+    if (!id) {
+      return null;
+    }
     return this.usersService.findOneById(id);
   }
 }

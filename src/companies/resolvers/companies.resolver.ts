@@ -107,12 +107,18 @@ export class CompaniesResolver {
   @ResolveField(type => UserEntity)
   async userCreated(@Parent() company: CompanyEntity): Promise<any> {
     const id = company.userCreatedId;
+    if (!id) {
+      return null;
+    }
     return this.usersService.findOneById(id);
   }
 
   @ResolveField(type => UserEntity)
   async userUpdated(@Parent() company: CompanyEntity) {
     const id = company.userUpdatedId;
+    if (!id) {
+      return null;
+    }
     return this.usersService.findOneById(id);
   }
 }
