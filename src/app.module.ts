@@ -26,6 +26,7 @@ import { EmployeesModule } from './employees/employees.module';
 import { OccurrencesModule } from './occurrences/occurrences.module';
 import { StudentOccurrencesModule } from './studentoccurrences/studentoccurrences.module';
 import { StudentGradesModule } from './studentgrades/studentgrades.module';
+import { StudentCallsModule } from './studentcalls/studentcalls.module';
 
 // Modulos Publicos
 import { PermisisonsModule } from './permissions/permissions.module';
@@ -94,6 +95,7 @@ import { Customer } from './customers/entities/customer.object';
     OccurrencesModule,
     StudentOccurrencesModule,
     StudentGradesModule,
+    StudentCallsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
