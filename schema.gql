@@ -429,6 +429,27 @@ type StudentOccurrenceEntity {
   note: String
 }
 
+type StudentGradeEntity {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userCreated: UserEntity!
+  userUpdatedId: Float
+  userUpdated: UserEntity!
+  studentId: Float!
+  student: StudentEntity!
+  yearId: Float!
+  year: YearEntity!
+  subjectId: Float!
+  subject: SubjectEntity!
+  unit: String!
+  typeUnit: String!
+  typeGrade: Float!
+  grade: Float
+  concept: String
+}
+
 type OrganizationEntity {
   id: ID!
   createdAt: Date
@@ -478,6 +499,8 @@ type Query {
   occurrenceAll: [OccurrenceEntity!]!
   studentOccurrence(id: Float!): StudentOccurrenceEntity!
   studentOccurrenceAll: [StudentOccurrenceEntity!]!
+  studentGrade(id: Float!): StudentGradeEntity!
+  studentGradeAll: [StudentGradeEntity!]!
   organization(id: Float!): OrganizationEntity!
   organizationAll: [OrganizationEntity!]!
 }
@@ -540,6 +563,9 @@ type Mutation {
   studentOccurrenceCreate(input: CreatStudentOccurrenceInput!): StudentOccurrenceEntity!
   studentOccurrenceDelete(id: Float!): Boolean!
   studentOccurrenceUpdate(input: CreatStudentOccurrenceInput!, id: Float!): StudentOccurrenceEntity!
+  studentGradeCreate(input: CreatStudentGradeInput!): StudentGradeEntity!
+  studentGradeDelete(id: Float!): Boolean!
+  studentGradeUpdate(input: CreatStudentGradeInput!, id: Float!): StudentGradeEntity!
   organizationCreate(input: CreateOrganizationInput!): OrganizationEntity!
   organizationUpdate(input: CreateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationDelete(id: Float!): Boolean!
@@ -806,6 +832,17 @@ input CreatStudentOccurrenceInput {
   subjectId: Float
   employeeId: Float
   note: String
+}
+
+input CreatStudentGradeInput {
+  studentId: Float!
+  yearId: Float!
+  subjectId: Float!
+  unit: String!
+  typeUnit: String!
+  typeGrade: Float!
+  grade: Float
+  concept: String
 }
 
 input CreateOrganizationInput {
