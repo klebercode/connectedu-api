@@ -12,11 +12,12 @@ import {
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { CreateUsersInput } from '../types/create-user.input';
+import { UpdateUsersInput } from '../types/update-user.input';
 import { MyContext } from '../../common/types/myContext';
 import { UserEntity } from '../entities/user.entity';
 import { UsersService } from '../users.service';
 
-@UseGuards(GqlAuthGuard)
+@UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => UserEntity)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
@@ -59,12 +60,27 @@ export class UsersResolver {
   async updateUser(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('input') input: CreateUsersInput,
+    @Args('input') input: UpdateUsersInput,
   ): Promise<UserEntity> {
     try {
       const { user } = context.req;
       const obj = await this.usersService.update(id, { ...input }, user['id']);
       return obj;
+    } catch (exception) {
+      throw new HttpException(exception.message, 409);
+    }
+  }
+
+  @Mutation(() => Boolean, { name: 'userUpdatePassword' })
+  async updatePasswordUser(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+    @Args('input') input: string,
+  ): Promise<boolean> {
+    try {
+      const { user } = context.req;
+      const ret = await this.usersService.updatePassword(id, input, user['id']);
+      return ret;
     } catch (exception) {
       throw new HttpException(exception.message, 409);
     }

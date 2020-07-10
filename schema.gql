@@ -19,9 +19,9 @@ type UserEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
-  name: String
+  name: String!
   nickName: String
-  login: String
+  login: String!
   email: String
   password: String!
   profile: String
@@ -469,6 +469,57 @@ type StudentCallEntity {
   reason: String
 }
 
+type ContentPlannedEntity {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userCreated: UserEntity!
+  userUpdatedId: Float
+  userUpdated: UserEntity!
+  yearId: Float!
+  year: YearEntity!
+  subjectId: Float!
+  subject: SubjectEntity!
+  classroomId: Float!
+  classroom: ClassRoomEntity!
+  teacherId: Float!
+  teacher: TeacherEntity!
+  classDouble: Boolean
+  date: DateTime
+  content: String
+  process: String
+  ability: String
+  classWork: String
+  classHome: String
+}
+
+type ContentAppliedEntity {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userCreated: UserEntity!
+  userUpdatedId: Float
+  userUpdated: UserEntity!
+  yearId: Float!
+  year: YearEntity!
+  subjectId: Float!
+  subject: SubjectEntity!
+  classroomId: Float!
+  classroom: ClassRoomEntity!
+  teacherId: Float!
+  teacher: TeacherEntity!
+  classDouble: Boolean
+  date: DateTime
+  content: String
+  process: String
+  ability: String
+  classWork: String
+  classHome: String
+  justify: String
+}
+
 type OrganizationEntity {
   id: ID!
   createdAt: Date
@@ -522,6 +573,10 @@ type Query {
   studentGradeAll: [StudentGradeEntity!]!
   studentCall(id: Float!): StudentCallEntity!
   studentCallAll: [StudentCallEntity!]!
+  contentPlanned(id: Float!): ContentPlannedEntity!
+  contentPlannedAll: [ContentPlannedEntity!]!
+  contentApplied(id: Float!): ContentAppliedEntity!
+  contentAppliedAll: [ContentAppliedEntity!]!
   organization(id: Float!): OrganizationEntity!
   organizationAll: [OrganizationEntity!]!
 }
@@ -532,7 +587,8 @@ type Mutation {
   customerDelete(id: Float!): Boolean!
   userCreate(input: CreateUsersInput!): UserEntity!
   userDelete(id: Float!): Boolean!
-  userUpdate(input: CreateUsersInput!, id: Float!): UserEntity!
+  userUpdate(input: UpdateUsersInput!, id: Float!): UserEntity!
+  userUpdatePassword(input: String!, id: Float!): Boolean!
   studentCreate(input: CreateStudentInput!): StudentEntity!
   studentUpdate(input: CreateStudentInput!, id: Float!): StudentEntity!
   studentDelete(id: Float!): Boolean!
@@ -590,6 +646,12 @@ type Mutation {
   studentCallCreate(input: CreatStudentCallInput!): StudentCallEntity!
   studentCallDelete(id: Float!): Boolean!
   studentCallUpdate(input: CreatStudentCallInput!, id: Float!): StudentCallEntity!
+  contentPlannedCreate(input: CreatContentPlannedInput!): ContentPlannedEntity!
+  contentPlannedDelete(id: Float!): Boolean!
+  contentPlannedUpdate(input: CreatContentPlannedInput!, id: Float!): ContentPlannedEntity!
+  contentAppliedCreate(input: CreatContentAppliedInput!): ContentAppliedEntity!
+  contentAppliedDelete(id: Float!): Boolean!
+  contentAppliedUpdate(input: CreatContentAppliedInput!, id: Float!): ContentAppliedEntity!
   organizationCreate(input: CreateOrganizationInput!): OrganizationEntity!
   organizationUpdate(input: CreateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationDelete(id: Float!): Boolean!
@@ -610,6 +672,14 @@ input CreateUsersInput {
   codeToken: Float
   email: String
   password: String
+}
+
+input UpdateUsersInput {
+  name: String
+  nickName: String
+  login: String
+  profile: String
+  email: String
 }
 
 input CreateStudentInput {
@@ -877,6 +947,35 @@ input CreatStudentCallInput {
   state: String
   justify: Boolean
   reason: String
+}
+
+input CreatContentPlannedInput {
+  yearId: Float!
+  subjectId: Float!
+  classroomId: Float!
+  teacherId: Float!
+  classDouble: Boolean
+  date: DateTime
+  content: String
+  process: String
+  ability: String
+  classWork: String
+  classHome: String
+}
+
+input CreatContentAppliedInput {
+  yearId: Float!
+  subjectId: Float!
+  classroomId: Float!
+  teacherId: Float!
+  classDouble: Boolean!
+  date: DateTime!
+  content: String
+  process: String
+  ability: String
+  classWork: String
+  classHome: String
+  justify: String
 }
 
 input CreateOrganizationInput {

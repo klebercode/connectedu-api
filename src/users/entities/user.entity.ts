@@ -8,39 +8,47 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  BeforeInsert,
 } from 'typeorm';
 import { IsOptional, isEmail } from 'class-validator';
 import { BaseEntity } from '../../base-entity';
+import { Optional } from '@nestjs/common';
 
 @ObjectType()
 @Entity('user')
 @Unique(['login'])
 export class UserEntity extends BaseEntity {
-  @Field({ nullable: true })
+  @Field({ nullable: false })
+  @Optional()
   @Column({ type: 'varchar', length: 100, nullable: false })
   name: string;
 
   @Field({ nullable: true })
+  @Optional()
   @Column({ name: 'nick_name', type: 'varchar', length: 100, nullable: true })
   nickName: string;
 
-  @Field({ nullable: true })
-  @Column({ type: 'varchar', length: 40, nullable: true })
+  @Field({ nullable: false })
+  @Optional()
+  @Column({ type: 'varchar', length: 40, nullable: false })
   login: string;
 
   @Field({ nullable: true })
+  @Optional()
   @Column({ type: 'varchar', length: 100, nullable: true })
   email: string;
 
-  @Field()
-  @Column({ type: 'varchar', length: 100, nullable: true })
+  @Field({ nullable: false })
+  @Column({ type: 'varchar', length: 100, nullable: false })
   password: string;
 
   @Field({ nullable: true })
+  @Optional()
   @Column({ type: 'varchar', length: 100, nullable: true })
   profile: string;
 
   @Field({ nullable: true })
+  @Optional()
   @Column({ name: 'code_token', nullable: true })
   codeToken: number;
 
@@ -68,8 +76,10 @@ export class UserEntity extends BaseEntity {
   userUpdated?: UserEntity;
 
   @Field(() => GraphQLISODateTime, { nullable: true })
+  @Optional()
   createdAt?: Date;
 
   @Field(() => GraphQLISODateTime, { nullable: true })
+  @Optional()
   updatedAt?: Date;
 }

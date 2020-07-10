@@ -16,14 +16,18 @@ export class UserAuthGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const ctx = GqlExecutionContext.create(context);
     const user = ctx.getContext().req.user;
-    const ret: any = this.validateUser(user.id, user.email);
+    const ret: any = this.validateUser(user.id, user.login, user.code);
     return ret;
   }
 
-  async validateUser(id: number, email: string): Promise<Boolean> {
+  async validateUser(
+    id: number,
+    login: string,
+    code: number,
+  ): Promise<Boolean> {
     const user = await this.usersService.findOneById(id);
     if (user) {
-      if (user.email === email) {
+      if (user.login === login && user.codeToken === code) {
         return true;
       }
     }
