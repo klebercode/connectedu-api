@@ -614,6 +614,8 @@ type Mutation {
   yearDelete(id: Float!): Boolean!
   yearUpdate(input: CreateYearInput!, id: Float!): YearEntity!
   subjectCreate(input: CreateSubjectInput!): SubjectEntity!
+  subjectCreateMany(input: [CreateSubjectInput!]!): [SubjectEntity!]!
+  subjectUpdateMany(input: [UpdateSubjectInput!]!): Boolean!
   subjectDelete(id: Float!): Boolean!
   subjectUpdate(input: CreateSubjectInput!, id: Float!): SubjectEntity!
   teacherCreate(input: CreateTeacherInput!): TeacherEntity!
@@ -801,6 +803,14 @@ input CreateYearInput {
 }
 
 input CreateSubjectInput {
+  description: String
+  abbreviation: String
+  descriptionMinutes: String
+  status: Boolean
+}
+
+input UpdateSubjectInput {
+  id: Float
   description: String
   abbreviation: String
   descriptionMinutes: String

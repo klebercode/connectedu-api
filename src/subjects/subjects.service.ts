@@ -1,5 +1,7 @@
 import { Inject, GoneException } from '@nestjs/common';
 import { CreateSubjectInput } from './types/create-subject.input';
+import { UpdateSubjectInput } from './types/update-subject.input';
+
 import { SubjectEntity } from './entities/subject.entity';
 import { Repository, Connection } from 'typeorm';
 import { CustomersServiceDecorator } from '../customers/customers-service.decorator';
@@ -40,6 +42,71 @@ export class SubjectsService {
       return obj;
     } catch (error) {
       throw new GoneException(error);
+    }
+  }
+
+  async createMany(
+    subjects: [CreateSubjectInput],
+    idUser: any,
+  ): Promise<SubjectEntity[]> {
+    const objcts = [];
+
+    subjects.forEach(async item => {
+      objcts.push({
+        ...item,
+        userCreatedId: idUser,
+        userUpdatedId: idUser,
+      });
+    });
+
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const obj = await queryRunner.manager.save(SubjectEntity, objcts);
+
+      await queryRunner.commitTransaction();
+
+      return obj;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      throw new GoneException(error);
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async updateMany(
+    subjects: [UpdateSubjectInput],
+    idUser: any,
+  ): Promise<boolean> {
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      subjects.forEach(async item => {
+        const wret = await queryRunner.manager.update(
+          SubjectEntity,
+          item['id'],
+          {
+            ...item,
+            userUpdatedId: idUser,
+          },
+        );
+      });
+
+      await queryRunner.commitTransaction();
+
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      throw new GoneException(error);
+    } finally {
+      await queryRunner.release();
     }
   }
 

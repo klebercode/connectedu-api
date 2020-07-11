@@ -8,11 +8,13 @@ import {
   Context,
   Parent,
 } from '@nestjs/graphql';
-
+import { MyContext } from '../../common/types/myContext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
+
 import { CreateSubjectInput } from '../types/create-subject.input';
-import { MyContext } from '../../common/types/myContext';
+import { UpdateSubjectInput } from '../types/update-subject.input';
+
 import { SubjectEntity } from '../entities/subject.entity';
 import { SubjectsService } from '../subjects.service';
 import { UsersService } from '../../users/users.service';
@@ -44,6 +46,36 @@ export class SubjectsResolver {
     try {
       const { user } = context.req;
       const obj = await this.subjectsService.create(input, user['id']);
+      return obj;
+    } catch (exception) {
+      throw new HttpException(exception.message, 409);
+    }
+  }
+
+  @Mutation(() => [SubjectEntity], { name: 'subjectCreateMany' })
+  async createSubjectMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [CreateSubjectInput] })
+    input: [CreateSubjectInput],
+  ): Promise<SubjectEntity[]> {
+    try {
+      const { user } = context.req;
+      const obj = await this.subjectsService.createMany(input, user['id']);
+      return obj;
+    } catch (exception) {
+      throw new HttpException(exception.message, 409);
+    }
+  }
+
+  @Mutation(() => Boolean, { name: 'subjectUpdateMany' })
+  async updateSubjectMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [UpdateSubjectInput] })
+    input: [UpdateSubjectInput],
+  ): Promise<boolean> {
+    try {
+      const { user } = context.req;
+      const obj = await this.subjectsService.updateMany(input, user['id']);
       return obj;
     } catch (exception) {
       throw new HttpException(exception.message, 409);
