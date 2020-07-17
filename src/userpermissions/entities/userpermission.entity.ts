@@ -6,7 +6,7 @@ import { PermissionEntity } from '../../permissions/entities/permission.object';
 import { UserEntity } from '../../users/entities/user.entity';
 
 @ObjectType()
-@Entity('user_permission')
+@Entity('userpermission')
 @Unique(['userId', 'codeId'])
 export class UserPermissionEntity extends UserBaseEntity {
   @Field({ nullable: true })
