@@ -12,12 +12,8 @@ export class StatesService {
   ) {}
 
   async create(state: CreateStateInput): Promise<StateEntity> {
-    try {
-      const obj = await this.stateRepository.save(state);
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.stateRepository.save(state);
+    return obj;
   }
 
   async findOneById(id: number): Promise<StateEntity> {
@@ -37,11 +33,7 @@ export class StatesService {
   }
 
   async update(id: number, state: Partial<StateEntity>): Promise<StateEntity> {
-    try {
-      await this.stateRepository.update(id, state);
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.stateRepository.update(id, state);
+    return this.findOneById(id);
   }
 }

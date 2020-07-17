@@ -1,4 +1,4 @@
-import { UseGuards, HttpException } from '@nestjs/common';
+import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -23,9 +23,14 @@ import { UserEntity } from '../../users/entities/user.entity';
 import { StudentsService } from '../../students/students.service';
 import { YearsService } from '../../years/years.service';
 import { SubjectsService } from '../../subjects/subjects.service';
+import {
+  HttpExceptionFilter,
+  CustomException,
+} from '../../common/filters/http-exception.filter';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => StudentGradeEntity)
+@UseFilters(HttpExceptionFilter)
 export class StudentGradesResolver {
   constructor(
     private readonly studentGradesService: StudentGradesService,
@@ -34,15 +39,28 @@ export class StudentGradesResolver {
     private readonly yearsService: YearsService,
     private readonly subjectsService: SubjectsService,
   ) {}
+  private nameApp = 'Notas Estudante';
 
   @Query(() => StudentGradeEntity, { name: 'studentGrade' })
   async getStudentGrade(@Args('id') id: number): Promise<StudentGradeEntity> {
-    return await this.studentGradesService.findOneById(id);
+    try {
+      const obj = await this.studentGradesService.findOneById(id);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'get', this.nameApp);
+    }
   }
 
   @Query(() => [StudentGradeEntity], { name: 'studentGradeAll' })
   async getStudentGrades(): Promise<StudentGradeEntity[]> {
-    return this.studentGradesService.findAll();
+    try {
+      return this.studentGradesService.findAll();
+    } catch (error) {
+      CustomException.catch(error, 'gets', this.nameApp);
+    }
   }
 
   @Mutation(() => StudentGradeEntity, {
@@ -56,19 +74,23 @@ export class StudentGradesResolver {
       const { user } = context.req;
       const obj = await this.studentGradesService.create(input, user['id']);
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'create', this.nameApp);
     }
   }
 
   @Mutation(() => Boolean, { name: 'studentGradeDelete' })
   async deleteStudentGrade(@Args('id') id: number): Promise<boolean> {
-    await this.studentGradesService.remove(id);
-    const obj = await this.studentGradesService.findOneById(id);
-    if (!obj) {
-      return true;
+    try {
+      await this.studentGradesService.remove(id);
+      const obj = await this.studentGradesService.findOneById(id);
+      if (!obj) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'delete', this.nameApp);
     }
-    return false;
   }
 
   @Mutation(() => StudentGradeEntity, {
@@ -87,8 +109,8 @@ export class StudentGradesResolver {
         user['id'],
       );
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'update', this.nameApp);
     }
   }
 
@@ -100,7 +122,11 @@ export class StudentGradesResolver {
     if (!id) {
       return null;
     }
-    return this.studentsService.findOneById(id);
+    try {
+      return this.studentsService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Estudante');
+    }
   }
 
   @ResolveField('year')
@@ -109,7 +135,11 @@ export class StudentGradesResolver {
     if (!id) {
       return null;
     }
-    return this.yearsService.findOneById(id);
+    try {
+      return this.yearsService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Exercício');
+    }
   }
 
   @ResolveField('subject')
@@ -120,7 +150,11 @@ export class StudentGradesResolver {
     if (!id) {
       return null;
     }
-    return this.subjectsService.findOneById(id);
+    try {
+      return this.subjectsService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Matéria');
+    }
   }
 
   @ResolveField(type => UserEntity)
@@ -131,7 +165,11 @@ export class StudentGradesResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 
   @ResolveField(type => UserEntity)
@@ -140,6 +178,10 @@ export class StudentGradesResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 }

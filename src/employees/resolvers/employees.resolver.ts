@@ -1,4 +1,4 @@
-import { UseGuards, HttpException } from '@nestjs/common';
+import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -20,9 +20,14 @@ import { StatesService } from '../../states/states.service';
 import { UsersService } from '../../users/users.service';
 import { CitiesService } from '../../cities/cities.service';
 import { UserEntity } from '../../users/entities/user.entity';
+import {
+  HttpExceptionFilter,
+  CustomException,
+} from '../../common/filters/http-exception.filter';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => EmployeeEntity)
+@UseFilters(HttpExceptionFilter)
 export class EmployeesResolver {
   constructor(
     private readonly employeesService: EmployeesService,
@@ -30,15 +35,28 @@ export class EmployeesResolver {
     private readonly statesService: StatesService,
     private readonly citiesService: CitiesService,
   ) {}
+  private nameApp = 'Funcionário';
 
   @Query(() => EmployeeEntity, { name: 'employee' })
   async getEmployee(@Args('id') id: number): Promise<EmployeeEntity> {
-    return await this.employeesService.findOneById(id);
+    try {
+      const obj = await this.employeesService.findOneById(id);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'get', this.nameApp);
+    }
   }
 
   @Query(() => [EmployeeEntity], { name: 'employeeAll' })
   async getEmployees(): Promise<EmployeeEntity[]> {
-    return await this.employeesService.findAll();
+    try {
+      return this.employeesService.findAll();
+    } catch (error) {
+      CustomException.catch(error, 'gets', this.nameApp);
+    }
   }
 
   @Mutation(() => EmployeeEntity, { name: 'employeeCreate' })
@@ -51,8 +69,22 @@ export class EmployeesResolver {
       const employee = await this.employeesService.create(input, user['id']);
 
       return employee;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'create', this.nameApp);
+    }
+  }
+
+  @Mutation(() => Boolean, { name: 'employeeDelete' })
+  async deteleEmployee(@Args('id') id: number): Promise<boolean> {
+    try {
+      await this.employeesService.remove(id);
+      const employee = await this.employeesService.findOneById(id);
+      if (!employee) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'delete', this.nameApp);
     }
   }
 
@@ -71,19 +103,9 @@ export class EmployeesResolver {
       );
 
       return employee;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'update', this.nameApp);
     }
-  }
-
-  @Mutation(() => Boolean, { name: 'employeeDelete' })
-  async deteleEmployee(@Args('id') id: number): Promise<boolean> {
-    await this.employeesService.remove(id);
-    const employee = await this.employeesService.findOneById(id);
-    if (!employee) {
-      return true;
-    }
-    return false;
   }
 
   @ResolveField('state')
@@ -92,7 +114,11 @@ export class EmployeesResolver {
     if (!id) {
       return null;
     }
-    return this.statesService.findOneById(id);
+    try {
+      return this.statesService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Estado');
+    }
   }
 
   @ResolveField('city')
@@ -101,7 +127,11 @@ export class EmployeesResolver {
     if (!id) {
       return null;
     }
-    return this.citiesService.findOneById(id);
+    try {
+      return this.citiesService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Cidade');
+    }
   }
 
   @ResolveField(() => UserEntity)
@@ -110,7 +140,11 @@ export class EmployeesResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 
   @ResolveField(() => UserEntity)
@@ -119,6 +153,10 @@ export class EmployeesResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 }

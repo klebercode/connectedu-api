@@ -1,4 +1,4 @@
-import { UseGuards, HttpException } from '@nestjs/common';
+import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -25,9 +25,14 @@ import { OccurrencesService } from '../../occurrences/occurrences.service';
 import { TeachersService } from '../../teachers/teachers.service';
 import { SubjectsService } from '../../subjects/subjects.service';
 import { EmployeesService } from '../../employees/employees.service';
+import {
+  HttpExceptionFilter,
+  CustomException,
+} from '../../common/filters/http-exception.filter';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => StudentOccurrenceEntity)
+@UseFilters(HttpExceptionFilter)
 export class StudentOccurrencesResolver {
   constructor(
     private readonly studentOccurrencesService: StudentOccurrencesService,
@@ -38,17 +43,30 @@ export class StudentOccurrencesResolver {
     private readonly subjectsService: SubjectsService,
     private readonly employeesService: EmployeesService,
   ) {}
+  private nameApp = 'Ocorrência Estudante';
 
   @Query(() => StudentOccurrenceEntity, { name: 'studentOccurrence' })
   async getStudentOccurrence(
     @Args('id') id: number,
   ): Promise<StudentOccurrenceEntity> {
-    return await this.studentOccurrencesService.findOneById(id);
+    try {
+      const obj = await this.studentOccurrencesService.findOneById(id);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'get', this.nameApp);
+    }
   }
 
   @Query(() => [StudentOccurrenceEntity], { name: 'studentOccurrenceAll' })
   async getStudentOccurrences(): Promise<StudentOccurrenceEntity[]> {
-    return this.studentOccurrencesService.findAll();
+    try {
+      return this.studentOccurrencesService.findAll();
+    } catch (error) {
+      CustomException.catch(error, 'gets', this.nameApp);
+    }
   }
 
   @Mutation(() => StudentOccurrenceEntity, {
@@ -65,19 +83,23 @@ export class StudentOccurrencesResolver {
         user['id'],
       );
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'create', this.nameApp);
     }
   }
 
   @Mutation(() => Boolean, { name: 'studentOccurrenceDelete' })
   async deleteStudentOccurrence(@Args('id') id: number): Promise<boolean> {
-    await this.studentOccurrencesService.remove(id);
-    const obj = await this.studentOccurrencesService.findOneById(id);
-    if (!obj) {
-      return true;
+    try {
+      await this.studentOccurrencesService.remove(id);
+      const obj = await this.studentOccurrencesService.findOneById(id);
+      if (!obj) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'delete', this.nameApp);
     }
-    return false;
   }
 
   @Mutation(() => StudentOccurrenceEntity, {
@@ -96,8 +118,8 @@ export class StudentOccurrencesResolver {
         user['id'],
       );
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'update', this.nameApp);
     }
   }
 
@@ -109,7 +131,12 @@ export class StudentOccurrencesResolver {
     if (!id) {
       return null;
     }
-    return this.occurrencesService.findOneById(id);
+
+    try {
+      return this.occurrencesService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Ocorrência');
+    }
   }
 
   @ResolveField('student')
@@ -120,7 +147,12 @@ export class StudentOccurrencesResolver {
     if (!id) {
       return null;
     }
-    return this.studentsService.findOneById(id);
+
+    try {
+      return this.studentsService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Estudante');
+    }
   }
 
   @ResolveField('teacher')
@@ -131,7 +163,12 @@ export class StudentOccurrencesResolver {
     if (!id) {
       return null;
     }
-    return this.teachersService.findOneById(id);
+
+    try {
+      return this.teachersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Professor');
+    }
   }
 
   @ResolveField('subject')
@@ -142,7 +179,12 @@ export class StudentOccurrencesResolver {
     if (!id) {
       return null;
     }
-    return this.subjectsService.findOneById(id);
+
+    try {
+      return this.subjectsService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Matéria');
+    }
   }
 
   @ResolveField('employee')
@@ -153,7 +195,12 @@ export class StudentOccurrencesResolver {
     if (!id) {
       return null;
     }
-    return this.employeesService.findOneById(id);
+
+    try {
+      return this.employeesService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Funcionário');
+    }
   }
 
   @ResolveField(type => UserEntity)
@@ -164,7 +211,12 @@ export class StudentOccurrencesResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 
   @ResolveField(type => UserEntity)
@@ -175,6 +227,11 @@ export class StudentOccurrencesResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 }

@@ -9,6 +9,7 @@ import { StudentEntity } from './entities/student.entity';
 @CustomersServiceDecorator()
 export class StudentsService {
   private studentsRepository: Repository<StudentEntity>;
+
   constructor(@Inject(CUSTOMER_CONNECTION) private connection: Connection) {
     this.studentsRepository = this.connection.getRepository(StudentEntity);
   }
@@ -17,16 +18,12 @@ export class StudentsService {
     student: CreateStudentInput,
     idUser: any,
   ): Promise<StudentEntity> {
-    try {
-      const obj = await this.studentsRepository.save({
-        ...student,
-        userCreatedId: idUser,
-        userUpdatedId: idUser,
-      });
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.studentsRepository.save({
+      ...student,
+      userCreatedId: idUser,
+      userUpdatedId: idUser,
+    });
+    return obj;
   }
 
   async findOneById(id: number): Promise<StudentEntity> {
@@ -50,14 +47,10 @@ export class StudentsService {
     student: Partial<CreateStudentInput>,
     idUser: any,
   ): Promise<StudentEntity> {
-    try {
-      await this.studentsRepository.update(id, {
-        ...student,
-        userUpdatedId: idUser,
-      });
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.studentsRepository.update(id, {
+      ...student,
+      userUpdatedId: idUser,
+    });
+    return this.findOneById(id);
   }
 }

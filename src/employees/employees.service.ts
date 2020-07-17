@@ -17,16 +17,12 @@ export class EmployeesService {
     employee: CreateEmploeeInput,
     idUser: any,
   ): Promise<EmployeeEntity> {
-    try {
-      const obj = await this.employeeRepository.save({
-        ...employee,
-        userCreatedId: idUser,
-        userUpdatedId: idUser,
-      });
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.employeeRepository.save({
+      ...employee,
+      userCreatedId: idUser,
+      userUpdatedId: idUser,
+    });
+    return obj;
   }
 
   async findOneById(id: number): Promise<EmployeeEntity> {
@@ -50,14 +46,10 @@ export class EmployeesService {
     employee: Partial<CreateEmploeeInput>,
     idUser: any,
   ): Promise<EmployeeEntity> {
-    try {
-      await this.employeeRepository.update(id, {
-        ...employee,
-        userUpdatedId: idUser,
-      });
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.employeeRepository.update(id, {
+      ...employee,
+      userUpdatedId: idUser,
+    });
+    return this.findOneById(id);
   }
 }

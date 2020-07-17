@@ -1,4 +1,4 @@
-import { UseGuards, HttpException } from '@nestjs/common';
+import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -8,6 +8,7 @@ import {
   Parent,
   ResolveField,
 } from '@nestjs/graphql';
+
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
@@ -20,9 +21,14 @@ import { StatesService } from '../../states/states.service';
 import { UsersService } from '../../users/users.service';
 import { CitiesService } from '../../cities/cities.service';
 import { UserEntity } from '../../users/entities/user.entity';
+import {
+  HttpExceptionFilter,
+  CustomException,
+} from '../../common/filters/http-exception.filter';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => TeacherEntity)
+@UseFilters(HttpExceptionFilter)
 export class TeachersResolver {
   constructor(
     private readonly teachersService: TeachersService,
@@ -30,15 +36,28 @@ export class TeachersResolver {
     private readonly statesService: StatesService,
     private readonly citiesService: CitiesService,
   ) {}
+  private nameApp = 'Professor';
 
   @Query(() => TeacherEntity, { name: 'teacher' })
   async getTeacher(@Args('id') id: number): Promise<TeacherEntity> {
-    return await this.teachersService.findOneById(id);
+    try {
+      const obj = await this.teachersService.findOneById(id);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'get', this.nameApp);
+    }
   }
 
   @Query(() => [TeacherEntity], { name: 'teacherAll' })
   async getTeachers(): Promise<TeacherEntity[]> {
-    return await this.teachersService.findAll();
+    try {
+      return this.teachersService.findAll();
+    } catch (error) {
+      CustomException.catch(error, 'gets', this.nameApp);
+    }
   }
 
   @Mutation(() => TeacherEntity, { name: 'teacherCreate' })
@@ -51,8 +70,22 @@ export class TeachersResolver {
       const teacher = await this.teachersService.create(input, user['id']);
 
       return teacher;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'create', this.nameApp);
+    }
+  }
+
+  @Mutation(() => Boolean, { name: 'teacherDelete' })
+  async deteleTeacher(@Args('id') id: number): Promise<boolean> {
+    try {
+      await this.teachersService.remove(id);
+      const teacher = await this.teachersService.findOneById(id);
+      if (!teacher) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'delete', this.nameApp);
     }
   }
 
@@ -71,19 +104,9 @@ export class TeachersResolver {
       );
 
       return teacher;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'update', this.nameApp);
     }
-  }
-
-  @Mutation(() => Boolean, { name: 'teacherDelete' })
-  async deteleTeacher(@Args('id') id: number): Promise<boolean> {
-    await this.teachersService.remove(id);
-    const teacher = await this.teachersService.findOneById(id);
-    if (!teacher) {
-      return true;
-    }
-    return false;
   }
 
   @ResolveField('state')
@@ -92,7 +115,12 @@ export class TeachersResolver {
     if (!id) {
       return null;
     }
-    return this.statesService.findOneById(id);
+
+    try {
+      return this.statesService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Estado');
+    }
   }
 
   @ResolveField('city')
@@ -101,7 +129,12 @@ export class TeachersResolver {
     if (!id) {
       return null;
     }
-    return this.citiesService.findOneById(id);
+
+    try {
+      return this.citiesService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Cidade');
+    }
   }
 
   @ResolveField(() => UserEntity)
@@ -110,7 +143,12 @@ export class TeachersResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 
   @ResolveField(() => UserEntity)
@@ -119,6 +157,11 @@ export class TeachersResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 }

@@ -19,16 +19,12 @@ export class ResponsiblesService {
     responsible: CreateResponsibleInput,
     idUser: any,
   ): Promise<ResponsibleEntity> {
-    try {
-      const obj = await this.responsiblesRepository.save({
-        ...responsible,
-        userCreatedId: idUser,
-        userUpdatedId: idUser,
-      });
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.responsiblesRepository.save({
+      ...responsible,
+      userCreatedId: idUser,
+      userUpdatedId: idUser,
+    });
+    return obj;
   }
 
   async findOneById(id: number): Promise<ResponsibleEntity> {
@@ -52,14 +48,10 @@ export class ResponsiblesService {
     responsible: Partial<CreateResponsibleInput>,
     idUser: any,
   ): Promise<ResponsibleEntity> {
-    try {
-      await this.responsiblesRepository.update(id, {
-        ...responsible,
-        userUpdatedId: idUser,
-      });
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.responsiblesRepository.update(id, {
+      ...responsible,
+      userUpdatedId: idUser,
+    });
+    return this.findOneById(id);
   }
 }

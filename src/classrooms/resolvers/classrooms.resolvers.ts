@@ -1,4 +1,10 @@
-import { UseGuards, HttpException } from '@nestjs/common';
+import {
+  UseGuards,
+  HttpException,
+  UseFilters,
+  NotFoundException,
+} from '@nestjs/common';
+
 import {
   Args,
   Mutation,
@@ -19,9 +25,14 @@ import { UsersService } from '../../users/users.service';
 import { CompaniesService } from '../../companies/companies.service';
 import { YearsService } from '../../years/years.service';
 import { UserEntity } from '../../users/entities/user.entity';
+import {
+  HttpExceptionFilter,
+  CustomException,
+} from '../../common/filters/http-exception.filter';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ClassRoomEntity)
+@UseFilters(HttpExceptionFilter)
 export class ClassRoomsResolver {
   constructor(
     private readonly classRoomsService: ClassRoomsService,
@@ -29,15 +40,28 @@ export class ClassRoomsResolver {
     private readonly yearsService: YearsService,
     private readonly companiesService: CompaniesService,
   ) {}
+  private nameApp = 'Série';
 
   @Query(() => ClassRoomEntity, { name: 'classRoom' })
   async getClassRoom(@Args('id') id: number): Promise<ClassRoomEntity> {
-    return await this.classRoomsService.findOneById(id);
+    try {
+      const obj = await this.classRoomsService.findOneById(id);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'get', this.nameApp);
+    }
   }
 
   @Query(() => [ClassRoomEntity], { name: 'classRoomAll' })
   async getClassRooms(): Promise<ClassRoomEntity[]> {
-    return this.classRoomsService.findAll();
+    try {
+      return this.classRoomsService.findAll();
+    } catch (error) {
+      CustomException.catch(error, 'gets', this.nameApp);
+    }
   }
 
   @Mutation(() => ClassRoomEntity, { name: 'classRoomCreate' })
@@ -49,19 +73,23 @@ export class ClassRoomsResolver {
       const { user } = context.req;
       const obj = await this.classRoomsService.create(input, user['id']);
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'create', this.nameApp);
     }
   }
 
   @Mutation(() => Boolean, { name: 'classRoomDelete' })
   async deleteClassRoom(@Args('id') id: number): Promise<boolean> {
-    await this.classRoomsService.remove(id);
-    const obj = await this.classRoomsService.findOneById(id);
-    if (!obj) {
-      return true;
+    try {
+      await this.classRoomsService.remove(id);
+      const obj = await this.classRoomsService.findOneById(id);
+      if (!obj) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'delete', this.nameApp);
     }
-    return false;
   }
 
   @Mutation(() => ClassRoomEntity, { name: 'classRoomUpdate' })
@@ -78,8 +106,8 @@ export class ClassRoomsResolver {
         user['id'],
       );
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'update', this.nameApp);
     }
   }
 
@@ -89,7 +117,11 @@ export class ClassRoomsResolver {
     if (!id) {
       return null;
     }
-    return this.yearsService.findOneById(id);
+    try {
+      return this.yearsService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Exercício');
+    }
   }
 
   @ResolveField('company')
@@ -98,7 +130,11 @@ export class ClassRoomsResolver {
     if (!id) {
       return null;
     }
-    return this.companiesService.findOneById(id);
+    try {
+      return this.companiesService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Empresa');
+    }
   }
 
   @ResolveField(type => UserEntity)
@@ -107,7 +143,11 @@ export class ClassRoomsResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuario');
+    }
   }
 
   @ResolveField(type => UserEntity)
@@ -116,6 +156,10 @@ export class ClassRoomsResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuario');
+    }
   }
 }

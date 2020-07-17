@@ -1,4 +1,4 @@
-import { UseGuards, HttpException } from '@nestjs/common';
+import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -17,23 +17,41 @@ import { YearEntity } from '../entities/year.entity';
 import { YearsService } from '../years.service';
 import { UsersService } from '../../users/users.service';
 import { UserEntity } from '../../users/entities/user.entity';
+import {
+  HttpExceptionFilter,
+  CustomException,
+} from '../../common/filters/http-exception.filter';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => YearEntity)
+@UseFilters(HttpExceptionFilter)
 export class YearsResolver {
   constructor(
     private readonly yearsService: YearsService,
     private readonly usersService: UsersService,
   ) {}
+  private nameApp = 'Exercício';
 
   @Query(() => YearEntity, { name: 'year' })
   async getYear(@Args('id') id: number): Promise<YearEntity> {
-    return await this.yearsService.findOneById(id);
+    try {
+      const obj = await this.yearsService.findOneById(id);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'get', this.nameApp);
+    }
   }
 
   @Query(() => [YearEntity], { name: 'yearAll' })
   async getYears(): Promise<YearEntity[]> {
-    return this.yearsService.findAll();
+    try {
+      return this.yearsService.findAll();
+    } catch (error) {
+      CustomException.catch(error, 'gets', this.nameApp);
+    }
   }
 
   @Mutation(() => YearEntity, { name: 'yearCreate' })
@@ -45,19 +63,23 @@ export class YearsResolver {
       const { user } = context.req;
       const obj = await this.yearsService.create(input, user['id']);
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'create', this.nameApp);
     }
   }
 
   @Mutation(() => Boolean, { name: 'yearDelete' })
   async deleteYear(@Args('id') id: number): Promise<boolean> {
-    await this.yearsService.remove(id);
-    const obj = await this.yearsService.findOneById(id);
-    if (!obj) {
-      return true;
+    try {
+      await this.yearsService.remove(id);
+      const obj = await this.yearsService.findOneById(id);
+      if (!obj) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'delete', this.nameApp);
     }
-    return false;
   }
 
   @Mutation(() => YearEntity, { name: 'yearUpdate' })
@@ -70,24 +92,36 @@ export class YearsResolver {
       const { user } = context.req;
       const obj = await this.yearsService.update(id, { ...input }, user['id']);
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'update', this.nameApp);
     }
   }
+
   @ResolveField(() => UserEntity)
   async userCreated(@Parent() yearEntity: YearEntity): Promise<any> {
     const id = yearEntity.userCreatedId;
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
+
   @ResolveField(() => UserEntity)
   async userUpdated(@Parent() yearEntity: YearEntity) {
     const id = yearEntity.userUpdatedId;
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 }

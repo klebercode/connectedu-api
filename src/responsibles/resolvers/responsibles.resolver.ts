@@ -1,4 +1,4 @@
-import { UseGuards, HttpException } from '@nestjs/common';
+import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -20,9 +20,14 @@ import { StatesService } from '../../states/states.service';
 import { UsersService } from '../../users/users.service';
 import { CitiesService } from '../../cities/cities.service';
 import { UserEntity } from '../../users/entities/user.entity';
+import {
+  HttpExceptionFilter,
+  CustomException,
+} from '../../common/filters/http-exception.filter';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ResponsibleEntity)
+@UseFilters(HttpExceptionFilter)
 export class ResponsiblesResolver {
   constructor(
     private readonly responsiblesService: ResponsiblesService,
@@ -30,15 +35,28 @@ export class ResponsiblesResolver {
     private readonly statesService: StatesService,
     private readonly citiesService: CitiesService,
   ) {}
+  private nameApp = 'Responsável';
 
   @Query(() => ResponsibleEntity, { name: 'responsible' })
   async getResponsible(@Args('id') id: number): Promise<ResponsibleEntity> {
-    return await this.responsiblesService.findOneById(id);
+    try {
+      const obj = await this.responsiblesService.findOneById(id);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'get', this.nameApp);
+    }
   }
 
   @Query(() => [ResponsibleEntity], { name: 'responsibleAll' })
   async getResponsibles(): Promise<ResponsibleEntity[]> {
-    return await this.responsiblesService.findAll();
+    try {
+      return this.responsiblesService.findAll();
+    } catch (error) {
+      CustomException.catch(error, 'gets', this.nameApp);
+    }
   }
 
   @Mutation(() => ResponsibleEntity, { name: 'responsibleCreate' })
@@ -54,8 +72,22 @@ export class ResponsiblesResolver {
       );
 
       return responsible;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'create', this.nameApp);
+    }
+  }
+
+  @Mutation(() => Boolean, { name: 'responsibleDelete' })
+  async deteleResponsible(@Args('id') id: number): Promise<boolean> {
+    try {
+      await this.responsiblesService.remove(id);
+      const responsible = await this.responsiblesService.findOneById(id);
+      if (!responsible) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'delete', this.nameApp);
     }
   }
 
@@ -74,19 +106,9 @@ export class ResponsiblesResolver {
       );
 
       return responsible;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'update', this.nameApp);
     }
-  }
-
-  @Mutation(() => Boolean, { name: 'responsibleDelete' })
-  async deteleResponsible(@Args('id') id: number): Promise<boolean> {
-    await this.responsiblesService.remove(id);
-    const responsible = await this.responsiblesService.findOneById(id);
-    if (!responsible) {
-      return true;
-    }
-    return false;
   }
 
   @ResolveField('state')
@@ -95,7 +117,11 @@ export class ResponsiblesResolver {
     if (!id) {
       return null;
     }
-    return this.statesService.findOneById(id);
+    try {
+      return this.statesService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Estado');
+    }
   }
 
   @ResolveField('city')
@@ -104,18 +130,30 @@ export class ResponsiblesResolver {
     if (!id) {
       return null;
     }
-    return this.citiesService.findOneById(id);
+    try {
+      return this.citiesService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Cidade');
+    }
   }
 
   @ResolveField(() => UserEntity)
   async userCreated(@Parent() responsible: ResponsibleEntity): Promise<any> {
     const id = responsible.userCreatedId;
-    return this.usersService.findOneById(id);
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 
   @ResolveField(() => UserEntity)
   async userUpdated(@Parent() responsible: ResponsibleEntity) {
     const id = responsible.userUpdatedId;
-    return this.usersService.findOneById(id);
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 }

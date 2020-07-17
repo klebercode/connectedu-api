@@ -1,4 +1,4 @@
-import { Inject, GoneException } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { Repository, Connection } from 'typeorm';
 import { CustomersServiceDecorator } from '../customers/customers-service.decorator';
 import { CUSTOMER_CONNECTION } from '../customers/customers.module';
@@ -11,6 +11,7 @@ import { UpdateUsersInput } from './types/update-user.input';
 @CustomersServiceDecorator()
 export class UsersService {
   private usersRepository: Repository<UserEntity>;
+
   constructor(@Inject(CUSTOMER_CONNECTION) private connection: Connection) {
     this.usersRepository = this.connection.getRepository(UserEntity);
   }
@@ -38,17 +39,13 @@ export class UsersService {
   }
 
   async create(user: CreateUsersInput, idUser: any): Promise<UserEntity> {
-    try {
-      user.password = await bcryptjs.hash(user.password, 10);
-      const obj = await this.usersRepository.save({
-        ...user,
-        userCreatedId: idUser,
-        userUpdatedId: idUser,
-      });
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    user.password = await bcryptjs.hash(user.password, 10);
+    const obj = await this.usersRepository.save({
+      ...user,
+      userCreatedId: idUser,
+      userUpdatedId: idUser,
+    });
+    return obj;
   }
 
   async remove(id: number): Promise<boolean> {
@@ -61,12 +58,8 @@ export class UsersService {
   }
 
   async updateCodeToken(id: number, codeToken: number): Promise<boolean> {
-    try {
-      await this.usersRepository.update(id, { codeToken });
-      return true;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.usersRepository.update(id, { codeToken });
+    return true;
   }
 
   async updatePassword(
@@ -74,13 +67,9 @@ export class UsersService {
     password: string,
     idUser: any,
   ): Promise<boolean> {
-    try {
-      const password_hash = await bcryptjs.hash(password, 10);
-      await this.usersRepository.update(id, { password: password_hash });
-      return this.updateCodeToken(id, 0);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const password_hash = await bcryptjs.hash(password, 10);
+    await this.usersRepository.update(id, { password: password_hash });
+    return this.updateCodeToken(id, 0);
   }
 
   async update(
@@ -88,14 +77,10 @@ export class UsersService {
     user: Partial<UpdateUsersInput>,
     idUser: any,
   ): Promise<UserEntity> {
-    try {
-      await this.usersRepository.update(id, {
-        ...user,
-        userUpdatedId: idUser,
-      });
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.usersRepository.update(id, {
+      ...user,
+      userUpdatedId: idUser,
+    });
+    return this.findOneById(id);
   }
 }

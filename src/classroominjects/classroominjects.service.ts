@@ -33,16 +33,12 @@ export class ClassRoomInjectsService {
     classRoomInject: CreateClassRoomInjectInput,
     idUser: any,
   ): Promise<ClassRoomInjectEntity> {
-    try {
-      const obj = await this.classRoomInjectRepository.save({
-        ...classRoomInject,
-        userCreatedId: idUser,
-        userUpdatedId: idUser,
-      });
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.classRoomInjectRepository.save({
+      ...classRoomInject,
+      userCreatedId: idUser,
+      userUpdatedId: idUser,
+    });
+    return obj;
   }
 
   async remove(id: number): Promise<boolean> {
@@ -59,14 +55,10 @@ export class ClassRoomInjectsService {
     classRoomInject: Partial<CreateClassRoomInjectInput>,
     idUser: any,
   ): Promise<ClassRoomInjectEntity> {
-    try {
-      await this.classRoomInjectRepository.update(id, {
-        ...classRoomInject,
-        userUpdatedId: idUser,
-      });
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.classRoomInjectRepository.update(id, {
+      ...classRoomInject,
+      userUpdatedId: idUser,
+    });
+    return this.findOneById(id);
   }
 }

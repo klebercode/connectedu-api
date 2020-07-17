@@ -12,12 +12,8 @@ export class CitiesService {
   ) {}
 
   async create(city: CreateCityInput): Promise<CityEntity> {
-    try {
-      const obj = await this.cityRepository.save(city);
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.cityRepository.save(city);
+    return obj;
   }
 
   async findOneById(id: number): Promise<CityEntity> {
@@ -37,11 +33,7 @@ export class CitiesService {
   }
 
   async update(id: number, city: Partial<CityEntity>) {
-    try {
-      await this.cityRepository.update(id, city);
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.cityRepository.update(id, city);
+    return this.findOneById(id);
   }
 }

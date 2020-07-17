@@ -1,4 +1,4 @@
-import { UseGuards, HttpException } from '@nestjs/common';
+import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -8,6 +8,7 @@ import {
   Context,
   Parent,
 } from '@nestjs/graphql';
+
 import { MyContext } from '../../common/types/myContext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
@@ -19,23 +20,41 @@ import { SubjectEntity } from '../entities/subject.entity';
 import { SubjectsService } from '../subjects.service';
 import { UsersService } from '../../users/users.service';
 import { UserEntity } from '../../users/entities/user.entity';
+import {
+  HttpExceptionFilter,
+  CustomException,
+} from '../../common/filters/http-exception.filter';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => SubjectEntity)
+@UseFilters(HttpExceptionFilter)
 export class SubjectsResolver {
   constructor(
     private readonly subjectsService: SubjectsService,
     private readonly usersService: UsersService,
   ) {}
+  private nameApp = 'Matéria';
 
   @Query(() => SubjectEntity, { name: 'subject' })
   async getSubject(@Args('id') id: number): Promise<SubjectEntity> {
-    return await this.subjectsService.findOneById(id);
+    try {
+      const obj = await this.subjectsService.findOneById(id);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'get', this.nameApp);
+    }
   }
 
   @Query(() => [SubjectEntity], { name: 'subjectAll' })
   async getSubjects(): Promise<SubjectEntity[]> {
-    return this.subjectsService.findAll();
+    try {
+      return this.subjectsService.findAll();
+    } catch (error) {
+      CustomException.catch(error, 'gets', this.nameApp);
+    }
   }
 
   @Mutation(() => SubjectEntity, { name: 'subjectCreate' })
@@ -47,8 +66,8 @@ export class SubjectsResolver {
       const { user } = context.req;
       const obj = await this.subjectsService.create(input, user['id']);
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'create', this.nameApp);
     }
   }
 
@@ -62,34 +81,23 @@ export class SubjectsResolver {
       const { user } = context.req;
       const obj = await this.subjectsService.createMany(input, user['id']);
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
-    }
-  }
-
-  @Mutation(() => Boolean, { name: 'subjectUpdateMany' })
-  async updateSubjectMany(
-    @Context() context: MyContext,
-    @Args({ name: 'input', type: () => [UpdateSubjectInput] })
-    input: [UpdateSubjectInput],
-  ): Promise<boolean> {
-    try {
-      const { user } = context.req;
-      const obj = await this.subjectsService.updateMany(input, user['id']);
-      return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'createMany', this.nameApp);
     }
   }
 
   @Mutation(() => Boolean, { name: 'subjectDelete' })
   async deleteSubject(@Args('id') id: number): Promise<boolean> {
-    await this.subjectsService.remove(id);
-    const obj = await this.subjectsService.findOneById(id);
-    if (!obj) {
-      return true;
+    try {
+      await this.subjectsService.remove(id);
+      const obj = await this.subjectsService.findOneById(id);
+      if (!obj) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'delete', this.nameApp);
     }
-    return false;
   }
 
   @Mutation(() => SubjectEntity, { name: 'subjectUpdate' })
@@ -106,8 +114,23 @@ export class SubjectsResolver {
         user['id'],
       );
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'update', this.nameApp);
+    }
+  }
+
+  @Mutation(() => Boolean, { name: 'subjectUpdateMany' })
+  async updateSubjectMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [UpdateSubjectInput] })
+    input: [UpdateSubjectInput],
+  ): Promise<boolean> {
+    try {
+      const { user } = context.req;
+      const obj = await this.subjectsService.updateMany(input, user['id']);
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'updateMany', this.nameApp);
     }
   }
 
@@ -117,7 +140,12 @@ export class SubjectsResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 
   @ResolveField(() => UserEntity)
@@ -126,6 +154,11 @@ export class SubjectsResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 }

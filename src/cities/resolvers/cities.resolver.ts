@@ -1,4 +1,9 @@
-import { UseGuards, HttpException } from '@nestjs/common';
+import {
+  UseGuards,
+  HttpException,
+  UseFilters,
+  NotFoundException,
+} from '@nestjs/common';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import {
   Args,
@@ -13,23 +18,41 @@ import { CreateCityInput } from '../types/create-city.input';
 import { CityEntity } from '../entities/city.object';
 import { CitiesService } from '../cities.service';
 import { StatesService } from '../../states/states.service';
+import {
+  HttpExceptionFilter,
+  CustomException,
+} from '../../common/filters/http-exception.filter';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(of => CityEntity)
+@UseFilters(HttpExceptionFilter)
 export class CitiesResolver {
   constructor(
     private readonly citiesService: CitiesService,
     private readonly statesService: StatesService,
   ) {}
+  private nameApp = 'Cidade';
 
   @Query(() => CityEntity, { name: 'city' })
   async getCity(@Args('id') id: number): Promise<CityEntity> {
-    return await this.citiesService.findOneById(id);
+    try {
+      const obj = await this.citiesService.findOneById(id);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'get', this.nameApp);
+    }
   }
 
   @Query(() => [CityEntity], { name: 'cityAll' })
   async getCities(): Promise<CityEntity[]> {
-    return await this.citiesService.findAll();
+    try {
+      return this.citiesService.findAll();
+    } catch (error) {
+      CustomException.catch(error, 'gets', this.nameApp);
+    }
   }
 
   @Mutation(() => CityEntity, { name: 'cityCreate' })
@@ -37,8 +60,22 @@ export class CitiesResolver {
     try {
       const obj = await this.citiesService.create({ ...input });
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'create', this.nameApp);
+    }
+  }
+
+  @Mutation(() => Boolean, { name: 'cityDelete' })
+  async deleteCity(@Args('id') id: number): Promise<boolean> {
+    try {
+      await this.citiesService.remove(id);
+      const obj = await this.citiesService.findOneById(id);
+      if (!obj) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'delete', this.nameApp);
     }
   }
 
@@ -50,19 +87,9 @@ export class CitiesResolver {
     try {
       const obj = await this.citiesService.update(id, { ...input });
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'update', this.nameApp);
     }
-  }
-
-  @Mutation(() => Boolean, { name: 'cityDelete' })
-  async deleteCity(@Args('id') id: number): Promise<boolean> {
-    await this.citiesService.remove(id);
-    const obj = await this.citiesService.findOneById(id);
-    if (!obj) {
-      return true;
-    }
-    return false;
   }
 
   @ResolveField('state')
@@ -71,6 +98,10 @@ export class CitiesResolver {
     if (!id) {
       return null;
     }
-    return this.statesService.findOneById(id);
+    try {
+      return this.statesService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Estado');
+    }
   }
 }

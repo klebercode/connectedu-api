@@ -17,16 +17,12 @@ export class CompaniesService {
     company: CreateCompanyInput,
     idUser: any,
   ): Promise<CompanyEntity> {
-    try {
-      const obj = await this.companiesRepository.save({
-        ...company,
-        userCreatedId: idUser,
-        userUpdatedId: idUser,
-      });
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.companiesRepository.save({
+      ...company,
+      userCreatedId: idUser,
+      userUpdatedId: idUser,
+    });
+    return obj;
   }
 
   async findOneById(id: number): Promise<CompanyEntity> {
@@ -50,14 +46,10 @@ export class CompaniesService {
     company: Partial<CreateCompanyInput>,
     idUser: any,
   ): Promise<CompanyEntity> {
-    try {
-      await this.companiesRepository.update(id, {
-        ...company,
-        userUpdatedId: idUser,
-      });
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.companiesRepository.update(id, {
+      ...company,
+      userUpdatedId: idUser,
+    });
+    return this.findOneById(id);
   }
 }

@@ -1,4 +1,4 @@
-import { UseGuards, HttpException } from '@nestjs/common';
+import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -16,20 +16,38 @@ import { UpdateUsersInput } from '../types/update-user.input';
 import { MyContext } from '../../common/types/myContext';
 import { UserEntity } from '../entities/user.entity';
 import { UsersService } from '../users.service';
+import {
+  HttpExceptionFilter,
+  CustomException,
+} from '../../common/filters/http-exception.filter';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => UserEntity)
+@UseFilters(HttpExceptionFilter)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
+  private nameApp = 'Usuário';
 
   @Query(() => UserEntity, { name: 'user' })
   async getUser(@Args('id') id: number): Promise<UserEntity> {
-    return await this.usersService.findOneById(id);
+    try {
+      const obj = await this.usersService.findOneById(id);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'get', this.nameApp);
+    }
   }
 
   @Query(() => [UserEntity], { name: 'userAll' })
   async getUsers(): Promise<UserEntity[]> {
-    return this.usersService.findAll();
+    try {
+      return this.usersService.findAll();
+    } catch (error) {
+      CustomException.catch(error, 'gets', this.nameApp);
+    }
   }
 
   @Mutation(() => UserEntity, { name: 'userCreate' })
@@ -41,19 +59,23 @@ export class UsersResolver {
       const { user } = context.req;
       const obj = await this.usersService.create(input, user['id']);
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'create', this.nameApp);
     }
   }
 
   @Mutation(() => Boolean, { name: 'userDelete' })
   async deleteUser(@Args('id') id: number): Promise<boolean> {
-    await this.usersService.remove(id);
-    const obj = await this.usersService.findOneById(id);
-    if (!obj) {
-      return true;
+    try {
+      await this.usersService.remove(id);
+      const obj = await this.usersService.findOneById(id);
+      if (!obj) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'delete', this.nameApp);
     }
-    return false;
   }
 
   @Mutation(() => UserEntity, { name: 'userUpdate' })
@@ -66,8 +88,8 @@ export class UsersResolver {
       const { user } = context.req;
       const obj = await this.usersService.update(id, { ...input }, user['id']);
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'update', this.nameApp);
     }
   }
 
@@ -81,8 +103,8 @@ export class UsersResolver {
       const { user } = context.req;
       const ret = await this.usersService.updatePassword(id, input, user['id']);
       return ret;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'update', 'Password Usuário');
     }
   }
 
@@ -92,7 +114,12 @@ export class UsersResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 
   @ResolveField('userUpdated')
@@ -101,6 +128,11 @@ export class UsersResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 }

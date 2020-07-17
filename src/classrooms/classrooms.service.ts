@@ -31,16 +31,12 @@ export class ClassRoomsService {
     classroom: CreateClassRoomInput,
     idUser: any,
   ): Promise<ClassRoomEntity> {
-    try {
-      const obj = await this.classRoomRepository.save({
-        ...classroom,
-        userCreatedId: idUser,
-        userUpdatedId: idUser,
-      });
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.classRoomRepository.save({
+      ...classroom,
+      userCreatedId: idUser,
+      userUpdatedId: idUser,
+    });
+    return obj;
   }
 
   async remove(id: number): Promise<boolean> {
@@ -57,14 +53,10 @@ export class ClassRoomsService {
     classroom: Partial<CreateClassRoomInput>,
     idUser: any,
   ): Promise<ClassRoomEntity> {
-    try {
-      await this.classRoomRepository.update(id, {
-        ...classroom,
-        userUpdatedId: idUser,
-      });
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.classRoomRepository.update(id, {
+      ...classroom,
+      userUpdatedId: idUser,
+    });
+    return this.findOneById(id);
   }
 }

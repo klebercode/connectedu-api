@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, GoneException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreatePermissionInput } from './types/create-permission.input';
 import { PermissionEntity } from './entities/permission.object';
 import { Repository } from 'typeorm';
@@ -12,12 +12,8 @@ export class PermissionsService {
   ) {}
 
   async create(permission: CreatePermissionInput): Promise<PermissionEntity> {
-    try {
-      const obj = await this.permissionRepository.save(permission);
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.permissionRepository.save(permission);
+    return obj;
   }
 
   async findOneById(id: number): Promise<PermissionEntity> {
@@ -37,11 +33,7 @@ export class PermissionsService {
   }
 
   async update(id: number, permission: Partial<PermissionEntity>) {
-    try {
-      await this.permissionRepository.update(id, permission);
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.permissionRepository.update(id, permission);
+    return this.findOneById(id);
   }
 }

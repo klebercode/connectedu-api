@@ -8,6 +8,7 @@ import { CUSTOMER_CONNECTION } from '../customers/customers.module';
 @CustomersServiceDecorator()
 export class StudentGradesService {
   private studentGradeRepository: Repository<StudentGradeEntity>;
+
   constructor(@Inject(CUSTOMER_CONNECTION) private connection: Connection) {
     this.studentGradeRepository = this.connection.getRepository(
       StudentGradeEntity,
@@ -22,33 +23,29 @@ export class StudentGradesService {
     if (!id) {
       return null;
     }
-    const user = await this.studentGradeRepository.findOne(id);
-    if (!user) {
+    const obj = await this.studentGradeRepository.findOne(id);
+    if (!obj) {
       return null;
     }
-    return user;
+    return obj;
   }
 
   async create(
     studentGrade: CreatStudentGradeInput,
     idUser: any,
   ): Promise<StudentGradeEntity> {
-    try {
-      const obj = await this.studentGradeRepository.save({
-        ...studentGrade,
-        userCreatedId: idUser,
-        userUpdatedId: idUser,
-      });
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.studentGradeRepository.save({
+      ...studentGrade,
+      userCreatedId: idUser,
+      userUpdatedId: idUser,
+    });
+    return obj;
   }
 
   async remove(id: number): Promise<boolean> {
     await this.studentGradeRepository.delete(id);
-    const user = await this.findOneById(id);
-    if (!user) {
+    const obj = await this.findOneById(id);
+    if (!obj) {
       return true;
     }
     return false;
@@ -59,14 +56,10 @@ export class StudentGradesService {
     studentGrade: Partial<CreatStudentGradeInput>,
     idUser: any,
   ): Promise<StudentGradeEntity> {
-    try {
-      await this.studentGradeRepository.update(id, {
-        ...studentGrade,
-        userUpdatedId: idUser,
-      });
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.studentGradeRepository.update(id, {
+      ...studentGrade,
+      userUpdatedId: idUser,
+    });
+    return this.findOneById(id);
   }
 }

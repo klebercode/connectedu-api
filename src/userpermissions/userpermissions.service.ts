@@ -8,6 +8,7 @@ import { CUSTOMER_CONNECTION } from '../customers/customers.module';
 @CustomersServiceDecorator()
 export class UserPermissionsService {
   private userPermissionsRepository: Repository<UserPermissionEntity>;
+
   constructor(@Inject(CUSTOMER_CONNECTION) private connection: Connection) {
     this.userPermissionsRepository = this.connection.getRepository(
       UserPermissionEntity,
@@ -33,16 +34,12 @@ export class UserPermissionsService {
     userPermission: CreateUserPermissionInput,
     idUser: any,
   ): Promise<UserPermissionEntity> {
-    try {
-      const obj = await this.userPermissionsRepository.save({
-        ...userPermission,
-        userCreatedId: idUser,
-        userUpdatedId: idUser,
-      });
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.userPermissionsRepository.save({
+      ...userPermission,
+      userCreatedId: idUser,
+      userUpdatedId: idUser,
+    });
+    return obj;
   }
 
   async remove(id: number): Promise<boolean> {
@@ -59,14 +56,10 @@ export class UserPermissionsService {
     userPermission: Partial<CreateUserPermissionInput>,
     idUser: any,
   ): Promise<UserPermissionEntity> {
-    try {
-      await this.userPermissionsRepository.update(id, {
-        ...userPermission,
-        userUpdatedId: idUser,
-      });
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.userPermissionsRepository.update(id, {
+      ...userPermission,
+      userUpdatedId: idUser,
+    });
+    return this.findOneById(id);
   }
 }

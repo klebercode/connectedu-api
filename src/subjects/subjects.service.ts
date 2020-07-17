@@ -1,4 +1,9 @@
-import { Inject, GoneException } from '@nestjs/common';
+import {
+  Inject,
+  HttpException,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateSubjectInput } from './types/create-subject.input';
 import { UpdateSubjectInput } from './types/update-subject.input';
 
@@ -10,6 +15,7 @@ import { CUSTOMER_CONNECTION } from '../customers/customers.module';
 @CustomersServiceDecorator()
 export class SubjectsService {
   private subjectRepository: Repository<SubjectEntity>;
+
   constructor(@Inject(CUSTOMER_CONNECTION) private connection: Connection) {
     this.subjectRepository = this.connection.getRepository(SubjectEntity);
   }
@@ -33,16 +39,12 @@ export class SubjectsService {
     subject: CreateSubjectInput,
     idUser: any,
   ): Promise<SubjectEntity> {
-    try {
-      const obj = await this.subjectRepository.save({
-        ...subject,
-        userCreatedId: idUser,
-        userUpdatedId: idUser,
-      });
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.subjectRepository.save({
+      ...subject,
+      userCreatedId: idUser,
+      userUpdatedId: idUser,
+    });
+    return obj;
   }
 
   async createMany(
@@ -65,14 +67,13 @@ export class SubjectsService {
 
     try {
       const obj = await queryRunner.manager.save(SubjectEntity, objcts);
-
       await queryRunner.commitTransaction();
 
       return obj;
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
-      throw new GoneException(error);
+      throw new HttpException(error, error);
     } finally {
       await queryRunner.release();
     }
@@ -104,7 +105,7 @@ export class SubjectsService {
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
-      throw new GoneException(error);
+      throw new HttpException(error, error);
     } finally {
       await queryRunner.release();
     }
@@ -124,14 +125,10 @@ export class SubjectsService {
     subject: Partial<CreateSubjectInput>,
     idUser: any,
   ): Promise<SubjectEntity> {
-    try {
-      await this.subjectRepository.update(id, {
-        ...subject,
-        userUpdatedId: idUser,
-      });
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.subjectRepository.update(id, {
+      ...subject,
+      userUpdatedId: idUser,
+    });
+    return this.findOneById(id);
   }
 }

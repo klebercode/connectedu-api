@@ -33,16 +33,12 @@ export class ContentAppliedsService {
     contentApplied: CreatContentAppliedInput,
     idUser: any,
   ): Promise<ContentAppliedEntity> {
-    try {
-      const obj = await this.contentAppliedRepository.save({
-        ...contentApplied,
-        userCreatedId: idUser,
-        userUpdatedId: idUser,
-      });
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.contentAppliedRepository.save({
+      ...contentApplied,
+      userCreatedId: idUser,
+      userUpdatedId: idUser,
+    });
+    return obj;
   }
 
   async remove(id: number): Promise<boolean> {
@@ -59,14 +55,10 @@ export class ContentAppliedsService {
     contentApplied: Partial<CreatContentAppliedInput>,
     idUser: any,
   ): Promise<ContentAppliedEntity> {
-    try {
-      await this.contentAppliedRepository.update(id, {
-        ...contentApplied,
-        userUpdatedId: idUser,
-      });
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.contentAppliedRepository.update(id, {
+      ...contentApplied,
+      userUpdatedId: idUser,
+    });
+    return this.findOneById(id);
   }
 }

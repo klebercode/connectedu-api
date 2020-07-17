@@ -31,16 +31,12 @@ export class OccurrencesService {
     Occurrence: CreateOccurrenceInput,
     idUser: any,
   ): Promise<OccurrenceEntity> {
-    try {
-      const obj = await this.occurrenceRepository.save({
-        ...Occurrence,
-        userCreatedId: idUser,
-        userUpdatedId: idUser,
-      });
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.occurrenceRepository.save({
+      ...Occurrence,
+      userCreatedId: idUser,
+      userUpdatedId: idUser,
+    });
+    return obj;
   }
 
   async remove(id: number): Promise<boolean> {
@@ -57,14 +53,10 @@ export class OccurrencesService {
     Occurrence: Partial<CreateOccurrenceInput>,
     idUser: any,
   ): Promise<OccurrenceEntity> {
-    try {
-      await this.occurrenceRepository.update(id, {
-        ...Occurrence,
-        userUpdatedId: idUser,
-      });
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.occurrenceRepository.update(id, {
+      ...Occurrence,
+      userUpdatedId: idUser,
+    });
+    return this.findOneById(id);
   }
 }

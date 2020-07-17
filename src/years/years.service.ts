@@ -8,6 +8,7 @@ import { CUSTOMER_CONNECTION } from '../customers/customers.module';
 @CustomersServiceDecorator()
 export class YearsService {
   private yearRepository: Repository<YearEntity>;
+
   constructor(@Inject(CUSTOMER_CONNECTION) private connection: Connection) {
     this.yearRepository = this.connection.getRepository(YearEntity);
   }
@@ -31,16 +32,12 @@ export class YearsService {
     userPermission: CreateYearInput,
     idUser: any,
   ): Promise<YearEntity> {
-    try {
-      const obj = await this.yearRepository.save({
-        ...userPermission,
-        userCreatedId: idUser,
-        userUpdatedId: idUser,
-      });
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.yearRepository.save({
+      ...userPermission,
+      userCreatedId: idUser,
+      userUpdatedId: idUser,
+    });
+    return obj;
   }
 
   async remove(id: number): Promise<boolean> {
@@ -57,14 +54,10 @@ export class YearsService {
     userPermission: Partial<CreateYearInput>,
     idUser: any,
   ): Promise<YearEntity> {
-    try {
-      await this.yearRepository.update(id, {
-        ...userPermission,
-        userUpdatedId: idUser,
-      });
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.yearRepository.update(id, {
+      ...userPermission,
+      userUpdatedId: idUser,
+    });
+    return this.findOneById(id);
   }
 }

@@ -1,4 +1,9 @@
-import { UseGuards, HttpException } from '@nestjs/common';
+import {
+  UseGuards,
+  HttpException,
+  UseFilters,
+  NotFoundException,
+} from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -20,9 +25,14 @@ import { UserEntity } from '../../users/entities/user.entity';
 
 import { SubjectsService } from '../../subjects/subjects.service';
 import { ClassRoomItemsService } from '../../classroomitems/classroomitems.service';
+import {
+  HttpExceptionFilter,
+  CustomException,
+} from '../../common/filters/http-exception.filter';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ClassRoomInjectEntity)
+@UseFilters(HttpExceptionFilter)
 export class ClassRoomInjectsResolver {
   constructor(
     private readonly classRoomInjectsService: ClassRoomInjectsService,
@@ -30,17 +40,30 @@ export class ClassRoomInjectsResolver {
     private readonly classRoomItemsService: ClassRoomItemsService,
     private readonly subjectsService: SubjectsService,
   ) {}
+  private nameApp = 'Materia-Composta';
 
   @Query(() => ClassRoomInjectEntity, { name: 'classRoomInject' })
   async getClassRoomInject(
     @Args('id') id: number,
   ): Promise<ClassRoomInjectEntity> {
-    return await this.classRoomInjectsService.findOneById(id);
+    try {
+      const obj = await this.classRoomInjectsService.findOneById(id);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'get', this.nameApp);
+    }
   }
 
   @Query(() => [ClassRoomInjectEntity], { name: 'classRoomInjectAll' })
   async getClassRoomInjects(): Promise<ClassRoomInjectEntity[]> {
-    return this.classRoomInjectsService.findAll();
+    try {
+      return this.classRoomInjectsService.findAll();
+    } catch (error) {
+      CustomException.catch(error, 'gets', this.nameApp);
+    }
   }
 
   @Mutation(() => ClassRoomInjectEntity, { name: 'classRoomInjectCreate' })
@@ -52,19 +75,23 @@ export class ClassRoomInjectsResolver {
       const { user } = context.req;
       const obj = await this.classRoomInjectsService.create(input, user['id']);
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'create', this.nameApp);
     }
   }
 
   @Mutation(() => Boolean, { name: 'classRoomInjectDelete' })
   async deleteClassRoomInject(@Args('id') id: number): Promise<boolean> {
-    await this.classRoomInjectsService.remove(id);
-    const obj = await this.classRoomInjectsService.findOneById(id);
-    if (!obj) {
-      return true;
+    try {
+      await this.classRoomInjectsService.remove(id);
+      const obj = await this.classRoomInjectsService.findOneById(id);
+      if (!obj) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'delete', this.nameApp);
     }
-    return false;
   }
 
   @Mutation(() => ClassRoomInjectEntity, { name: 'classRoomInjectUpdate' })
@@ -81,8 +108,8 @@ export class ClassRoomInjectsResolver {
         user['id'],
       );
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'update', this.nameApp);
     }
   }
 
@@ -94,7 +121,11 @@ export class ClassRoomInjectsResolver {
     if (!id) {
       return null;
     }
-    return this.classRoomItemsService.findOneById(id);
+    try {
+      return this.classRoomItemsService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Materia-Série');
+    }
   }
 
   @ResolveField('subject1')
@@ -105,7 +136,11 @@ export class ClassRoomInjectsResolver {
     if (!id) {
       return null;
     }
-    return this.subjectsService.findOneById(id);
+    try {
+      return this.subjectsService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Materia');
+    }
   }
 
   @ResolveField('subject2')
@@ -116,7 +151,11 @@ export class ClassRoomInjectsResolver {
     if (!id) {
       return null;
     }
-    return this.subjectsService.findOneById(id);
+    try {
+      return this.subjectsService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Materia');
+    }
   }
 
   @ResolveField('subject3')
@@ -127,7 +166,11 @@ export class ClassRoomInjectsResolver {
     if (!id) {
       return null;
     }
-    return this.subjectsService.findOneById(id);
+    try {
+      return this.subjectsService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Materia');
+    }
   }
 
   @ResolveField('subject4')
@@ -138,7 +181,11 @@ export class ClassRoomInjectsResolver {
     if (!id) {
       return null;
     }
-    return this.subjectsService.findOneById(id);
+    try {
+      return this.subjectsService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Materia');
+    }
   }
 
   @ResolveField(type => UserEntity)
@@ -149,7 +196,11 @@ export class ClassRoomInjectsResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuario');
+    }
   }
 
   @ResolveField(type => UserEntity)
@@ -158,6 +209,10 @@ export class ClassRoomInjectsResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuario');
+    }
   }
 }

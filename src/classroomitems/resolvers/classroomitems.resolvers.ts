@@ -1,4 +1,10 @@
-import { UseGuards, HttpException } from '@nestjs/common';
+import {
+  UseGuards,
+  HttpException,
+  UseFilters,
+  NotFoundException,
+} from '@nestjs/common';
+
 import {
   Args,
   Mutation,
@@ -21,9 +27,14 @@ import { UserEntity } from '../../users/entities/user.entity';
 import { ClassRoomsService } from '../../classrooms/classrooms.service';
 import { SubjectsService } from '../../subjects/subjects.service';
 import { TeachersService } from '../../teachers/teachers.service';
+import {
+  HttpExceptionFilter,
+  CustomException,
+} from '../../common/filters/http-exception.filter';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ClassRoomItemEntity)
+@UseFilters(HttpExceptionFilter)
 export class ClassRoomItemsResolver {
   constructor(
     private readonly classRoomItemsService: ClassRoomItemsService,
@@ -32,15 +43,28 @@ export class ClassRoomItemsResolver {
     private readonly subjectsService: SubjectsService,
     private readonly teachersService: TeachersService,
   ) {}
+  private nameApp = 'Matéria-Série';
 
   @Query(() => ClassRoomItemEntity, { name: 'classRoomItem' })
   async getClassRoomItem(@Args('id') id: number): Promise<ClassRoomItemEntity> {
-    return await this.classRoomItemsService.findOneById(id);
+    try {
+      const obj = await this.classRoomItemsService.findOneById(id);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'get', this.nameApp);
+    }
   }
 
   @Query(() => [ClassRoomItemEntity], { name: 'classRoomItemAll' })
   async getClassRoomItems(): Promise<ClassRoomItemEntity[]> {
-    return this.classRoomItemsService.findAll();
+    try {
+      return this.classRoomItemsService.findAll();
+    } catch (error) {
+      CustomException.catch(error, 'gets', this.nameApp);
+    }
   }
 
   @Mutation(() => ClassRoomItemEntity, { name: 'classRoomItemCreate' })
@@ -52,19 +76,23 @@ export class ClassRoomItemsResolver {
       const { user } = context.req;
       const obj = await this.classRoomItemsService.create(input, user['id']);
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'create', this.nameApp);
     }
   }
 
   @Mutation(() => Boolean, { name: 'classRoomItemDelete' })
   async deleteClassRoomItem(@Args('id') id: number): Promise<boolean> {
-    await this.classRoomItemsService.remove(id);
-    const obj = await this.classRoomItemsService.findOneById(id);
-    if (!obj) {
-      return true;
+    try {
+      await this.classRoomItemsService.remove(id);
+      const obj = await this.classRoomItemsService.findOneById(id);
+      if (!obj) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'delete', this.nameApp);
     }
-    return false;
   }
 
   @Mutation(() => ClassRoomItemEntity, { name: 'classRoomItemUpdate' })
@@ -81,8 +109,8 @@ export class ClassRoomItemsResolver {
         user['id'],
       );
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'update', this.nameApp);
     }
   }
 
@@ -94,7 +122,11 @@ export class ClassRoomItemsResolver {
     if (!id) {
       return null;
     }
-    return this.classRoomsService.findOneById(id);
+    try {
+      return this.classRoomsService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Série');
+    }
   }
 
   @ResolveField('subject')
@@ -105,7 +137,11 @@ export class ClassRoomItemsResolver {
     if (!id) {
       return null;
     }
-    return this.subjectsService.findOneById(id);
+    try {
+      return this.subjectsService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Matéria');
+    }
   }
 
   @ResolveField('teacher')
@@ -116,7 +152,11 @@ export class ClassRoomItemsResolver {
     if (!id) {
       return null;
     }
-    return this.teachersService.findOneById(id);
+    try {
+      return this.teachersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Professor');
+    }
   }
 
   @ResolveField(type => UserEntity)
@@ -127,7 +167,11 @@ export class ClassRoomItemsResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuario');
+    }
   }
 
   @ResolveField(type => UserEntity)
@@ -136,6 +180,10 @@ export class ClassRoomItemsResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuario');
+    }
   }
 }

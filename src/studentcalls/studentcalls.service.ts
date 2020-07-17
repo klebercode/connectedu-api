@@ -8,6 +8,7 @@ import { CUSTOMER_CONNECTION } from '../customers/customers.module';
 @CustomersServiceDecorator()
 export class StudentCallsService {
   private studentCallRepository: Repository<StudentCallEntity>;
+
   constructor(@Inject(CUSTOMER_CONNECTION) private connection: Connection) {
     this.studentCallRepository = this.connection.getRepository(
       StudentCallEntity,
@@ -33,16 +34,12 @@ export class StudentCallsService {
     studentCall: CreatStudentCallInput,
     idUser: any,
   ): Promise<StudentCallEntity> {
-    try {
-      const obj = await this.studentCallRepository.save({
-        ...studentCall,
-        userCreatedId: idUser,
-        userUpdatedId: idUser,
-      });
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.studentCallRepository.save({
+      ...studentCall,
+      userCreatedId: idUser,
+      userUpdatedId: idUser,
+    });
+    return obj;
   }
 
   async remove(id: number): Promise<boolean> {
@@ -59,14 +56,10 @@ export class StudentCallsService {
     studentCall: Partial<CreatStudentCallInput>,
     idUser: any,
   ): Promise<StudentCallEntity> {
-    try {
-      await this.studentCallRepository.update(id, {
-        ...studentCall,
-        userUpdatedId: idUser,
-      });
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.studentCallRepository.update(id, {
+      ...studentCall,
+      userUpdatedId: idUser,
+    });
+    return this.findOneById(id);
   }
 }

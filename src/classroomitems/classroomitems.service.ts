@@ -33,16 +33,12 @@ export class ClassRoomItemsService {
     classRoomItem: CreateClassRoomItemInput,
     idUser: any,
   ): Promise<ClassRoomItemEntity> {
-    try {
-      const obj = await this.classRoomItemRepository.save({
-        ...classRoomItem,
-        userCreatedId: idUser,
-        userUpdatedId: idUser,
-      });
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.classRoomItemRepository.save({
+      ...classRoomItem,
+      userCreatedId: idUser,
+      userUpdatedId: idUser,
+    });
+    return obj;
   }
 
   async remove(id: number): Promise<boolean> {
@@ -59,14 +55,10 @@ export class ClassRoomItemsService {
     classRoomItem: Partial<CreateClassRoomItemInput>,
     idUser: any,
   ): Promise<ClassRoomItemEntity> {
-    try {
-      await this.classRoomItemRepository.update(id, {
-        ...classRoomItem,
-        userUpdatedId: idUser,
-      });
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.classRoomItemRepository.update(id, {
+      ...classRoomItem,
+      userUpdatedId: idUser,
+    });
+    return this.findOneById(id);
   }
 }

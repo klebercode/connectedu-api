@@ -1,4 +1,4 @@
-import { UseGuards, HttpException } from '@nestjs/common';
+import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -18,26 +18,44 @@ import { UserPermissionsService } from '../userpermissions.service';
 import { UsersService } from '../../users/users.service';
 import { PermissionsService } from '../../permissions/permissions.service';
 import { UserEntity } from '../../users/entities/user.entity';
+import {
+  HttpExceptionFilter,
+  CustomException,
+} from '../../common/filters/http-exception.filter';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => UserPermissionEntity)
+@UseFilters(HttpExceptionFilter)
 export class UserPermissionsResolver {
   constructor(
     private readonly userPermissionsService: UserPermissionsService,
     private readonly usersService: UsersService,
     private readonly permissionsService: PermissionsService,
   ) {}
+  private nameApp = 'Permissões Usuário';
 
   @Query(() => UserPermissionEntity, { name: 'userPermission' })
   async getUserPermission(
     @Args('id') id: number,
   ): Promise<UserPermissionEntity> {
-    return await this.userPermissionsService.findOneById(id);
+    try {
+      const obj = await this.userPermissionsService.findOneById(id);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'get', this.nameApp);
+    }
   }
 
   @Query(() => [UserPermissionEntity], { name: 'userPermissionAll' })
   async getUserPermissions(): Promise<UserPermissionEntity[]> {
-    return this.userPermissionsService.findAll();
+    try {
+      return this.userPermissionsService.findAll();
+    } catch (error) {
+      CustomException.catch(error, 'gets', this.nameApp);
+    }
   }
 
   @Mutation(() => UserPermissionEntity, { name: 'userPermissionCreate' })
@@ -49,19 +67,23 @@ export class UserPermissionsResolver {
       const { user } = context.req;
       const obj = await this.userPermissionsService.create(input, user['id']);
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'create', this.nameApp);
     }
   }
 
   @Mutation(() => Boolean, { name: 'userPermissionDelete' })
   async deleteUserPermission(@Args('id') id: number): Promise<boolean> {
-    await this.userPermissionsService.remove(id);
-    const obj = await this.userPermissionsService.findOneById(id);
-    if (!obj) {
-      return true;
+    try {
+      await this.userPermissionsService.remove(id);
+      const obj = await this.userPermissionsService.findOneById(id);
+      if (!obj) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'delete', this.nameApp);
     }
-    return false;
   }
 
   @Mutation(() => UserPermissionEntity, { name: 'userPermissionUpdate' })
@@ -78,8 +100,8 @@ export class UserPermissionsResolver {
         user['id'],
       );
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'update', this.nameApp);
     }
   }
 
@@ -89,7 +111,12 @@ export class UserPermissionsResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 
   @ResolveField('code')
@@ -98,7 +125,12 @@ export class UserPermissionsResolver {
     if (!id) {
       return null;
     }
-    return this.permissionsService.findOneById(id);
+
+    try {
+      return this.permissionsService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Permissão');
+    }
   }
 
   @ResolveField(() => UserEntity)
@@ -109,7 +141,12 @@ export class UserPermissionsResolver {
     if (!id) {
       return null;
     }
-    return this.userPermissionsService.findOneById(id);
+
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 
   @ResolveField(() => UserEntity)
@@ -118,6 +155,11 @@ export class UserPermissionsResolver {
     if (!id) {
       return null;
     }
-    return this.userPermissionsService.findOneById(id);
+
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 }

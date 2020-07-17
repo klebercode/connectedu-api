@@ -583,44 +583,44 @@ type Query {
 
 type Mutation {
   customerCreate(input: CreateCustomerInput!): Customer!
-  customerUpdate(input: CreateCustomerInput!, id: Float!): Customer!
   customerDelete(id: Float!): Boolean!
+  customerUpdate(input: CreateCustomerInput!, id: Float!): Customer!
   userCreate(input: CreateUsersInput!): UserEntity!
   userDelete(id: Float!): Boolean!
   userUpdate(input: UpdateUsersInput!, id: Float!): UserEntity!
   userUpdatePassword(input: String!, id: Float!): Boolean!
   studentCreate(input: CreateStudentInput!): StudentEntity!
-  studentUpdate(input: CreateStudentInput!, id: Float!): StudentEntity!
   studentDelete(id: Float!): Boolean!
+  studentUpdate(input: CreateStudentInput!, id: Float!): StudentEntity!
   stateCreate(input: CreateStateInput!): StateEntity!
-  stateUpdate(input: CreateStateInput!, id: Float!): StateEntity!
   stateDelete(id: Float!): Boolean!
+  stateUpdate(input: CreateStateInput!, id: Float!): StateEntity!
   cityCreate(input: CreateCityInput!): CityEntity!
-  cityUpdate(input: CreateCityInput!, id: Float!): CityEntity!
   cityDelete(id: Float!): Boolean!
+  cityUpdate(input: CreateCityInput!, id: Float!): CityEntity!
   responsibleCreate(input: CreateResponsibleInput!): ResponsibleEntity!
-  responsibleUpdate(input: CreateResponsibleInput!, id: Float!): ResponsibleEntity!
   responsibleDelete(id: Float!): Boolean!
+  responsibleUpdate(input: CreateResponsibleInput!, id: Float!): ResponsibleEntity!
   userPermissionCreate(input: CreateUserPermissionInput!): UserPermissionEntity!
   userPermissionDelete(id: Float!): Boolean!
   userPermissionUpdate(input: CreateUserPermissionInput!, id: Float!): UserPermissionEntity!
   permissionCreate(input: CreatePermissionInput!): PermissionEntity!
-  permissionUpdate(input: CreatePermissionInput!, id: Float!): PermissionEntity!
   permissionDelete(id: Float!): Boolean!
+  permissionUpdate(input: CreatePermissionInput!, id: Float!): PermissionEntity!
   companyCreate(input: CreateCompanyInput!): CompanyEntity!
-  companyUpdate(input: CreateCompanyInput!, id: Float!): CompanyEntity!
   companyDelete(id: Float!): Boolean!
+  companyUpdate(input: CreateCompanyInput!, id: Float!): CompanyEntity!
   yearCreate(input: CreateYearInput!): YearEntity!
   yearDelete(id: Float!): Boolean!
   yearUpdate(input: CreateYearInput!, id: Float!): YearEntity!
   subjectCreate(input: CreateSubjectInput!): SubjectEntity!
   subjectCreateMany(input: [CreateSubjectInput!]!): [SubjectEntity!]!
-  subjectUpdateMany(input: [UpdateSubjectInput!]!): Boolean!
   subjectDelete(id: Float!): Boolean!
   subjectUpdate(input: CreateSubjectInput!, id: Float!): SubjectEntity!
+  subjectUpdateMany(input: [UpdateSubjectInput!]!): Boolean!
   teacherCreate(input: CreateTeacherInput!): TeacherEntity!
-  teacherUpdate(input: CreateTeacherInput!, id: Float!): TeacherEntity!
   teacherDelete(id: Float!): Boolean!
+  teacherUpdate(input: CreateTeacherInput!, id: Float!): TeacherEntity!
   classRoomCreate(input: CreateClassRoomInput!): ClassRoomEntity!
   classRoomDelete(id: Float!): Boolean!
   classRoomUpdate(input: CreateClassRoomInput!, id: Float!): ClassRoomEntity!
@@ -634,8 +634,8 @@ type Mutation {
   studentInformationDelete(id: Float!): Boolean!
   studentInformationUpdate(input: CreatStudentInformationInput!, id: Float!): StudentInformationEntity!
   employeeCreate(input: CreateEmploeeInput!): EmployeeEntity!
-  employeeUpdate(input: CreateEmploeeInput!, id: Float!): EmployeeEntity!
   employeeDelete(id: Float!): Boolean!
+  employeeUpdate(input: CreateEmploeeInput!, id: Float!): EmployeeEntity!
   occurrenceCreate(input: CreateOccurrenceInput!): OccurrenceEntity!
   occurrenceDelete(id: Float!): Boolean!
   occurrenceUpdate(input: CreateOccurrenceInput!, id: Float!): OccurrenceEntity!
@@ -655,8 +655,8 @@ type Mutation {
   contentAppliedDelete(id: Float!): Boolean!
   contentAppliedUpdate(input: CreatContentAppliedInput!, id: Float!): ContentAppliedEntity!
   organizationCreate(input: CreateOrganizationInput!): OrganizationEntity!
-  organizationUpdate(input: CreateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationDelete(id: Float!): Boolean!
+  organizationUpdate(input: CreateOrganizationInput!, id: Float!): OrganizationEntity!
 }
 
 input CreateCustomerInput {

@@ -8,6 +8,7 @@ import { CUSTOMER_CONNECTION } from '../customers/customers.module';
 @CustomersServiceDecorator()
 export class StudentOccurrencesService {
   private studentOccurrenceRepository: Repository<StudentOccurrenceEntity>;
+
   constructor(@Inject(CUSTOMER_CONNECTION) private connection: Connection) {
     this.studentOccurrenceRepository = this.connection.getRepository(
       StudentOccurrenceEntity,
@@ -33,16 +34,12 @@ export class StudentOccurrencesService {
     studentOccurrence: CreatStudentOccurrenceInput,
     idUser: any,
   ): Promise<StudentOccurrenceEntity> {
-    try {
-      const obj = await this.studentOccurrenceRepository.save({
-        ...studentOccurrence,
-        userCreatedId: idUser,
-        userUpdatedId: idUser,
-      });
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.studentOccurrenceRepository.save({
+      ...studentOccurrence,
+      userCreatedId: idUser,
+      userUpdatedId: idUser,
+    });
+    return obj;
   }
 
   async remove(id: number): Promise<boolean> {
@@ -59,14 +56,10 @@ export class StudentOccurrencesService {
     studentOccurrence: Partial<CreatStudentOccurrenceInput>,
     idUser: any,
   ): Promise<StudentOccurrenceEntity> {
-    try {
-      await this.studentOccurrenceRepository.update(id, {
-        ...studentOccurrence,
-        userUpdatedId: idUser,
-      });
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.studentOccurrenceRepository.update(id, {
+      ...studentOccurrence,
+      userUpdatedId: idUser,
+    });
+    return this.findOneById(id);
   }
 }

@@ -33,16 +33,12 @@ export class ContentPlannedsService {
     contentPlanned: CreatContentPlannedInput,
     idUser: any,
   ): Promise<ContentPlannedEntity> {
-    try {
-      const obj = await this.contentPlannedRepository.save({
-        ...contentPlanned,
-        userCreatedId: idUser,
-        userUpdatedId: idUser,
-      });
-      return obj;
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    const obj = await this.contentPlannedRepository.save({
+      ...contentPlanned,
+      userCreatedId: idUser,
+      userUpdatedId: idUser,
+    });
+    return obj;
   }
 
   async remove(id: number): Promise<boolean> {
@@ -59,14 +55,10 @@ export class ContentPlannedsService {
     contentPlanned: Partial<CreatContentPlannedInput>,
     idUser: any,
   ): Promise<ContentPlannedEntity> {
-    try {
-      await this.contentPlannedRepository.update(id, {
-        ...contentPlanned,
-        userUpdatedId: idUser,
-      });
-      return this.findOneById(id);
-    } catch (error) {
-      throw new GoneException(error);
-    }
+    await this.contentPlannedRepository.update(id, {
+      ...contentPlanned,
+      userUpdatedId: idUser,
+    });
+    return this.findOneById(id);
   }
 }

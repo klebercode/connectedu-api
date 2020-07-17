@@ -1,4 +1,5 @@
-import { UseGuards, HttpException } from '@nestjs/common';
+import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
+
 import {
   Args,
   Mutation,
@@ -24,9 +25,14 @@ import { YearsService } from '../../years/years.service';
 import { SubjectsService } from '../../subjects/subjects.service';
 import { TeachersService } from '../../teachers/teachers.service';
 import { ClassRoomsService } from '../../classrooms/classrooms.service';
+import {
+  HttpExceptionFilter,
+  CustomException,
+} from '../../common/filters/http-exception.filter';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ContentAppliedEntity)
+@UseFilters(HttpExceptionFilter)
 export class ContentAppliedsResolver {
   constructor(
     private readonly contentAppliedsService: ContentAppliedsService,
@@ -36,17 +42,30 @@ export class ContentAppliedsResolver {
     private readonly teachersService: TeachersService,
     private readonly classRoomsService: ClassRoomsService,
   ) {}
+  private nameApp = 'Conteúdo Vivenciado';
 
   @Query(() => ContentAppliedEntity, { name: 'contentApplied' })
   async getContentApplied(
     @Args('id') id: number,
   ): Promise<ContentAppliedEntity> {
-    return await this.contentAppliedsService.findOneById(id);
+    try {
+      const obj = await this.contentAppliedsService.findOneById(id);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'get', this.nameApp);
+    }
   }
 
   @Query(() => [ContentAppliedEntity], { name: 'contentAppliedAll' })
   async getContentApplieds(): Promise<ContentAppliedEntity[]> {
-    return this.contentAppliedsService.findAll();
+    try {
+      return this.contentAppliedsService.findAll();
+    } catch (error) {
+      CustomException.catch(error, 'gets', this.nameApp);
+    }
   }
 
   @Mutation(() => ContentAppliedEntity, {
@@ -60,19 +79,23 @@ export class ContentAppliedsResolver {
       const { user } = context.req;
       const obj = await this.contentAppliedsService.create(input, user['id']);
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'create', this.nameApp);
     }
   }
 
   @Mutation(() => Boolean, { name: 'contentAppliedDelete' })
   async deleteContentApplied(@Args('id') id: number): Promise<boolean> {
-    await this.contentAppliedsService.remove(id);
-    const obj = await this.contentAppliedsService.findOneById(id);
-    if (!obj) {
-      return true;
+    try {
+      await this.contentAppliedsService.remove(id);
+      const obj = await this.contentAppliedsService.findOneById(id);
+      if (!obj) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'delete', this.nameApp);
     }
-    return false;
   }
 
   @Mutation(() => ContentAppliedEntity, {
@@ -91,8 +114,8 @@ export class ContentAppliedsResolver {
         user['id'],
       );
       return obj;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'update', this.nameApp);
     }
   }
 
@@ -104,7 +127,11 @@ export class ContentAppliedsResolver {
     if (!id) {
       return null;
     }
-    return this.classRoomsService.findOneById(id);
+    try {
+      return this.classRoomsService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Série');
+    }
   }
 
   @ResolveField('teacher')
@@ -115,7 +142,11 @@ export class ContentAppliedsResolver {
     if (!id) {
       return null;
     }
-    return this.teachersService.findOneById(id);
+    try {
+      return this.teachersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Professor');
+    }
   }
 
   @ResolveField('year')
@@ -126,7 +157,11 @@ export class ContentAppliedsResolver {
     if (!id) {
       return null;
     }
-    return this.yearsService.findOneById(id);
+    try {
+      return this.yearsService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Exercício');
+    }
   }
 
   @ResolveField('subject')
@@ -137,7 +172,11 @@ export class ContentAppliedsResolver {
     if (!id) {
       return null;
     }
-    return this.subjectsService.findOneById(id);
+    try {
+      return this.subjectsService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Matéria');
+    }
   }
 
   @ResolveField(type => UserEntity)
@@ -148,7 +187,11 @@ export class ContentAppliedsResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 
   @ResolveField(type => UserEntity)
@@ -157,6 +200,10 @@ export class ContentAppliedsResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuário');
+    }
   }
 }

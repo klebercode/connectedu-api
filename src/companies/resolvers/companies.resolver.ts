@@ -1,4 +1,10 @@
-import { UseGuards, HttpException } from '@nestjs/common';
+import {
+  UseGuards,
+  HttpException,
+  UseFilters,
+  NotFoundException,
+} from '@nestjs/common';
+
 import {
   Args,
   Mutation,
@@ -20,9 +26,14 @@ import { StatesService } from '../../states/states.service';
 import { UsersService } from '../../users/users.service';
 import { CitiesService } from '../../cities/cities.service';
 import { UserEntity } from '../../users/entities/user.entity';
+import {
+  HttpExceptionFilter,
+  CustomException,
+} from '../../common/filters/http-exception.filter';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => CompanyEntity)
+@UseFilters(HttpExceptionFilter)
 export class CompaniesResolver {
   constructor(
     private readonly companiesService: CompaniesService,
@@ -30,15 +41,28 @@ export class CompaniesResolver {
     private readonly statesService: StatesService,
     private readonly citiesService: CitiesService,
   ) {}
+  private nameApp = 'Empresa';
 
   @Query(() => CompanyEntity, { name: 'company' })
   async getCompany(@Args('id') id: number): Promise<CompanyEntity> {
-    return await this.companiesService.findOneById(id);
+    try {
+      const obj = await this.companiesService.findOneById(id);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'get', this.nameApp);
+    }
   }
 
   @Query(() => [CompanyEntity], { name: 'companyAll' })
   async getCompanies(): Promise<CompanyEntity[]> {
-    return await this.companiesService.findAll();
+    try {
+      return this.companiesService.findAll();
+    } catch (error) {
+      CustomException.catch(error, 'gets', this.nameApp);
+    }
   }
 
   @Mutation(() => CompanyEntity, { name: 'companyCreate' })
@@ -51,8 +75,22 @@ export class CompaniesResolver {
       const company = await this.companiesService.create(input, user['id']);
 
       return company;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'create', this.nameApp);
+    }
+  }
+
+  @Mutation(() => Boolean, { name: 'companyDelete' })
+  async deteleCompany(@Args('id') id: number): Promise<boolean> {
+    try {
+      await this.companiesService.remove(id);
+      const obj = await this.companiesService.findOneById(id);
+      if (!obj) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'delete', this.nameApp);
     }
   }
 
@@ -71,19 +109,9 @@ export class CompaniesResolver {
       );
 
       return company;
-    } catch (exception) {
-      throw new HttpException(exception.message, 409);
+    } catch (error) {
+      CustomException.catch(error, 'update', this.nameApp);
     }
-  }
-
-  @Mutation(() => Boolean, { name: 'companyDelete' })
-  async deteleCompany(@Args('id') id: number): Promise<boolean> {
-    await this.companiesService.remove(id);
-    const company = await this.companiesService.findOneById(id);
-    if (!company) {
-      return true;
-    }
-    return false;
   }
 
   @ResolveField('state')
@@ -92,7 +120,11 @@ export class CompaniesResolver {
     if (!id) {
       return null;
     }
-    return this.statesService.findOneById(id);
+    try {
+      return this.statesService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Estado');
+    }
   }
 
   @ResolveField('city')
@@ -101,7 +133,11 @@ export class CompaniesResolver {
     if (!id) {
       return null;
     }
-    return this.citiesService.findOneById(id);
+    try {
+      return this.citiesService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Cidade');
+    }
   }
 
   @ResolveField(type => UserEntity)
@@ -110,7 +146,11 @@ export class CompaniesResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuario');
+    }
   }
 
   @ResolveField(type => UserEntity)
@@ -119,6 +159,10 @@ export class CompaniesResolver {
     if (!id) {
       return null;
     }
-    return this.usersService.findOneById(id);
+    try {
+      return this.usersService.findOneById(id);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Usuario');
+    }
   }
 }
