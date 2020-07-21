@@ -9,97 +9,105 @@ import {
   Parent,
 } from '@nestjs/graphql';
 
+import { MyContext } from '../../common/types/myContext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
-import { CreateOccurrenceInput } from '../types/create-occurrence.input';
-import { MyContext } from '../../common/types/myContext';
+
 import { OccurrenceEntity } from '../entities/occurrence.entity';
 import { OccurrencesService } from '../occurrences.service';
+import { CreateOccurrenceInput } from '../types/create-occurrence.input';
+import { UpdateOccurrenceInput } from '../types/update-occurrence.input';
+
 import { UsersService } from '../../users/users.service';
 import { UserEntity } from '../../users/entities/user.entity';
 import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+import { ResolverDefault } from '../../common/resolvers/global.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => OccurrenceEntity)
 @UseFilters(HttpExceptionFilter)
-export class OccurrencesResolver {
+export class OccurrencesResolver extends ResolverDefault<
+  OccurrenceEntity,
+  CreateOccurrenceInput,
+  UpdateOccurrenceInput
+> {
   constructor(
     private readonly occurrencesService: OccurrencesService,
     private readonly usersService: UsersService,
-  ) {}
-  private nameApp = 'Ocorrência';
+  ) {
+    super('Ocorrência', occurrencesService);
+  }
 
   @Query(() => OccurrenceEntity, { name: 'occurrence' })
-  async getOccurrence(@Args('id') id: number): Promise<OccurrenceEntity> {
-    try {
-      const obj = await this.occurrencesService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+  async get(@Args('id') id: number): Promise<OccurrenceEntity> {
+    return super.get(id);
+  }
+
+  @Query(() => [OccurrenceEntity], { name: 'occurrenceMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<OccurrenceEntity[]> {
+    return super.getMany(ids);
   }
 
   @Query(() => [OccurrenceEntity], { name: 'occurrenceAll' })
-  async getOccurrences(): Promise<OccurrenceEntity[]> {
-    try {
-      return this.occurrencesService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+  async getAll(): Promise<OccurrenceEntity[]> {
+    return super.getAll();
   }
 
   @Mutation(() => OccurrenceEntity, { name: 'occurrenceCreate' })
-  async createOccurrence(
+  async create(
     @Context() context: MyContext,
     @Args('input') input: CreateOccurrenceInput,
   ): Promise<OccurrenceEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.occurrencesService.create(input, user['id']);
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+    return super.create(context, input);
+  }
+
+  @Mutation(() => [OccurrenceEntity], { name: 'occurrenceCreateMany' })
+  async createMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [CreateOccurrenceInput] })
+    input: [CreateOccurrenceInput],
+  ): Promise<OccurrenceEntity[]> {
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'occurrenceDelete' })
-  async deleteOccurrence(@Args('id') id: number): Promise<boolean> {
-    try {
-      await this.occurrencesService.remove(id);
-      const obj = await this.occurrencesService.findOneById(id);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+  async delete(@Args('id') id: number): Promise<boolean> {
+    return super.delete(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'occurrenceDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => OccurrenceEntity, { name: 'occurrenceUpdate' })
-  async updateOccurrence(
+  async update(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('input') input: CreateOccurrenceInput,
+    @Args('input') input: UpdateOccurrenceInput,
   ): Promise<OccurrenceEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.occurrencesService.update(
-        id,
-        { ...input },
-        user['id'],
-      );
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(context, id, input);
   }
+
+  @Mutation(() => Boolean, { name: 'occurrenceUpdateMany' })
+  async updateMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [UpdateOccurrenceInput] })
+    input: [UpdateOccurrenceInput],
+  ): Promise<boolean> {
+    return super.updateMany(context, input);
+  }
+
+  // **************************************  Resolucao de Campos
 
   @ResolveField(() => UserEntity)
   async userCreated(@Parent() occurrence: OccurrenceEntity): Promise<any> {

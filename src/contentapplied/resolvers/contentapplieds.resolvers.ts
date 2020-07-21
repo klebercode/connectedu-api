@@ -14,9 +14,10 @@ import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { MyContext } from '../../common/types/myContext';
 
-import { CreatContentAppliedInput } from '../types/create-contentapplied.input';
 import { ContentAppliedEntity } from '../entities/contentapplied.entity';
 import { ContentAppliedsService } from '../contentapplieds.service';
+import { CreatContentAppliedInput } from '../types/create-contentapplied.input';
+import { UpdateContentAppliedInput } from '../types/update-contentapplied.input';
 
 //importados
 import { UsersService } from '../../users/users.service';
@@ -29,11 +30,16 @@ import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+import { ResolverDefault } from '../../common/resolvers/global.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ContentAppliedEntity)
 @UseFilters(HttpExceptionFilter)
-export class ContentAppliedsResolver {
+export class ContentAppliedsResolver extends ResolverDefault<
+  ContentAppliedEntity,
+  CreatContentAppliedInput,
+  UpdateContentAppliedInput
+> {
   constructor(
     private readonly contentAppliedsService: ContentAppliedsService,
     private readonly usersService: UsersService,
@@ -41,83 +47,81 @@ export class ContentAppliedsResolver {
     private readonly subjectsService: SubjectsService,
     private readonly teachersService: TeachersService,
     private readonly classRoomsService: ClassRoomsService,
-  ) {}
-  private nameApp = 'Conteúdo Vivenciado';
+  ) {
+    super('Conteúdo Vivenciado', contentAppliedsService);
+  }
 
   @Query(() => ContentAppliedEntity, { name: 'contentApplied' })
-  async getContentApplied(
-    @Args('id') id: number,
-  ): Promise<ContentAppliedEntity> {
-    try {
-      const obj = await this.contentAppliedsService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+  async get(@Args('id') id: number): Promise<ContentAppliedEntity> {
+    return super.get(id);
+  }
+
+  @Query(() => [ContentAppliedEntity], { name: 'contentAppliedMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<ContentAppliedEntity[]> {
+    return super.getMany(ids);
   }
 
   @Query(() => [ContentAppliedEntity], { name: 'contentAppliedAll' })
-  async getContentApplieds(): Promise<ContentAppliedEntity[]> {
-    try {
-      return this.contentAppliedsService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+  async getAll(): Promise<ContentAppliedEntity[]> {
+    return super.getAll();
   }
 
   @Mutation(() => ContentAppliedEntity, {
     name: 'contentAppliedCreate',
   })
-  async createContentApplied(
+  async create(
     @Context() context: MyContext,
     @Args('input') input: CreatContentAppliedInput,
   ): Promise<ContentAppliedEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.contentAppliedsService.create(input, user['id']);
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+    return super.create(context, input);
+  }
+
+  @Mutation(() => [ContentAppliedEntity], { name: 'contentAppliedCreateMany' })
+  async createMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [CreatContentAppliedInput] })
+    input: [CreatContentAppliedInput],
+  ): Promise<ContentAppliedEntity[]> {
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'contentAppliedDelete' })
-  async deleteContentApplied(@Args('id') id: number): Promise<boolean> {
-    try {
-      await this.contentAppliedsService.remove(id);
-      const obj = await this.contentAppliedsService.findOneById(id);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+  async delete(@Args('id') id: number): Promise<boolean> {
+    return super.delete(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'contentAppliedDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => ContentAppliedEntity, {
     name: 'contentAppliedUpdate',
   })
-  async updateContentApplied(
+  async update(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('input') input: CreatContentAppliedInput,
+    @Args('input') input: UpdateContentAppliedInput,
   ): Promise<ContentAppliedEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.contentAppliedsService.update(
-        id,
-        { ...input },
-        user['id'],
-      );
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(context, id, input);
   }
+
+  @Mutation(() => Boolean, { name: 'contentAppliedUpdateMany' })
+  async updateMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [UpdateContentAppliedInput] })
+    input: [UpdateContentAppliedInput],
+  ): Promise<boolean> {
+    return super.updateMany(context, input);
+  }
+
+  // **************************************  Resolucao de Campos
 
   @ResolveField('classroom')
   async classroom(

@@ -13,9 +13,10 @@ import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { MyContext } from '../../common/types/myContext';
 
-import { CreatStudentGradeInput } from '../types/create-studentgrade.input';
 import { StudentGradeEntity } from '../entities/studentgrade.entity';
 import { StudentGradesService } from '../studentgrades.service';
+import { CreatStudentGradeInput } from '../types/create-studentgrade.input';
+import { UpdateStudentGradeInput } from '../types/update-studentgrade.input';
 
 //importados
 import { UsersService } from '../../users/users.service';
@@ -27,70 +28,74 @@ import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+import { ResolverDefault } from '../../common/resolvers/global.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => StudentGradeEntity)
 @UseFilters(HttpExceptionFilter)
-export class StudentGradesResolver {
+export class StudentGradesResolver extends ResolverDefault<
+  StudentGradeEntity,
+  CreatStudentGradeInput,
+  UpdateStudentGradeInput
+> {
   constructor(
     private readonly studentGradesService: StudentGradesService,
     private readonly usersService: UsersService,
     private readonly studentsService: StudentsService,
     private readonly yearsService: YearsService,
     private readonly subjectsService: SubjectsService,
-  ) {}
-  private nameApp = 'Notas Estudante';
+  ) {
+    super('Notas Estudante', studentGradesService);
+  }
 
   @Query(() => StudentGradeEntity, { name: 'studentGrade' })
-  async getStudentGrade(@Args('id') id: number): Promise<StudentGradeEntity> {
-    try {
-      const obj = await this.studentGradesService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+  async get(@Args('id') id: number): Promise<StudentGradeEntity> {
+    return super.get(id);
+  }
+
+  @Query(() => [StudentGradeEntity], { name: 'studentGradeMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<StudentGradeEntity[]> {
+    return super.getMany(ids);
   }
 
   @Query(() => [StudentGradeEntity], { name: 'studentGradeAll' })
-  async getStudentGrades(): Promise<StudentGradeEntity[]> {
-    try {
-      return this.studentGradesService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+  async getAll(): Promise<StudentGradeEntity[]> {
+    return super.getAll();
   }
 
   @Mutation(() => StudentGradeEntity, {
     name: 'studentGradeCreate',
   })
-  async createStudentGrade(
+  async create(
     @Context() context: MyContext,
     @Args('input') input: CreatStudentGradeInput,
   ): Promise<StudentGradeEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.studentGradesService.create(input, user['id']);
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+    return super.create(context, input);
+  }
+
+  @Mutation(() => [StudentGradeEntity], { name: 'studentGradeCreateMany' })
+  async createMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [CreatStudentGradeInput] })
+    input: [CreatStudentGradeInput],
+  ): Promise<StudentGradeEntity[]> {
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'studentGradeDelete' })
-  async deleteStudentGrade(@Args('id') id: number): Promise<boolean> {
-    try {
-      await this.studentGradesService.remove(id);
-      const obj = await this.studentGradesService.findOneById(id);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+  async delete(@Args('id') id: number): Promise<boolean> {
+    return super.delete(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'studentGradeDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => StudentGradeEntity, {
@@ -99,20 +104,21 @@ export class StudentGradesResolver {
   async updateStudentGrade(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('input') input: CreatStudentGradeInput,
+    @Args('input') input: UpdateStudentGradeInput,
   ): Promise<StudentGradeEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.studentGradesService.update(
-        id,
-        { ...input },
-        user['id'],
-      );
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(context, id, input);
   }
+
+  @Mutation(() => Boolean, { name: 'studentGradeUpdateMany' })
+  async updateMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [UpdateStudentGradeInput] })
+    input: [UpdateStudentGradeInput],
+  ): Promise<boolean> {
+    return super.updateMany(context, input);
+  }
+
+  // **************************************  Resolucao de Campos
 
   @ResolveField('student')
   async student(

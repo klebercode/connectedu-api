@@ -9,12 +9,15 @@ import {
   Parent,
 } from '@nestjs/graphql';
 
+import { MyContext } from '../../common/types/myContext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
-import { CreateUserPermissionInput } from '../types/create-userpermission.input';
-import { MyContext } from '../../common/types/myContext';
+
 import { UserPermissionEntity } from '../entities/userpermission.entity';
 import { UserPermissionsService } from '../userpermissions.service';
+import { CreateUserPermissionInput } from '../types/create-userpermission.input';
+import { UpdateUserPermissionInput } from '../types/update-userpermission.input';
+
 import { UsersService } from '../../users/users.service';
 import { PermissionsService } from '../../permissions/permissions.service';
 import { UserEntity } from '../../users/entities/user.entity';
@@ -22,88 +25,91 @@ import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+import { ResolverDefault } from '../../common/resolvers/global.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => UserPermissionEntity)
 @UseFilters(HttpExceptionFilter)
-export class UserPermissionsResolver {
+export class UserPermissionsResolver extends ResolverDefault<
+  UserPermissionEntity,
+  CreateUserPermissionInput,
+  UpdateUserPermissionInput
+> {
   constructor(
     private readonly userPermissionsService: UserPermissionsService,
     private readonly usersService: UsersService,
     private readonly permissionsService: PermissionsService,
-  ) {}
-  private nameApp = 'Permissões Usuário';
+  ) {
+    super('Permissões Usuário', userPermissionsService);
+  }
 
   @Query(() => UserPermissionEntity, { name: 'userPermission' })
-  async getUserPermission(
-    @Args('id') id: number,
-  ): Promise<UserPermissionEntity> {
-    try {
-      const obj = await this.userPermissionsService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+  async get(@Args('id') id: number): Promise<UserPermissionEntity> {
+    return super.get(id);
+  }
+
+  @Query(() => [UserPermissionEntity], { name: 'userPermissionMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<UserPermissionEntity[]> {
+    return super.getMany(ids);
   }
 
   @Query(() => [UserPermissionEntity], { name: 'userPermissionAll' })
-  async getUserPermissions(): Promise<UserPermissionEntity[]> {
-    try {
-      return this.userPermissionsService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+  async getAll(): Promise<UserPermissionEntity[]> {
+    return super.getAll();
   }
 
   @Mutation(() => UserPermissionEntity, { name: 'userPermissionCreate' })
-  async createUserPermission(
+  async create(
     @Context() context: MyContext,
     @Args('input') input: CreateUserPermissionInput,
   ): Promise<UserPermissionEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.userPermissionsService.create(input, user['id']);
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+    return super.create(context, input);
+  }
+
+  @Mutation(() => [UserPermissionEntity], { name: 'userPermissionCreateMany' })
+  async createMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [CreateUserPermissionInput] })
+    input: [CreateUserPermissionInput],
+  ): Promise<UserPermissionEntity[]> {
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'userPermissionDelete' })
-  async deleteUserPermission(@Args('id') id: number): Promise<boolean> {
-    try {
-      await this.userPermissionsService.remove(id);
-      const obj = await this.userPermissionsService.findOneById(id);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+  async delete(@Args('id') id: number): Promise<boolean> {
+    return super.delete(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'userPermissionDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => UserPermissionEntity, { name: 'userPermissionUpdate' })
-  async updateUserPermission(
+  async update(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('input') input: CreateUserPermissionInput,
+    @Args('input') input: UpdateUserPermissionInput,
   ): Promise<UserPermissionEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.userPermissionsService.update(
-        id,
-        { ...input },
-        user['id'],
-      );
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(context, id, input);
   }
+
+  @Mutation(() => Boolean, { name: 'userPermissionUpdateMany' })
+  async updateMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [UpdateUserPermissionInput] })
+    input: [UpdateUserPermissionInput],
+  ): Promise<boolean> {
+    return super.updateMany(context, input);
+  }
+
+  // **************************************  Resolucao de Campos
 
   @ResolveField('user')
   async user(@Parent() userPermission: UserPermissionEntity): Promise<any> {

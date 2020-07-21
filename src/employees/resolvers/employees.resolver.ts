@@ -14,6 +14,7 @@ import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { EmployeeEntity } from '../entities/employee.entity';
 import { EmployeesService } from '../employees.service';
 import { CreateEmploeeInput } from '../types/create-employee.input';
+import { UpdateEmploeeInput } from '../types/update-employee.input';
 
 import { MyContext } from '../../common/types/myContext';
 import { StatesService } from '../../states/states.service';
@@ -24,89 +25,92 @@ import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+import { ResolverDefault } from '../../common/resolvers/global.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => EmployeeEntity)
 @UseFilters(HttpExceptionFilter)
-export class EmployeesResolver {
+export class EmployeesResolver extends ResolverDefault<
+  EmployeeEntity,
+  CreateEmploeeInput,
+  UpdateEmploeeInput
+> {
   constructor(
     private readonly employeesService: EmployeesService,
     private readonly usersService: UsersService,
     private readonly statesService: StatesService,
     private readonly citiesService: CitiesService,
-  ) {}
-  private nameApp = 'Funcionário';
+  ) {
+    super('Funcionário', employeesService);
+  }
 
   @Query(() => EmployeeEntity, { name: 'employee' })
-  async getEmployee(@Args('id') id: number): Promise<EmployeeEntity> {
-    try {
-      const obj = await this.employeesService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+  async get(@Args('id') id: number): Promise<EmployeeEntity> {
+    return super.get(id);
+  }
+
+  @Query(() => [EmployeeEntity], { name: 'employeetMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<EmployeeEntity[]> {
+    return super.getMany(ids);
   }
 
   @Query(() => [EmployeeEntity], { name: 'employeeAll' })
-  async getEmployees(): Promise<EmployeeEntity[]> {
-    try {
-      return this.employeesService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+  async getAll(): Promise<EmployeeEntity[]> {
+    return super.getAll();
   }
 
   @Mutation(() => EmployeeEntity, { name: 'employeeCreate' })
-  async createEmployee(
+  async create(
     @Context() context: MyContext,
     @Args('input') input: CreateEmploeeInput,
   ): Promise<EmployeeEntity> {
-    try {
-      const { user } = context.req;
-      const employee = await this.employeesService.create(input, user['id']);
+    return super.create(context, input);
+  }
 
-      return employee;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+  @Mutation(() => [EmployeeEntity], { name: 'employeeCreateMany' })
+  async createMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [CreateEmploeeInput] })
+    input: [CreateEmploeeInput],
+  ): Promise<EmployeeEntity[]> {
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'employeeDelete' })
-  async deteleEmployee(@Args('id') id: number): Promise<boolean> {
-    try {
-      await this.employeesService.remove(id);
-      const employee = await this.employeesService.findOneById(id);
-      if (!employee) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+  async detele(@Args('id') id: number): Promise<boolean> {
+    return super.delete(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'employeeDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => EmployeeEntity, { name: 'employeeUpdate' })
-  async updateEmployee(
+  async update(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('input') input: CreateEmploeeInput,
+    @Args('input') input: UpdateEmploeeInput,
   ): Promise<EmployeeEntity> {
-    try {
-      const { user } = context.req;
-      const employee = await this.employeesService.update(
-        id,
-        { ...input },
-        user['id'],
-      );
-
-      return employee;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(context, id, input);
   }
+
+  @Mutation(() => Boolean, { name: 'employeeUpdateMany' })
+  async updateMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [UpdateEmploeeInput] })
+    input: [UpdateEmploeeInput],
+  ): Promise<boolean> {
+    return super.updateMany(context, input);
+  }
+
+  // **************************************  Resolucao de Campos
 
   @ResolveField('state')
   async state(@Parent() employee: EmployeeEntity) {

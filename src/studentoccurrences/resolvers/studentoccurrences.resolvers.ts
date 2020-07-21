@@ -13,9 +13,10 @@ import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { MyContext } from '../../common/types/myContext';
 
-import { CreatStudentOccurrenceInput } from '../types/create-studentoccurrences.input';
 import { StudentOccurrenceEntity } from '../entities/studentoccurrence.entity';
 import { StudentOccurrencesService } from '../studentinformations.service';
+import { CreatStudentOccurrenceInput } from '../types/create-studentoccurrences.input';
+import { UpdateStudentOccurrenceInput } from '../types/update-studentoccurrences.input';
 
 //importados
 import { UsersService } from '../../users/users.service';
@@ -29,11 +30,16 @@ import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+import { ResolverDefault } from '../../common/resolvers/global.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => StudentOccurrenceEntity)
 @UseFilters(HttpExceptionFilter)
-export class StudentOccurrencesResolver {
+export class StudentOccurrencesResolver extends ResolverDefault<
+  StudentOccurrenceEntity,
+  CreatStudentOccurrenceInput,
+  UpdateStudentOccurrenceInput
+> {
   constructor(
     private readonly studentOccurrencesService: StudentOccurrencesService,
     private readonly usersService: UsersService,
@@ -42,86 +48,83 @@ export class StudentOccurrencesResolver {
     private readonly teachersService: TeachersService,
     private readonly subjectsService: SubjectsService,
     private readonly employeesService: EmployeesService,
-  ) {}
-  private nameApp = 'Ocorrência Estudante';
+  ) {
+    super('Ocorrência Estudante', studentOccurrencesService);
+  }
 
   @Query(() => StudentOccurrenceEntity, { name: 'studentOccurrence' })
-  async getStudentOccurrence(
-    @Args('id') id: number,
-  ): Promise<StudentOccurrenceEntity> {
-    try {
-      const obj = await this.studentOccurrencesService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+  async get(@Args('id') id: number): Promise<StudentOccurrenceEntity> {
+    return super.get(id);
+  }
+
+  @Query(() => [StudentOccurrenceEntity], { name: 'studentOccurrenceMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<StudentOccurrenceEntity[]> {
+    return super.getMany(ids);
   }
 
   @Query(() => [StudentOccurrenceEntity], { name: 'studentOccurrenceAll' })
-  async getStudentOccurrences(): Promise<StudentOccurrenceEntity[]> {
-    try {
-      return this.studentOccurrencesService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+  async getAll(): Promise<StudentOccurrenceEntity[]> {
+    return super.getAll();
   }
 
   @Mutation(() => StudentOccurrenceEntity, {
     name: 'studentOccurrenceCreate',
   })
-  async createStudentOccurrence(
+  async create(
     @Context() context: MyContext,
     @Args('input') input: CreatStudentOccurrenceInput,
   ): Promise<StudentOccurrenceEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.studentOccurrencesService.create(
-        input,
-        user['id'],
-      );
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+    return super.create(context, input);
+  }
+
+  @Mutation(() => [StudentOccurrenceEntity], {
+    name: 'studentOccurrenceCreateMany',
+  })
+  async createMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [CreatStudentOccurrenceInput] })
+    input: [CreatStudentOccurrenceInput],
+  ): Promise<StudentOccurrenceEntity[]> {
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'studentOccurrenceDelete' })
-  async deleteStudentOccurrence(@Args('id') id: number): Promise<boolean> {
-    try {
-      await this.studentOccurrencesService.remove(id);
-      const obj = await this.studentOccurrencesService.findOneById(id);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+  async delete(@Args('id') id: number): Promise<boolean> {
+    return super.delete(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'studentOccurrenceDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => StudentOccurrenceEntity, {
     name: 'studentOccurrenceUpdate',
   })
-  async updateStudentOccurrence(
+  async update(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('input') input: CreatStudentOccurrenceInput,
+    @Args('input') input: UpdateStudentOccurrenceInput,
   ): Promise<StudentOccurrenceEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.studentOccurrencesService.update(
-        id,
-        { ...input },
-        user['id'],
-      );
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(context, id, input);
   }
+
+  @Mutation(() => Boolean, { name: 'studentOccurrenceUpdateMany' })
+  async updateMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [UpdateStudentOccurrenceInput] })
+    input: [UpdateStudentOccurrenceInput],
+  ): Promise<boolean> {
+    return super.updateMany(context, input);
+  }
+
+  // **************************************  Resolucao de Campos
 
   @ResolveField('occurrence')
   async occurrence(

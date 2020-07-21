@@ -14,6 +14,7 @@ import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { ResponsibleEntity } from '../entities/responsible.entity';
 import { ResponsiblesService } from '../responsibles.service';
 import { CreateResponsibleInput } from '../types/create-responsible.input';
+import { UpdateResponsibleInput } from '../types/update-responsible.input';
 
 import { MyContext } from '../../common/types/myContext';
 import { StatesService } from '../../states/states.service';
@@ -24,92 +25,92 @@ import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+import { ResolverDefault } from '../../common/resolvers/global.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ResponsibleEntity)
 @UseFilters(HttpExceptionFilter)
-export class ResponsiblesResolver {
+export class ResponsiblesResolver extends ResolverDefault<
+  ResponsibleEntity,
+  CreateResponsibleInput,
+  UpdateResponsibleInput
+> {
   constructor(
     private readonly responsiblesService: ResponsiblesService,
     private readonly usersService: UsersService,
     private readonly statesService: StatesService,
     private readonly citiesService: CitiesService,
-  ) {}
-  private nameApp = 'Responsável';
+  ) {
+    super('Responsável', responsiblesService);
+  }
 
   @Query(() => ResponsibleEntity, { name: 'responsible' })
-  async getResponsible(@Args('id') id: number): Promise<ResponsibleEntity> {
-    try {
-      const obj = await this.responsiblesService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+  async get(@Args('id') id: number): Promise<ResponsibleEntity> {
+    return super.get(id);
+  }
+
+  @Query(() => [ResponsibleEntity], { name: 'responsibleMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<ResponsibleEntity[]> {
+    return super.getMany(ids);
   }
 
   @Query(() => [ResponsibleEntity], { name: 'responsibleAll' })
-  async getResponsibles(): Promise<ResponsibleEntity[]> {
-    try {
-      return this.responsiblesService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+  async getAll(): Promise<ResponsibleEntity[]> {
+    return super.getAll();
   }
 
   @Mutation(() => ResponsibleEntity, { name: 'responsibleCreate' })
-  async createResponsible(
+  async create(
     @Context() context: MyContext,
     @Args('input') input: CreateResponsibleInput,
   ): Promise<ResponsibleEntity> {
-    try {
-      const { user } = context.req;
-      const responsible = await this.responsiblesService.create(
-        input,
-        user['id'],
-      );
+    return super.create(context, input);
+  }
 
-      return responsible;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+  @Mutation(() => [ResponsibleEntity], { name: 'subjectCreateMany' })
+  async createMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [CreateResponsibleInput] })
+    input: [CreateResponsibleInput],
+  ): Promise<ResponsibleEntity[]> {
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'responsibleDelete' })
-  async deteleResponsible(@Args('id') id: number): Promise<boolean> {
-    try {
-      await this.responsiblesService.remove(id);
-      const responsible = await this.responsiblesService.findOneById(id);
-      if (!responsible) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+  async detele(@Args('id') id: number): Promise<boolean> {
+    return super.delete(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'responsibleDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => ResponsibleEntity, { name: 'responsibleUpdate' })
-  async updateResponsible(
+  async update(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('input') input: CreateResponsibleInput,
+    @Args('input') input: UpdateResponsibleInput,
   ): Promise<ResponsibleEntity> {
-    try {
-      const { user } = context.req;
-      const responsible = await this.responsiblesService.update(
-        id,
-        { ...input },
-        user['id'],
-      );
-
-      return responsible;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(context, id, input);
   }
+
+  @Mutation(() => Boolean, { name: 'responsibleUpdateMany' })
+  async updateMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [UpdateResponsibleInput] })
+    input: [UpdateResponsibleInput],
+  ): Promise<boolean> {
+    return super.updateMany(context, input);
+  }
+
+  // **************************************  Resolucao de Campos
 
   @ResolveField('state')
   async state(@Parent() responsible: ResponsibleEntity) {

@@ -31,89 +31,92 @@ import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+import { ResolverDefault } from '../../common/resolvers/global.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => CompanyEntity)
 @UseFilters(HttpExceptionFilter)
-export class CompaniesResolver {
+export class CompaniesResolver extends ResolverDefault<
+  CompanyEntity,
+  CreateCompanyInput,
+  UpdateCompanyInput
+> {
   constructor(
     private readonly companiesService: CompaniesService,
     private readonly usersService: UsersService,
     private readonly statesService: StatesService,
     private readonly citiesService: CitiesService,
-  ) {}
-  private nameApp = 'Empresa';
+  ) {
+    super('Empresa', companiesService);
+  }
 
   @Query(() => CompanyEntity, { name: 'company' })
-  async getCompany(@Args('id') id: number): Promise<CompanyEntity> {
-    try {
-      const obj = await this.companiesService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+  async get(@Args('id') id: number): Promise<CompanyEntity> {
+    return super.get(id);
+  }
+
+  @Query(() => [CompanyEntity], { name: 'companyMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<CompanyEntity[]> {
+    return super.getMany(ids);
   }
 
   @Query(() => [CompanyEntity], { name: 'companyAll' })
-  async getCompanies(): Promise<CompanyEntity[]> {
-    try {
-      return this.companiesService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+  async getAll(): Promise<CompanyEntity[]> {
+    return super.getAll();
   }
 
   @Mutation(() => CompanyEntity, { name: 'companyCreate' })
-  async createCompany(
+  async create(
     @Context() context: MyContext,
     @Args('input') input: CreateCompanyInput,
   ): Promise<CompanyEntity> {
-    try {
-      const { user } = context.req;
-      const company = await this.companiesService.create(input, user['id']);
+    return super.create(context, input);
+  }
 
-      return company;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+  @Mutation(() => [CompanyEntity], { name: 'companyCreateMany' })
+  async createMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [CreateCompanyInput] })
+    input: [CreateCompanyInput],
+  ): Promise<CompanyEntity[]> {
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'companyDelete' })
-  async deteleCompany(@Args('id') id: number): Promise<boolean> {
-    try {
-      await this.companiesService.remove(id);
-      const obj = await this.companiesService.findOneById(id);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+  async detele(@Args('id') id: number): Promise<boolean> {
+    return super.delete(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'companyDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => CompanyEntity, { name: 'companyUpdate' })
-  async updateCompany(
+  async update(
     @Context() context: MyContext,
     @Args('id') id: number,
     @Args('input') input: UpdateCompanyInput,
   ): Promise<CompanyEntity> {
-    try {
-      const { user } = context.req;
-      const company = await this.companiesService.update(
-        id,
-        { ...input },
-        user['id'],
-      );
-
-      return company;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(context, id, input);
   }
+
+  @Mutation(() => Boolean, { name: 'companyUpdateMany' })
+  async updateMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [UpdateCompanyInput] })
+    input: [UpdateCompanyInput],
+  ): Promise<boolean> {
+    return super.updateMany(context, input);
+  }
+
+  // **************************************  Resolucao de Campos
 
   @ResolveField('state')
   async state(@Parent() company: CompanyEntity) {

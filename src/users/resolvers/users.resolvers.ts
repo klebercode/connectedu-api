@@ -1,4 +1,4 @@
-import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
+import { UseGuards, UseFilters } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -9,88 +9,97 @@ import {
   Parent,
 } from '@nestjs/graphql';
 
+import { MyContext } from '../../common/types/myContext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
-import { CreateUsersInput } from '../types/create-user.input';
-import { UpdateUsersInput } from '../types/update-user.input';
-import { MyContext } from '../../common/types/myContext';
+
 import { UserEntity } from '../entities/user.entity';
 import { UsersService } from '../users.service';
+import { CreateUsersInput } from '../types/create-user.input';
+import { UpdateUsersInput } from '../types/update-user.input';
+
 import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+import { ResolverDefault } from '../../common/resolvers/global.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => UserEntity)
 @UseFilters(HttpExceptionFilter)
-export class UsersResolver {
-  constructor(private readonly usersService: UsersService) {}
-  private nameApp = 'Usuário';
+export class UsersResolver extends ResolverDefault<
+  UserEntity,
+  CreateUsersInput,
+  UpdateUsersInput
+> {
+  constructor(private readonly usersService: UsersService) {
+    super('Usuário', usersService);
+  }
 
   @Query(() => UserEntity, { name: 'user' })
-  async getUser(@Args('id') id: number): Promise<UserEntity> {
-    try {
-      const obj = await this.usersService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+  async get(@Args('id') id: number): Promise<UserEntity> {
+    return super.get(id);
+  }
+
+  @Query(() => [UserEntity], { name: 'userMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<UserEntity[]> {
+    return super.getMany(ids);
   }
 
   @Query(() => [UserEntity], { name: 'userAll' })
-  async getUsers(): Promise<UserEntity[]> {
-    try {
-      return this.usersService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+  async getAll(): Promise<UserEntity[]> {
+    return super.getAll();
   }
 
   @Mutation(() => UserEntity, { name: 'userCreate' })
-  async createUser(
+  async create(
     @Context() context: MyContext,
     @Args('input') input: CreateUsersInput,
   ): Promise<UserEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.usersService.create(input, user['id']);
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+    return super.create(context, input);
+  }
+
+  @Mutation(() => [UserEntity], { name: 'userCreateMany' })
+  async createMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [CreateUsersInput] })
+    input: [CreateUsersInput],
+  ): Promise<UserEntity[]> {
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'userDelete' })
-  async deleteUser(@Args('id') id: number): Promise<boolean> {
-    try {
-      await this.usersService.remove(id);
-      const obj = await this.usersService.findOneById(id);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+  async delete(@Args('id') id: number): Promise<boolean> {
+    return super.delete(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'userDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => UserEntity, { name: 'userUpdate' })
-  async updateUser(
+  async update(
     @Context() context: MyContext,
     @Args('id') id: number,
     @Args('input') input: UpdateUsersInput,
   ): Promise<UserEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.usersService.update(id, { ...input }, user['id']);
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(context, id, input);
+  }
+
+  @Mutation(() => Boolean, { name: 'userUpdateMany' })
+  async updateMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [UpdateUsersInput] })
+    input: [UpdateUsersInput],
+  ): Promise<boolean> {
+    return super.updateMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'userUpdatePassword' })
@@ -107,6 +116,8 @@ export class UsersResolver {
       CustomException.catch(error, 'update', 'Password Usuário');
     }
   }
+
+  // **************************************  Resolucao de Campos
 
   @ResolveField('userCreated')
   async userCreated(@Parent() user: UserEntity): Promise<any> {

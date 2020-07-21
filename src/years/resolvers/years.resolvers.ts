@@ -1,4 +1,4 @@
-import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
+import { UseGuards, UseFilters } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -9,93 +9,105 @@ import {
   Parent,
 } from '@nestjs/graphql';
 
+import { MyContext } from '../../common/types/myContext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
-import { CreateYearInput } from '../types/create-year.input';
-import { MyContext } from '../../common/types/myContext';
+
 import { YearEntity } from '../entities/year.entity';
 import { YearsService } from '../years.service';
+import { CreateYearInput } from '../types/create-year.input';
+import { UpdateYearInput } from '../types/update-year.input';
+
 import { UsersService } from '../../users/users.service';
 import { UserEntity } from '../../users/entities/user.entity';
 import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+import { ResolverDefault } from '../../common/resolvers/global.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => YearEntity)
 @UseFilters(HttpExceptionFilter)
-export class YearsResolver {
+export class YearsResolver extends ResolverDefault<
+  YearEntity,
+  CreateYearInput,
+  UpdateYearInput
+> {
   constructor(
     private readonly yearsService: YearsService,
     private readonly usersService: UsersService,
-  ) {}
-  private nameApp = 'Exercício';
+  ) {
+    super('Exercício', yearsService);
+  }
 
   @Query(() => YearEntity, { name: 'year' })
-  async getYear(@Args('id') id: number): Promise<YearEntity> {
-    try {
-      const obj = await this.yearsService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+  async get(@Args('id') id: number): Promise<YearEntity> {
+    return super.get(id);
+  }
+
+  @Query(() => [YearEntity], { name: 'yearMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<YearEntity[]> {
+    return super.getMany(ids);
   }
 
   @Query(() => [YearEntity], { name: 'yearAll' })
-  async getYears(): Promise<YearEntity[]> {
-    try {
-      return this.yearsService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+  async getAll(): Promise<YearEntity[]> {
+    return super.getAll();
   }
 
   @Mutation(() => YearEntity, { name: 'yearCreate' })
-  async createYear(
+  async create(
     @Context() context: MyContext,
     @Args('input') input: CreateYearInput,
   ): Promise<YearEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.yearsService.create(input, user['id']);
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+    return super.create(context, input);
+  }
+
+  @Mutation(() => [YearEntity], { name: 'yearCreateMany' })
+  async createMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [CreateYearInput] })
+    input: [CreateYearInput],
+  ): Promise<YearEntity[]> {
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'yearDelete' })
-  async deleteYear(@Args('id') id: number): Promise<boolean> {
-    try {
-      await this.yearsService.remove(id);
-      const obj = await this.yearsService.findOneById(id);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+  async delete(@Args('id') id: number): Promise<boolean> {
+    return super.delete(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'yearDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => YearEntity, { name: 'yearUpdate' })
-  async updateYear(
+  async update(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('input') input: CreateYearInput,
+    @Args('input') input: UpdateYearInput,
   ): Promise<YearEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.yearsService.update(id, { ...input }, user['id']);
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(context, id, input);
   }
+
+  @Mutation(() => Boolean, { name: 'yearUpdateMany' })
+  async updateMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [UpdateYearInput] })
+    input: [UpdateYearInput],
+  ): Promise<boolean> {
+    return super.updateMany(context, input);
+  }
+
+  // **************************************  Resolucao de Campos
 
   @ResolveField(() => UserEntity)
   async userCreated(@Parent() yearEntity: YearEntity): Promise<any> {

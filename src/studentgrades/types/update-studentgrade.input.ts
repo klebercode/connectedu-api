@@ -3,7 +3,7 @@ import { MaxLength, IsOptional } from 'class-validator';
 
 @InputType()
 export class UpdateStudentGradeInput {
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   @IsOptional()
   id?: number;
 

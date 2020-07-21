@@ -13,10 +13,10 @@ import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { MyContext } from '../../common/types/myContext';
 
-import { CreatStudentInformationInput } from '../types/create-studentinformation.input';
 import { StudentInformationEntity } from '../entities/studentinformation.entity';
 import { StudentInformationsService } from '../studentinformations.service';
-
+import { CreatStudentInformationInput } from '../types/create-studentinformation.input';
+import { UpdateStudentInformationInput } from '../types/update-studentinformation.input';
 //importados
 import { UsersService } from '../../users/users.service';
 import { UserEntity } from '../../users/entities/user.entity';
@@ -28,11 +28,16 @@ import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+import { ResolverDefault } from '../../common/resolvers/global.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => StudentInformationEntity)
 @UseFilters(HttpExceptionFilter)
-export class StudentInformationsResolver {
+export class StudentInformationsResolver extends ResolverDefault<
+  StudentInformationEntity,
+  CreatStudentInformationInput,
+  UpdateStudentInformationInput
+> {
   constructor(
     private readonly studentInformationsService: StudentInformationsService,
     private readonly usersService: UsersService,
@@ -40,86 +45,83 @@ export class StudentInformationsResolver {
     private readonly studentsService: StudentsService,
     private readonly yearsService: YearsService,
     private readonly classRoomsService: ClassRoomsService,
-  ) {}
-  private nameApp = 'Informações do Estudante';
+  ) {
+    super('Informações do Estudante', studentInformationsService);
+  }
 
   @Query(() => StudentInformationEntity, { name: 'studentInformation' })
-  async getStudentInformation(
-    @Args('id') id: number,
-  ): Promise<StudentInformationEntity> {
-    try {
-      const obj = await this.studentInformationsService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+  async get(@Args('id') id: number): Promise<StudentInformationEntity> {
+    return super.get(id);
+  }
+
+  @Query(() => [StudentInformationEntity], { name: 'studentInformationMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<StudentInformationEntity[]> {
+    return super.getMany(ids);
   }
 
   @Query(() => [StudentInformationEntity], { name: 'studentInformationAll' })
-  async getStudentInformations(): Promise<StudentInformationEntity[]> {
-    try {
-      return this.studentInformationsService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+  async getAll(): Promise<StudentInformationEntity[]> {
+    return super.getAll();
   }
 
   @Mutation(() => StudentInformationEntity, {
     name: 'studentInformationCreate',
   })
-  async createStudentInformation(
+  async create(
     @Context() context: MyContext,
     @Args('input') input: CreatStudentInformationInput,
   ): Promise<StudentInformationEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.studentInformationsService.create(
-        input,
-        user['id'],
-      );
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+    return super.create(context, input);
+  }
+
+  @Mutation(() => [StudentInformationEntity], {
+    name: 'sstudentInformationCreateMany',
+  })
+  async createMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [CreatStudentInformationInput] })
+    input: [CreatStudentInformationInput],
+  ): Promise<StudentInformationEntity[]> {
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'studentInformationDelete' })
-  async deleteStudentInformation(@Args('id') id: number): Promise<boolean> {
-    try {
-      await this.studentInformationsService.remove(id);
-      const obj = await this.studentInformationsService.findOneById(id);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+  async delete(@Args('id') id: number): Promise<boolean> {
+    return super.delete(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'studentInformationDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => StudentInformationEntity, {
     name: 'studentInformationUpdate',
   })
-  async updateStudentInformation(
+  async update(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('input') input: CreatStudentInformationInput,
+    @Args('input') input: UpdateStudentInformationInput,
   ): Promise<StudentInformationEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.studentInformationsService.update(
-        id,
-        { ...input },
-        user['id'],
-      );
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(context, id, input);
   }
+
+  @Mutation(() => Boolean, { name: 'studentInformationUpdateMany' })
+  async updateMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [UpdateStudentInformationInput] })
+    input: [UpdateStudentInformationInput],
+  ): Promise<boolean> {
+    return super.updateMany(context, input);
+  }
+
+  // **************************************  Resolucao de Campos
 
   @ResolveField('student')
   async student(

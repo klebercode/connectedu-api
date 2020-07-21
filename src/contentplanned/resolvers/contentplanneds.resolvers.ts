@@ -13,9 +13,10 @@ import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { MyContext } from '../../common/types/myContext';
 
-import { CreatContentPlannedInput } from '../types/create-contentplanned.input';
 import { ContentPlannedEntity } from '../entities/contentplanned.entity';
 import { ContentPlannedsService } from '../contentplanneds.service';
+import { CreatContentPlannedInput } from '../types/create-contentplanned.input';
+import { UpdateContentPlannedInput } from '../types/update-contentplanned.input';
 
 //importados
 import { UsersService } from '../../users/users.service';
@@ -28,11 +29,16 @@ import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+import { ResolverDefault } from '../../common/resolvers/global.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ContentPlannedEntity)
 @UseFilters(HttpExceptionFilter)
-export class ContentPlannedsResolver {
+export class ContentPlannedsResolver extends ResolverDefault<
+  ContentPlannedEntity,
+  CreatContentPlannedInput,
+  UpdateContentPlannedInput
+> {
   constructor(
     private readonly contentPlannedsService: ContentPlannedsService,
     private readonly usersService: UsersService,
@@ -40,83 +46,81 @@ export class ContentPlannedsResolver {
     private readonly subjectsService: SubjectsService,
     private readonly teachersService: TeachersService,
     private readonly classRoomsService: ClassRoomsService,
-  ) {}
-  private nameApp = 'Conteúdo Planejado';
+  ) {
+    super('Conteúdo Planejado', contentPlannedsService);
+  }
 
   @Query(() => ContentPlannedEntity, { name: 'contentPlanned' })
-  async getContentPlanned(
-    @Args('id') id: number,
-  ): Promise<ContentPlannedEntity> {
-    try {
-      const obj = await this.contentPlannedsService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+  async get(@Args('id') id: number): Promise<ContentPlannedEntity> {
+    return super.get(id);
+  }
+
+  @Query(() => [ContentPlannedEntity], { name: 'contentPlannedMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<ContentPlannedEntity[]> {
+    return super.getMany(ids);
   }
 
   @Query(() => [ContentPlannedEntity], { name: 'contentPlannedAll' })
-  async getContentPlanneds(): Promise<ContentPlannedEntity[]> {
-    try {
-      return this.contentPlannedsService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+  async getAll(): Promise<ContentPlannedEntity[]> {
+    return super.getAll();
   }
 
   @Mutation(() => ContentPlannedEntity, {
     name: 'contentPlannedCreate',
   })
-  async createContentPlanned(
+  async create(
     @Context() context: MyContext,
     @Args('input') input: CreatContentPlannedInput,
   ): Promise<ContentPlannedEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.contentPlannedsService.create(input, user['id']);
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+    return super.create(context, input);
+  }
+
+  @Mutation(() => [ContentPlannedEntity], { name: 'contentPlannedCreateMany' })
+  async createMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [CreatContentPlannedInput] })
+    input: [CreatContentPlannedInput],
+  ): Promise<ContentPlannedEntity[]> {
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'contentPlannedDelete' })
-  async deleteContentPlanned(@Args('id') id: number): Promise<boolean> {
-    try {
-      await this.contentPlannedsService.remove(id);
-      const obj = await this.contentPlannedsService.findOneById(id);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+  async delete(@Args('id') id: number): Promise<boolean> {
+    return super.delete(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'contentPlannedDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => ContentPlannedEntity, {
     name: 'contentPlannedUpdate',
   })
-  async updateContentPlanned(
+  async update(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('input') input: CreatContentPlannedInput,
+    @Args('input') input: UpdateContentPlannedInput,
   ): Promise<ContentPlannedEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.contentPlannedsService.update(
-        id,
-        { ...input },
-        user['id'],
-      );
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(context, id, input);
   }
+
+  @Mutation(() => Boolean, { name: 'contentPlannedUpdateMany' })
+  async updateMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [UpdateContentPlannedInput] })
+    input: [UpdateContentPlannedInput],
+  ): Promise<boolean> {
+    return super.updateMany(context, input);
+  }
+
+  // **************************************  Resolucao de Campos
 
   @ResolveField('classroom')
   async classroom(

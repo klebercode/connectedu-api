@@ -533,28 +533,35 @@ type Query {
   customer(id: Float!): Customer!
   customerAll: [Customer!]!
   user(id: Float!): UserEntity!
+  userMany(ids: [Float!]!): [UserEntity!]!
   userAll: [UserEntity!]!
   userLogin(password: String!, email: String!): String!
   student(id: Float!): StudentEntity!
+  studentMany(ids: [Float!]!): [StudentEntity!]!
   studentAll: [StudentEntity!]!
   state(id: Float!): StateEntity!
   stateAll: [StateEntity!]!
   city(id: Float!): CityEntity!
   cityAll: [CityEntity!]!
   responsible(id: Float!): ResponsibleEntity!
+  responsibleMany(ids: [Float!]!): [ResponsibleEntity!]!
   responsibleAll: [ResponsibleEntity!]!
   userPermission(id: Float!): UserPermissionEntity!
+  userPermissionMany(ids: [Float!]!): [UserPermissionEntity!]!
   userPermissionAll: [UserPermissionEntity!]!
   permission(id: Float!): PermissionEntity!
   permissionAll: [PermissionEntity!]!
   company(id: Float!): CompanyEntity!
+  companyMany(ids: [Float!]!): [CompanyEntity!]!
   companyAll: [CompanyEntity!]!
   year(id: Float!): YearEntity!
+  yearMany(ids: [Float!]!): [YearEntity!]!
   yearAll: [YearEntity!]!
   subject(id: Float!): SubjectEntity!
   subjectMany(ids: [Float!]!): [SubjectEntity!]!
   subjectAll: [SubjectEntity!]!
   teacher(id: Float!): TeacherEntity!
+  teacherMany(ids: [Float!]!): [TeacherEntity!]!
   teacherAll: [TeacherEntity!]!
   classRoom(id: Float!): ClassRoomEntity!
   classRoomMany(ids: [Float!]!): [ClassRoomEntity!]!
@@ -566,20 +573,28 @@ type Query {
   classRoomInjectMany(ids: [Float!]!): [ClassRoomInjectEntity!]!
   classRoomInjectAll: [ClassRoomInjectEntity!]!
   studentInformation(id: Float!): StudentInformationEntity!
+  studentInformationMany(ids: [Float!]!): [StudentInformationEntity!]!
   studentInformationAll: [StudentInformationEntity!]!
   employee(id: Float!): EmployeeEntity!
+  employeetMany(ids: [Float!]!): [EmployeeEntity!]!
   employeeAll: [EmployeeEntity!]!
   occurrence(id: Float!): OccurrenceEntity!
+  occurrenceMany(ids: [Float!]!): [OccurrenceEntity!]!
   occurrenceAll: [OccurrenceEntity!]!
   studentOccurrence(id: Float!): StudentOccurrenceEntity!
+  studentOccurrenceMany(ids: [Float!]!): [StudentOccurrenceEntity!]!
   studentOccurrenceAll: [StudentOccurrenceEntity!]!
   studentGrade(id: Float!): StudentGradeEntity!
+  studentGradeMany(ids: [Float!]!): [StudentGradeEntity!]!
   studentGradeAll: [StudentGradeEntity!]!
   studentCall(id: Float!): StudentCallEntity!
+  studentCallMany(ids: [Float!]!): [StudentCallEntity!]!
   studentCallAll: [StudentCallEntity!]!
   contentPlanned(id: Float!): ContentPlannedEntity!
+  contentPlannedMany(ids: [Float!]!): [ContentPlannedEntity!]!
   contentPlannedAll: [ContentPlannedEntity!]!
   contentApplied(id: Float!): ContentAppliedEntity!
+  contentAppliedMany(ids: [Float!]!): [ContentAppliedEntity!]!
   contentAppliedAll: [ContentAppliedEntity!]!
   organization(id: Float!): OrganizationEntity!
   organizationAll: [OrganizationEntity!]!
@@ -590,12 +605,18 @@ type Mutation {
   customerDelete(id: Float!): Boolean!
   customerUpdate(input: CreateCustomerInput!, id: Float!): Customer!
   userCreate(input: CreateUsersInput!): UserEntity!
+  userCreateMany(input: [CreateUsersInput!]!): [UserEntity!]!
   userDelete(id: Float!): Boolean!
+  userDeleteMany(ids: [Float!]!): Boolean!
   userUpdate(input: UpdateUsersInput!, id: Float!): UserEntity!
+  userUpdateMany(input: [UpdateUsersInput!]!): Boolean!
   userUpdatePassword(input: String!, id: Float!): Boolean!
   studentCreate(input: CreateStudentInput!): StudentEntity!
+  studentCreateMany(input: [CreateStudentInput!]!): [StudentEntity!]!
   studentDelete(id: Float!): Boolean!
-  studentUpdate(input: CreateStudentInput!, id: Float!): StudentEntity!
+  studentDeleteMany(ids: [Float!]!): Boolean!
+  studentUpdate(input: UpdateStudentInput!, id: Float!): StudentEntity!
+  studentUpdateMany(input: [UpdateStudentInput!]!): Boolean!
   stateCreate(input: CreateStateInput!): StateEntity!
   stateDelete(id: Float!): Boolean!
   stateUpdate(input: CreateStateInput!, id: Float!): StateEntity!
@@ -603,29 +624,43 @@ type Mutation {
   cityDelete(id: Float!): Boolean!
   cityUpdate(input: CreateCityInput!, id: Float!): CityEntity!
   responsibleCreate(input: CreateResponsibleInput!): ResponsibleEntity!
+  subjectCreateMany(input: [CreateSubjectInput!]!): [SubjectEntity!]!
   responsibleDelete(id: Float!): Boolean!
-  responsibleUpdate(input: CreateResponsibleInput!, id: Float!): ResponsibleEntity!
+  responsibleDeleteMany(ids: [Float!]!): Boolean!
+  responsibleUpdate(input: UpdateResponsibleInput!, id: Float!): ResponsibleEntity!
+  responsibleUpdateMany(input: [UpdateResponsibleInput!]!): Boolean!
   userPermissionCreate(input: CreateUserPermissionInput!): UserPermissionEntity!
+  userPermissionCreateMany(input: [CreateUserPermissionInput!]!): [UserPermissionEntity!]!
   userPermissionDelete(id: Float!): Boolean!
-  userPermissionUpdate(input: CreateUserPermissionInput!, id: Float!): UserPermissionEntity!
+  userPermissionDeleteMany(ids: [Float!]!): Boolean!
+  userPermissionUpdate(input: UpdateUserPermissionInput!, id: Float!): UserPermissionEntity!
+  userPermissionUpdateMany(input: [UpdateUserPermissionInput!]!): Boolean!
   permissionCreate(input: CreatePermissionInput!): PermissionEntity!
   permissionDelete(id: Float!): Boolean!
   permissionUpdate(input: CreatePermissionInput!, id: Float!): PermissionEntity!
   companyCreate(input: CreateCompanyInput!): CompanyEntity!
+  companyCreateMany(input: [CreateCompanyInput!]!): [CompanyEntity!]!
   companyDelete(id: Float!): Boolean!
+  companyDeleteMany(ids: [Float!]!): Boolean!
   companyUpdate(input: UpdateCompanyInput!, id: Float!): CompanyEntity!
+  companyUpdateMany(input: [UpdateCompanyInput!]!): Boolean!
   yearCreate(input: CreateYearInput!): YearEntity!
+  yearCreateMany(input: [CreateYearInput!]!): [YearEntity!]!
   yearDelete(id: Float!): Boolean!
-  yearUpdate(input: CreateYearInput!, id: Float!): YearEntity!
+  yearDeleteMany(ids: [Float!]!): Boolean!
+  yearUpdate(input: UpdateYearInput!, id: Float!): YearEntity!
+  yearUpdateMany(input: [UpdateYearInput!]!): Boolean!
   subjectCreate(input: CreateSubjectInput!): SubjectEntity!
-  subjectCreateMany(input: [CreateSubjectInput!]!): [SubjectEntity!]!
   subjectDelete(id: Float!): Boolean!
   subjectDeleteMany(ids: [Float!]!): Boolean!
   subjectUpdate(input: UpdateSubjectInput!, id: Float!): SubjectEntity!
   subjectUpdateMany(input: [UpdateSubjectInput!]!): Boolean!
   teacherCreate(input: CreateTeacherInput!): TeacherEntity!
+  teacherCreateMany(input: [CreateTeacherInput!]!): [TeacherEntity!]!
   teacherDelete(id: Float!): Boolean!
-  teacherUpdate(input: CreateTeacherInput!, id: Float!): TeacherEntity!
+  teacherDeleteMany(ids: [Float!]!): Boolean!
+  teacherUpdate(input: UpdateTeacherInput!, id: Float!): TeacherEntity!
+  teacherUpdateMany(input: [UpdateTeacherInput!]!): Boolean!
   classRoomCreate(input: CreateClassRoomInput!): ClassRoomEntity!
   classRoomCreateMany(input: [CreateClassRoomInput!]!): [ClassRoomEntity!]!
   classRoomDelete(id: Float!): Boolean!
@@ -645,29 +680,53 @@ type Mutation {
   classRoomInjectUpdate(input: UpdateClassRoomInjectInput!, id: Float!): ClassRoomInjectEntity!
   classRoomInjectUpdateMany(input: [UpdateClassRoomInjectInput!]!): Boolean!
   studentInformationCreate(input: CreatStudentInformationInput!): StudentInformationEntity!
+  sstudentInformationCreateMany(input: [CreatStudentInformationInput!]!): [StudentInformationEntity!]!
   studentInformationDelete(id: Float!): Boolean!
-  studentInformationUpdate(input: CreatStudentInformationInput!, id: Float!): StudentInformationEntity!
+  studentInformationDeleteMany(ids: [Float!]!): Boolean!
+  studentInformationUpdate(input: UpdateStudentInformationInput!, id: Float!): StudentInformationEntity!
+  studentInformationUpdateMany(input: [UpdateStudentInformationInput!]!): Boolean!
   employeeCreate(input: CreateEmploeeInput!): EmployeeEntity!
+  employeeCreateMany(input: [CreateEmploeeInput!]!): [EmployeeEntity!]!
   employeeDelete(id: Float!): Boolean!
-  employeeUpdate(input: CreateEmploeeInput!, id: Float!): EmployeeEntity!
+  employeeDeleteMany(ids: [Float!]!): Boolean!
+  employeeUpdate(input: UpdateEmploeeInput!, id: Float!): EmployeeEntity!
+  employeeUpdateMany(input: [UpdateEmploeeInput!]!): Boolean!
   occurrenceCreate(input: CreateOccurrenceInput!): OccurrenceEntity!
+  occurrenceCreateMany(input: [CreateOccurrenceInput!]!): [OccurrenceEntity!]!
   occurrenceDelete(id: Float!): Boolean!
-  occurrenceUpdate(input: CreateOccurrenceInput!, id: Float!): OccurrenceEntity!
+  occurrenceDeleteMany(ids: [Float!]!): Boolean!
+  occurrenceUpdate(input: UpdateOccurrenceInput!, id: Float!): OccurrenceEntity!
+  occurrenceUpdateMany(input: [UpdateOccurrenceInput!]!): Boolean!
   studentOccurrenceCreate(input: CreatStudentOccurrenceInput!): StudentOccurrenceEntity!
+  studentOccurrenceCreateMany(input: [CreatStudentOccurrenceInput!]!): [StudentOccurrenceEntity!]!
   studentOccurrenceDelete(id: Float!): Boolean!
-  studentOccurrenceUpdate(input: CreatStudentOccurrenceInput!, id: Float!): StudentOccurrenceEntity!
+  studentOccurrenceDeleteMany(ids: [Float!]!): Boolean!
+  studentOccurrenceUpdate(input: UpdateStudentOccurrenceInput!, id: Float!): StudentOccurrenceEntity!
+  studentOccurrenceUpdateMany(input: [UpdateStudentOccurrenceInput!]!): Boolean!
   studentGradeCreate(input: CreatStudentGradeInput!): StudentGradeEntity!
+  studentGradeCreateMany(input: [CreatStudentGradeInput!]!): [StudentGradeEntity!]!
   studentGradeDelete(id: Float!): Boolean!
-  studentGradeUpdate(input: CreatStudentGradeInput!, id: Float!): StudentGradeEntity!
+  studentGradeDeleteMany(ids: [Float!]!): Boolean!
+  studentGradeUpdate(input: UpdateStudentGradeInput!, id: Float!): StudentGradeEntity!
+  studentGradeUpdateMany(input: [UpdateStudentGradeInput!]!): Boolean!
   studentCallCreate(input: CreatStudentCallInput!): StudentCallEntity!
+  studentCallCreateMany(input: [CreatStudentCallInput!]!): [StudentCallEntity!]!
   studentCallDelete(id: Float!): Boolean!
-  studentCallUpdate(input: CreatStudentCallInput!, id: Float!): StudentCallEntity!
+  studentCallDeleteMany(ids: [Float!]!): Boolean!
+  studentCallUpdate(input: UpdateStudentCallInput!, id: Float!): StudentCallEntity!
+  studentCallUpdateMany(input: [UpdateStudentCallInput!]!): Boolean!
   contentPlannedCreate(input: CreatContentPlannedInput!): ContentPlannedEntity!
+  contentPlannedCreateMany(input: [CreatContentPlannedInput!]!): [ContentPlannedEntity!]!
   contentPlannedDelete(id: Float!): Boolean!
-  contentPlannedUpdate(input: CreatContentPlannedInput!, id: Float!): ContentPlannedEntity!
+  contentPlannedDeleteMany(ids: [Float!]!): Boolean!
+  contentPlannedUpdate(input: UpdateContentPlannedInput!, id: Float!): ContentPlannedEntity!
+  contentPlannedUpdateMany(input: [UpdateContentPlannedInput!]!): Boolean!
   contentAppliedCreate(input: CreatContentAppliedInput!): ContentAppliedEntity!
+  contentAppliedCreateMany(input: [CreatContentAppliedInput!]!): [ContentAppliedEntity!]!
   contentAppliedDelete(id: Float!): Boolean!
-  contentAppliedUpdate(input: CreatContentAppliedInput!, id: Float!): ContentAppliedEntity!
+  contentAppliedDeleteMany(ids: [Float!]!): Boolean!
+  contentAppliedUpdate(input: UpdateContentAppliedInput!, id: Float!): ContentAppliedEntity!
+  contentAppliedUpdateMany(input: [UpdateContentAppliedInput!]!): Boolean!
   organizationCreate(input: CreateOrganizationInput!): OrganizationEntity!
   organizationDelete(id: Float!): Boolean!
   organizationUpdate(input: CreateOrganizationInput!, id: Float!): OrganizationEntity!
@@ -699,6 +758,40 @@ input UpdateUsersInput {
 }
 
 input CreateStudentInput {
+  name: String
+  useNickName: Boolean
+  nickName: String
+  dateBirth: DateTime
+  gender: String
+  codeNationality: String
+  stateNaturalnessId: Float
+  cityNaturalnessId: Float
+  stateNaturalnessForeign: String
+  naturalnessForeign: String
+  nationalityForeign: String
+  reside: String
+  resideResponsableId: Float
+  fatherId: Float
+  motherId: Float
+  adress: String
+  district: String
+  complement: String
+  stateId: Float
+  cityId: Float
+  zipCode: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cpf: String
+  identity: String
+  OrgIdentity: String
+  note: String
+  profile: String
+}
+
+input UpdateStudentInput {
+  id: Float
   name: String
   useNickName: Boolean
   nickName: String
@@ -768,7 +861,53 @@ input CreateResponsibleInput {
   profile: String
 }
 
+input CreateSubjectInput {
+  description: String
+  abbreviation: String
+  descriptionMinutes: String
+  status: Boolean
+}
+
+input UpdateResponsibleInput {
+  id: Float
+  name: String
+  dateBirth: DateTime
+  gender: String
+  codeNationality: String
+  nationality: String
+  adress: String
+  district: String
+  complement: String
+  stateId: Float
+  cityId: Float
+  zipCode: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cpf: String
+  identity: String
+  OrgIdentity: String
+  civilStatus: Boolean
+  note: String
+  profession: String
+  workCompany: String
+  workPhone: String
+  profile: String
+}
+
 input CreateUserPermissionInput {
+  userId: Float!
+  codeId: Float!
+  create: Boolean
+  edit: Boolean
+  delete: Boolean
+  list: Boolean
+  visible: Boolean
+}
+
+input UpdateUserPermissionInput {
+  id: Float
   userId: Float!
   codeId: Float!
   create: Boolean
@@ -840,11 +979,15 @@ input CreateYearInput {
   dateModule4: DateTime
 }
 
-input CreateSubjectInput {
-  description: String
-  abbreviation: String
-  descriptionMinutes: String
-  status: Boolean
+input UpdateYearInput {
+  id: Float
+  year: String
+  dateBegin: DateTime
+  dateEnd: DateTime
+  dateModule1: DateTime
+  dateModule2: DateTime
+  dateModule3: DateTime
+  dateModule4: DateTime
 }
 
 input UpdateSubjectInput {
@@ -856,6 +999,28 @@ input UpdateSubjectInput {
 }
 
 input CreateTeacherInput {
+  name: String
+  nickName: String
+  adress: String
+  district: String
+  complement: String
+  stateId: Float
+  cityId: Float
+  zipCode: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cpf: String
+  identity: String
+  OrgIdentity: String
+  status: Boolean
+  note: String
+  profile: String
+}
+
+input UpdateTeacherInput {
+  id: Float
   name: String
   nickName: String
   adress: String
@@ -976,7 +1141,53 @@ input CreatStudentInformationInput {
   relationshipPedag: Float
 }
 
+input UpdateStudentInformationInput {
+  id: Float
+  studentId: Float
+  yearId: Float
+  dateRegistration: DateTime
+  classroomId: Float
+  situation: String
+  numberStudent: Float
+  payday: Float
+  formPayment: Float
+  monthlyDiscount: Float
+  dateExit: Date
+  reasonExit: String
+  descriptionReason: String
+  responsible1Id: Float
+  relationship1: Float
+  responsible2Id: Float
+  relationship2: Float
+  responsiblePedagId: Float
+  relationshipPedag: Float
+}
+
 input CreateEmploeeInput {
+  name: String
+  nickName: String
+  adress: String
+  district: String
+  complement: String
+  stateId: Float
+  cityId: Float
+  zipCode: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cpf: String
+  identity: String
+  OrgIdentity: String
+  status: Boolean
+  setor: Float
+  function: Float
+  note: String
+  profile: String
+}
+
+input UpdateEmploeeInput {
+  id: Float
   name: String
   nickName: String
   adress: String
@@ -1006,7 +1217,27 @@ input CreateOccurrenceInput {
   points: Float
 }
 
+input UpdateOccurrenceInput {
+  id: Float
+  description: String
+  status: Boolean
+  type: Float
+  points: Float
+}
+
 input CreatStudentOccurrenceInput {
+  occurrenceId: Float
+  studentId: Float
+  date: DateTime
+  typeOrigin: Float
+  teacherId: Float
+  subjectId: Float
+  employeeId: Float
+  note: String
+}
+
+input UpdateStudentOccurrenceInput {
+  id: Float
   occurrenceId: Float
   studentId: Float
   date: DateTime
@@ -1028,7 +1259,30 @@ input CreatStudentGradeInput {
   concept: String
 }
 
+input UpdateStudentGradeInput {
+  id: Float
+  studentId: Float!
+  yearId: Float!
+  subjectId: Float!
+  unit: String!
+  typeUnit: String!
+  typeGrade: Float!
+  grade: Float
+  concept: String
+}
+
 input CreatStudentCallInput {
+  studentId: Float!
+  subjectId: Float!
+  date: DateTime!
+  time: DateTime
+  state: String
+  justify: Boolean
+  reason: String
+}
+
+input UpdateStudentCallInput {
+  id: Float
   studentId: Float!
   subjectId: Float!
   date: DateTime!
@@ -1052,7 +1306,38 @@ input CreatContentPlannedInput {
   classHome: String
 }
 
+input UpdateContentPlannedInput {
+  id: Float
+  yearId: Float!
+  subjectId: Float!
+  classroomId: Float!
+  teacherId: Float!
+  classDouble: Boolean
+  date: DateTime
+  content: String
+  process: String
+  ability: String
+  classWork: String
+  classHome: String
+}
+
 input CreatContentAppliedInput {
+  yearId: Float!
+  subjectId: Float!
+  classroomId: Float!
+  teacherId: Float!
+  classDouble: Boolean!
+  date: DateTime!
+  content: String
+  process: String
+  ability: String
+  classWork: String
+  classHome: String
+  justify: String
+}
+
+input UpdateContentAppliedInput {
+  id: Float
   yearId: Float!
   subjectId: Float!
   classroomId: Float!
