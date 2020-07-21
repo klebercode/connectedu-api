@@ -20,6 +20,7 @@ import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { CompanyEntity } from '../entities/company.entity';
 import { CompaniesService } from '../companies.service';
 import { CreateCompanyInput } from '../types/create-company.input';
+import { UpdateCompanyInput } from '../types/update-company.input';
 
 import { MyContext } from '../../common/types/myContext';
 import { StatesService } from '../../states/states.service';
@@ -98,7 +99,7 @@ export class CompaniesResolver {
   async updateCompany(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('input') input: CreateCompanyInput,
+    @Args('input') input: UpdateCompanyInput,
   ): Promise<CompanyEntity> {
     try {
       const { user } = context.req;

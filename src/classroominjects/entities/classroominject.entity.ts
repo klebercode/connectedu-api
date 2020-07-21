@@ -1,5 +1,12 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
+import {
+  Entity,
+  Column,
+  JoinColumn,
+  ManyToOne,
+  Unique,
+  OneToOne,
+} from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { UserBaseEntity } from 'src/users/entities/user-base-entity';
 import { UserEntity } from '../../users/entities/user.entity';
@@ -8,6 +15,7 @@ import { ClassRoomItemEntity } from '../../classroomitems/entities/classroomitem
 
 @ObjectType()
 @Entity('classroominject')
+@Unique(['classroomItemId'])
 export class ClassRoomInjectEntity extends UserBaseEntity {
   @Field({ nullable: true })
   @Column({ name: 'classroom_item_id', nullable: false })
@@ -15,7 +23,7 @@ export class ClassRoomInjectEntity extends UserBaseEntity {
   classroomItemId?: number;
 
   @Field(type => ClassRoomItemEntity, { nullable: true })
-  @ManyToOne(type => ClassRoomItemEntity)
+  @OneToOne(type => ClassRoomItemEntity)
   @JoinColumn({ name: 'classroom_item_id' })
   @IsOptional()
   classroomItem?: ClassRoomItemEntity;

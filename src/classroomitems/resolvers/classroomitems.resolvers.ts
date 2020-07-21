@@ -17,12 +17,14 @@ import {
 
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
-import { CreateClassRoomItemInput } from '../types/create-classroomitem.input';
 import { MyContext } from '../../common/types/myContext';
-import { ClassRoomItemEntity } from '../entities/classroomitem.entity';
-import { ClassRoomItemsService } from '../classroomitems.service';
 import { UsersService } from '../../users/users.service';
 import { UserEntity } from '../../users/entities/user.entity';
+
+import { ClassRoomItemEntity } from '../entities/classroomitem.entity';
+import { ClassRoomItemsService } from '../classroomitems.service';
+import { CreateClassRoomItemInput } from '../types/create-classroomitem.input';
+import { UpdateClassRoomItemInput } from '../types/update-classroomitem.input';
 
 import { ClassRoomsService } from '../../classrooms/classrooms.service';
 import { SubjectsService } from '../../subjects/subjects.service';
@@ -31,88 +33,93 @@ import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+import { ResolverDefault } from '../../common/resolvers/global.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ClassRoomItemEntity)
 @UseFilters(HttpExceptionFilter)
-export class ClassRoomItemsResolver {
+export class ClassRoomItemsResolver extends ResolverDefault<
+  ClassRoomItemEntity,
+  CreateClassRoomItemInput,
+  UpdateClassRoomItemInput
+> {
   constructor(
     private readonly classRoomItemsService: ClassRoomItemsService,
     private readonly usersService: UsersService,
     private readonly classRoomsService: ClassRoomsService,
     private readonly subjectsService: SubjectsService,
     private readonly teachersService: TeachersService,
-  ) {}
-  private nameApp = 'Matéria-Série';
+  ) {
+    super('Matéria-Série', classRoomItemsService);
+  }
 
   @Query(() => ClassRoomItemEntity, { name: 'classRoomItem' })
-  async getClassRoomItem(@Args('id') id: number): Promise<ClassRoomItemEntity> {
-    try {
-      const obj = await this.classRoomItemsService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+  async get(@Args('id') id: number): Promise<ClassRoomItemEntity> {
+    return super.get(id);
+  }
+
+  @Query(() => [ClassRoomItemEntity], { name: 'classRoomItemMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<ClassRoomItemEntity[]> {
+    return super.getMany(ids);
   }
 
   @Query(() => [ClassRoomItemEntity], { name: 'classRoomItemAll' })
-  async getClassRoomItems(): Promise<ClassRoomItemEntity[]> {
-    try {
-      return this.classRoomItemsService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+  async getAll(): Promise<ClassRoomItemEntity[]> {
+    return super.getAll();
   }
 
   @Mutation(() => ClassRoomItemEntity, { name: 'classRoomItemCreate' })
-  async createClassRoomItem(
+  async create(
     @Context() context: MyContext,
     @Args('input') input: CreateClassRoomItemInput,
   ): Promise<ClassRoomItemEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.classRoomItemsService.create(input, user['id']);
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+    return super.create(context, input);
+  }
+
+  @Mutation(() => [ClassRoomItemEntity], { name: 'classRoomItemMany' })
+  async createMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [CreateClassRoomItemInput] })
+    input: [CreateClassRoomItemInput],
+  ): Promise<ClassRoomItemEntity[]> {
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'classRoomItemDelete' })
-  async deleteClassRoomItem(@Args('id') id: number): Promise<boolean> {
-    try {
-      await this.classRoomItemsService.remove(id);
-      const obj = await this.classRoomItemsService.findOneById(id);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+  async delete(@Args('id') id: number): Promise<boolean> {
+    return super.delete(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'classRoomItemDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => ClassRoomItemEntity, { name: 'classRoomItemUpdate' })
-  async updateClassRoomItem(
+  async update(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('input') input: CreateClassRoomItemInput,
+    @Args('input') input: UpdateClassRoomItemInput,
   ): Promise<ClassRoomItemEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.classRoomItemsService.update(
-        id,
-        { ...input },
-        user['id'],
-      );
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(context, id, input);
   }
+
+  @Mutation(() => Boolean, { name: 'classRoomItemUpdateMany' })
+  async updateMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [UpdateClassRoomItemInput] })
+    input: [UpdateClassRoomItemInput],
+  ): Promise<boolean> {
+    return super.updateMany(context, input);
+  }
+
+  // **************************************  Resolucao de Campos
 
   @ResolveField('classroom')
   async classroom(

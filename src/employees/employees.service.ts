@@ -1,55 +1,21 @@
-import { Inject, GoneException } from '@nestjs/common';
-import { Repository, Connection } from 'typeorm';
+import { Inject } from '@nestjs/common';
+import { Connection } from 'typeorm';
+
 import { CustomersServiceDecorator } from '../customers/customers-service.decorator';
 import { CUSTOMER_CONNECTION } from '../customers/customers.module';
+import { ServiceDefault } from '../common/services/global.service';
 
-import { CreateEmploeeInput } from './types/create-employee.input';
 import { EmployeeEntity } from './entities/employee.entity';
+import { CreateEmploeeInput } from './types/create-employee.input';
+import { UpdateEmploeeInput } from './types/update-employee.input';
 
 @CustomersServiceDecorator()
-export class EmployeesService {
-  private employeeRepository: Repository<EmployeeEntity>;
-  constructor(@Inject(CUSTOMER_CONNECTION) private connection: Connection) {
-    this.employeeRepository = this.connection.getRepository(EmployeeEntity);
-  }
-
-  async create(
-    employee: CreateEmploeeInput,
-    idUser: any,
-  ): Promise<EmployeeEntity> {
-    const obj = await this.employeeRepository.save({
-      ...employee,
-      userCreatedId: idUser,
-      userUpdatedId: idUser,
-    });
-    return obj;
-  }
-
-  async findOneById(id: number): Promise<EmployeeEntity> {
-    const obj = await this.employeeRepository.findOne(id);
-    if (!obj) {
-      return null;
-    }
-    return obj;
-  }
-
-  async findAll(): Promise<EmployeeEntity[]> {
-    return await this.employeeRepository.find();
-  }
-
-  async remove(id: number): Promise<void> {
-    await this.employeeRepository.delete(id);
-  }
-
-  async update(
-    id: number,
-    employee: Partial<CreateEmploeeInput>,
-    idUser: any,
-  ): Promise<EmployeeEntity> {
-    await this.employeeRepository.update(id, {
-      ...employee,
-      userUpdatedId: idUser,
-    });
-    return this.findOneById(id);
+export class EmployeesService extends ServiceDefault<
+  EmployeeEntity,
+  CreateEmploeeInput,
+  UpdateEmploeeInput
+> {
+  constructor(@Inject(CUSTOMER_CONNECTION) connection: Connection) {
+    super(connection, EmployeeEntity);
   }
 }

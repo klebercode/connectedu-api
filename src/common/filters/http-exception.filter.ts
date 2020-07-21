@@ -44,6 +44,18 @@ export class CustomException extends HttpException {
       case 'UPDATE':
         this.message = 'Erro ao tentar salvar registro';
         break;
+      case 'CREATEMANY':
+        this.message = 'Erro ao tentar gravar lista de novos registros';
+        break;
+      case 'GETMANY':
+        this.message = 'Registros da lista não localizados';
+        break;
+      case 'DELETEMANY':
+        this.message = 'Erro ao tentar deletar lista de registros';
+        break;
+      case 'UPDATEMANY':
+        this.message = 'Erro ao tentar salvar lista de registros';
+        break;
       default:
         this.message = 'Erro não identificado';
         break;

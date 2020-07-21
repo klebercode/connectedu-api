@@ -1,9 +1,4 @@
-import {
-  UseGuards,
-  HttpException,
-  UseFilters,
-  NotFoundException,
-} from '@nestjs/common';
+import { UseGuards, UseFilters } from '@nestjs/common';
 
 import {
   Args,
@@ -17,10 +12,13 @@ import {
 
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
-import { CreateClassRoomInput } from '../types/create-classroom.input';
 import { MyContext } from '../../common/types/myContext';
+
 import { ClassRoomEntity } from '../entities/classroom.entity';
 import { ClassRoomsService } from '../classrooms.service';
+import { CreateClassRoomInput } from '../types/create-classroom.input';
+import { UpdateClassRoomInput } from '../types/update-classroom.input';
+
 import { UsersService } from '../../users/users.service';
 import { CompaniesService } from '../../companies/companies.service';
 import { YearsService } from '../../years/years.service';
@@ -29,87 +27,92 @@ import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+import { ResolverDefault } from '../../common/resolvers/global.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ClassRoomEntity)
 @UseFilters(HttpExceptionFilter)
-export class ClassRoomsResolver {
+export class ClassRoomsResolver extends ResolverDefault<
+  ClassRoomEntity,
+  CreateClassRoomInput,
+  UpdateClassRoomInput
+> {
   constructor(
     private readonly classRoomsService: ClassRoomsService,
     private readonly usersService: UsersService,
     private readonly yearsService: YearsService,
     private readonly companiesService: CompaniesService,
-  ) {}
-  private nameApp = 'Série';
+  ) {
+    super('Série', classRoomsService);
+  }
 
   @Query(() => ClassRoomEntity, { name: 'classRoom' })
-  async getClassRoom(@Args('id') id: number): Promise<ClassRoomEntity> {
-    try {
-      const obj = await this.classRoomsService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+  async get(@Args('id') id: number): Promise<ClassRoomEntity> {
+    return super.get(id);
+  }
+
+  @Query(() => [ClassRoomEntity], { name: 'classRoomMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<ClassRoomEntity[]> {
+    return super.getMany(ids);
   }
 
   @Query(() => [ClassRoomEntity], { name: 'classRoomAll' })
-  async getClassRooms(): Promise<ClassRoomEntity[]> {
-    try {
-      return this.classRoomsService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+  async getAll(): Promise<ClassRoomEntity[]> {
+    return super.getAll();
   }
 
   @Mutation(() => ClassRoomEntity, { name: 'classRoomCreate' })
-  async createClassRoom(
+  async create(
     @Context() context: MyContext,
     @Args('input') input: CreateClassRoomInput,
   ): Promise<ClassRoomEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.classRoomsService.create(input, user['id']);
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+    return super.create(context, input);
+  }
+
+  @Mutation(() => [ClassRoomEntity], { name: 'classRoomCreateMany' })
+  async createMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [CreateClassRoomInput] })
+    input: [CreateClassRoomInput],
+  ): Promise<ClassRoomEntity[]> {
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'classRoomDelete' })
-  async deleteClassRoom(@Args('id') id: number): Promise<boolean> {
-    try {
-      await this.classRoomsService.remove(id);
-      const obj = await this.classRoomsService.findOneById(id);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+  async delete(@Args('id') id: number): Promise<boolean> {
+    return super.delete(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'classRoomDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => ClassRoomEntity, { name: 'classRoomUpdate' })
-  async updateClassRoom(
+  async update(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('input') input: CreateClassRoomInput,
+    @Args('input') input: UpdateClassRoomInput,
   ): Promise<ClassRoomEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.classRoomsService.update(
-        id,
-        { ...input },
-        user['id'],
-      );
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(context, id, input);
   }
+
+  @Mutation(() => Boolean, { name: 'classRoomUpdateMany' })
+  async updateMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [UpdateClassRoomInput] })
+    input: [UpdateClassRoomInput],
+  ): Promise<boolean> {
+    return super.updateMany(context, input);
+  }
+
+  // **************************************  Resolucao de Campos
 
   @ResolveField('year')
   async year(@Parent() classRoomEntity: ClassRoomEntity): Promise<any> {

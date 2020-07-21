@@ -11,11 +11,6 @@ export class CitiesService {
     private cityRepository: Repository<CityEntity>,
   ) {}
 
-  async create(city: CreateCityInput): Promise<CityEntity> {
-    const obj = await this.cityRepository.save(city);
-    return obj;
-  }
-
   async findOneById(id: number): Promise<CityEntity> {
     const obj = await this.cityRepository.findOne(id);
     if (!obj) {
@@ -26,6 +21,11 @@ export class CitiesService {
 
   async findAll(): Promise<CityEntity[]> {
     return await this.cityRepository.find();
+  }
+
+  async create(city: CreateCityInput): Promise<CityEntity> {
+    const obj = await this.cityRepository.save(city);
+    return obj;
   }
 
   async remove(id: number): Promise<void> {

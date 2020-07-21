@@ -552,14 +552,18 @@ type Query {
   year(id: Float!): YearEntity!
   yearAll: [YearEntity!]!
   subject(id: Float!): SubjectEntity!
+  subjectMany(ids: [Float!]!): [SubjectEntity!]!
   subjectAll: [SubjectEntity!]!
   teacher(id: Float!): TeacherEntity!
   teacherAll: [TeacherEntity!]!
   classRoom(id: Float!): ClassRoomEntity!
+  classRoomMany(ids: [Float!]!): [ClassRoomEntity!]!
   classRoomAll: [ClassRoomEntity!]!
   classRoomItem(id: Float!): ClassRoomItemEntity!
+  classRoomItemMany(ids: [Float!]!): [ClassRoomItemEntity!]!
   classRoomItemAll: [ClassRoomItemEntity!]!
   classRoomInject(id: Float!): ClassRoomInjectEntity!
+  classRoomInjectMany(ids: [Float!]!): [ClassRoomInjectEntity!]!
   classRoomInjectAll: [ClassRoomInjectEntity!]!
   studentInformation(id: Float!): StudentInformationEntity!
   studentInformationAll: [StudentInformationEntity!]!
@@ -609,27 +613,37 @@ type Mutation {
   permissionUpdate(input: CreatePermissionInput!, id: Float!): PermissionEntity!
   companyCreate(input: CreateCompanyInput!): CompanyEntity!
   companyDelete(id: Float!): Boolean!
-  companyUpdate(input: CreateCompanyInput!, id: Float!): CompanyEntity!
+  companyUpdate(input: UpdateCompanyInput!, id: Float!): CompanyEntity!
   yearCreate(input: CreateYearInput!): YearEntity!
   yearDelete(id: Float!): Boolean!
   yearUpdate(input: CreateYearInput!, id: Float!): YearEntity!
   subjectCreate(input: CreateSubjectInput!): SubjectEntity!
   subjectCreateMany(input: [CreateSubjectInput!]!): [SubjectEntity!]!
   subjectDelete(id: Float!): Boolean!
-  subjectUpdate(input: CreateSubjectInput!, id: Float!): SubjectEntity!
+  subjectDeleteMany(ids: [Float!]!): Boolean!
+  subjectUpdate(input: UpdateSubjectInput!, id: Float!): SubjectEntity!
   subjectUpdateMany(input: [UpdateSubjectInput!]!): Boolean!
   teacherCreate(input: CreateTeacherInput!): TeacherEntity!
   teacherDelete(id: Float!): Boolean!
   teacherUpdate(input: CreateTeacherInput!, id: Float!): TeacherEntity!
   classRoomCreate(input: CreateClassRoomInput!): ClassRoomEntity!
+  classRoomCreateMany(input: [CreateClassRoomInput!]!): [ClassRoomEntity!]!
   classRoomDelete(id: Float!): Boolean!
-  classRoomUpdate(input: CreateClassRoomInput!, id: Float!): ClassRoomEntity!
+  classRoomDeleteMany(ids: [Float!]!): Boolean!
+  classRoomUpdate(input: UpdateClassRoomInput!, id: Float!): ClassRoomEntity!
+  classRoomUpdateMany(input: [UpdateClassRoomInput!]!): Boolean!
   classRoomItemCreate(input: CreateClassRoomItemInput!): ClassRoomItemEntity!
+  classRoomItemMany(input: [CreateClassRoomItemInput!]!): [ClassRoomItemEntity!]!
   classRoomItemDelete(id: Float!): Boolean!
-  classRoomItemUpdate(input: CreateClassRoomItemInput!, id: Float!): ClassRoomItemEntity!
+  classRoomItemDeleteMany(ids: [Float!]!): Boolean!
+  classRoomItemUpdate(input: UpdateClassRoomItemInput!, id: Float!): ClassRoomItemEntity!
+  classRoomItemUpdateMany(input: [UpdateClassRoomItemInput!]!): Boolean!
   classRoomInjectCreate(input: CreateClassRoomInjectInput!): ClassRoomInjectEntity!
+  classRoomInjectCreateMany(input: [CreateClassRoomInjectInput!]!): [ClassRoomInjectEntity!]!
   classRoomInjectDelete(id: Float!): Boolean!
-  classRoomInjectUpdate(input: CreateClassRoomInjectInput!, id: Float!): ClassRoomInjectEntity!
+  classRoomInjectDeleteMany(ids: [Float!]!): Boolean!
+  classRoomInjectUpdate(input: UpdateClassRoomInjectInput!, id: Float!): ClassRoomInjectEntity!
+  classRoomInjectUpdateMany(input: [UpdateClassRoomInjectInput!]!): Boolean!
   studentInformationCreate(input: CreatStudentInformationInput!): StudentInformationEntity!
   studentInformationDelete(id: Float!): Boolean!
   studentInformationUpdate(input: CreatStudentInformationInput!, id: Float!): StudentInformationEntity!
@@ -792,6 +806,30 @@ input CreateCompanyInput {
   image: String
 }
 
+input UpdateCompanyInput {
+  id: Float
+  socialReason: String
+  nameFantasy: String
+  adress: String
+  district: String
+  complement: String
+  stateId: Float
+  cityId: Float
+  zipCode: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cnpj: String
+  recognition: String
+  publication: String
+  numberInep: String
+  principal: String
+  secretary: String
+  note: String
+  image: String
+}
+
 input CreateYearInput {
   year: String
   dateBegin: DateTime
@@ -851,6 +889,20 @@ input CreateClassRoomInput {
   yearId: Float
 }
 
+input UpdateClassRoomInput {
+  id: Float
+  description: String
+  abbreviation: String
+  descriptionMinutes: String
+  shift: String
+  type: String
+  level: String
+  classification: String
+  status: Boolean
+  companyId: Float
+  yearId: Float
+}
+
 input CreateClassRoomItemInput {
   classroomId: Float
   subjectId: Float
@@ -867,7 +919,34 @@ input CreateClassRoomItemInput {
   gradeMax: Float
 }
 
+input UpdateClassRoomItemInput {
+  id: Float
+  classroomId: Float
+  subjectId: Float
+  teacherId: Float
+  workHours: Float
+  visibleReport: Boolean
+  visibleMinute: Boolean
+  registerCall: Boolean
+  registerContent: Boolean
+  registerOccurrence: Boolean
+  type: String
+  numberGrades: Float
+  gradeMin: Float
+  gradeMax: Float
+}
+
 input CreateClassRoomInjectInput {
+  classroomItemId: Float!
+  subject1Id: Float
+  subject2Id: Float
+  subject3Id: Float
+  subject4Id: Float
+  average: Float
+}
+
+input UpdateClassRoomInjectInput {
+  id: Float
   classroomItemId: Float
   subject1Id: Float
   subject2Id: Float

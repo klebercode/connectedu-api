@@ -2,28 +2,25 @@ import { Field, InputType } from '@nestjs/graphql';
 import { MaxLength, IsOptional } from 'class-validator';
 
 @InputType()
-export class CreateClassRoomInjectInput {
-  @Field({ nullable: false })
+export class UpdateOccurrenceInput {
+  @Field({ nullable: true })
   @IsOptional()
-  classroomItemId?: number;
+  id?: number;
+
+  @Field({ nullable: true })
+  @MaxLength(60)
+  @IsOptional()
+  description?: string;
 
   @Field({ nullable: true })
   @IsOptional()
-  subject1Id?: number;
+  status?: boolean;
 
   @Field({ nullable: true })
   @IsOptional()
-  subject2Id?: number;
+  type?: number;
 
   @Field({ nullable: true })
   @IsOptional()
-  subject3Id?: number;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  subject4Id?: number;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  average?: number;
+  points?: number;
 }

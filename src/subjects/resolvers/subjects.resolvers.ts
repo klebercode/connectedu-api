@@ -1,4 +1,4 @@
-import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
+import { UseGuards, UseFilters } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -13,126 +13,101 @@ import { MyContext } from '../../common/types/myContext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
+import { SubjectEntity } from '../entities/subject.entity';
+import { SubjectsService } from '../subjects.service';
 import { CreateSubjectInput } from '../types/create-subject.input';
 import { UpdateSubjectInput } from '../types/update-subject.input';
 
-import { SubjectEntity } from '../entities/subject.entity';
-import { SubjectsService } from '../subjects.service';
 import { UsersService } from '../../users/users.service';
 import { UserEntity } from '../../users/entities/user.entity';
 import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+import { ResolverDefault } from '../../common/resolvers/global.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => SubjectEntity)
 @UseFilters(HttpExceptionFilter)
-export class SubjectsResolver {
+export class SubjectsResolver extends ResolverDefault<
+  SubjectEntity,
+  CreateSubjectInput,
+  UpdateSubjectInput
+> {
   constructor(
     private readonly subjectsService: SubjectsService,
     private readonly usersService: UsersService,
-  ) {}
-  private nameApp = 'Matéria';
+  ) {
+    super('Matéria', subjectsService);
+  }
 
   @Query(() => SubjectEntity, { name: 'subject' })
-  async getSubject(@Args('id') id: number): Promise<SubjectEntity> {
-    try {
-      const obj = await this.subjectsService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+  async get(@Args('id') id: number): Promise<SubjectEntity> {
+    return super.get(id);
+  }
+
+  @Query(() => [SubjectEntity], { name: 'subjectMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<SubjectEntity[]> {
+    return super.getMany(ids);
   }
 
   @Query(() => [SubjectEntity], { name: 'subjectAll' })
-  async getSubjects(): Promise<SubjectEntity[]> {
-    try {
-      return this.subjectsService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+  async getAll(): Promise<SubjectEntity[]> {
+    return super.getAll();
   }
 
   @Mutation(() => SubjectEntity, { name: 'subjectCreate' })
-  async createSubject(
+  async create(
     @Context() context: MyContext,
     @Args('input') input: CreateSubjectInput,
   ): Promise<SubjectEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.subjectsService.create(input, user['id']);
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+    return super.create(context, input);
   }
 
   @Mutation(() => [SubjectEntity], { name: 'subjectCreateMany' })
-  async createSubjectMany(
+  async createMany(
     @Context() context: MyContext,
     @Args({ name: 'input', type: () => [CreateSubjectInput] })
     input: [CreateSubjectInput],
   ): Promise<SubjectEntity[]> {
-    try {
-      const { user } = context.req;
-      const obj = await this.subjectsService.createMany(input, user['id']);
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'createMany', this.nameApp);
-    }
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'subjectDelete' })
-  async deleteSubject(@Args('id') id: number): Promise<boolean> {
-    try {
-      await this.subjectsService.remove(id);
-      const obj = await this.subjectsService.findOneById(id);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+  async delete(@Args('id') id: number): Promise<boolean> {
+    return super.delete(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'subjectDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => SubjectEntity, { name: 'subjectUpdate' })
-  async updateSubject(
+  async update(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('input') input: CreateSubjectInput,
+    @Args('input') input: UpdateSubjectInput,
   ): Promise<SubjectEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.subjectsService.update(
-        id,
-        { ...input },
-        user['id'],
-      );
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(context, id, input);
   }
 
   @Mutation(() => Boolean, { name: 'subjectUpdateMany' })
-  async updateSubjectMany(
+  async updateMany(
     @Context() context: MyContext,
     @Args({ name: 'input', type: () => [UpdateSubjectInput] })
     input: [UpdateSubjectInput],
   ): Promise<boolean> {
-    try {
-      const { user } = context.req;
-      const obj = await this.subjectsService.updateMany(input, user['id']);
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'updateMany', this.nameApp);
-    }
+    return super.updateMany(context, input);
   }
+
+  // **************************************  Resolucao de Campos
 
   @ResolveField(() => UserEntity)
   async userCreated(@Parent() subjectEntity: SubjectEntity): Promise<any> {

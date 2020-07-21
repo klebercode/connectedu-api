@@ -1,9 +1,4 @@
-import {
-  UseGuards,
-  HttpException,
-  UseFilters,
-  NotFoundException,
-} from '@nestjs/common';
+import { UseGuards, UseFilters } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -16,12 +11,15 @@ import {
 
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
-import { CreateClassRoomInjectInput } from '../types/create-classroominject.input';
 import { MyContext } from '../../common/types/myContext';
-import { ClassRoomInjectEntity } from '../entities/classroominject.entity';
-import { ClassRoomInjectsService } from '../classroominjects.service';
+
 import { UsersService } from '../../users/users.service';
 import { UserEntity } from '../../users/entities/user.entity';
+
+import { ClassRoomInjectEntity } from '../entities/classroominject.entity';
+import { ClassRoomInjectsService } from '../classroominjects.service';
+import { CreateClassRoomInjectInput } from '../types/create-classroominject.input';
+import { UpdateClassRoomInjectInput } from '../types/update-classroominject.input';
 
 import { SubjectsService } from '../../subjects/subjects.service';
 import { ClassRoomItemsService } from '../../classroomitems/classroomitems.service';
@@ -29,89 +27,94 @@ import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+import { ResolverDefault } from '../../common/resolvers/global.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ClassRoomInjectEntity)
 @UseFilters(HttpExceptionFilter)
-export class ClassRoomInjectsResolver {
+export class ClassRoomInjectsResolver extends ResolverDefault<
+  ClassRoomInjectEntity,
+  CreateClassRoomInjectInput,
+  UpdateClassRoomInjectInput
+> {
   constructor(
     private readonly classRoomInjectsService: ClassRoomInjectsService,
     private readonly usersService: UsersService,
     private readonly classRoomItemsService: ClassRoomItemsService,
     private readonly subjectsService: SubjectsService,
-  ) {}
-  private nameApp = 'Materia-Composta';
+  ) {
+    super('Matéria-Composta', classRoomInjectsService);
+  }
 
   @Query(() => ClassRoomInjectEntity, { name: 'classRoomInject' })
-  async getClassRoomInject(
-    @Args('id') id: number,
-  ): Promise<ClassRoomInjectEntity> {
-    try {
-      const obj = await this.classRoomInjectsService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+  async get(@Args('id') id: number): Promise<ClassRoomInjectEntity> {
+    return super.get(id);
+  }
+
+  @Query(() => [ClassRoomInjectEntity], { name: 'classRoomInjectMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<ClassRoomInjectEntity[]> {
+    return super.getMany(ids);
   }
 
   @Query(() => [ClassRoomInjectEntity], { name: 'classRoomInjectAll' })
-  async getClassRoomInjects(): Promise<ClassRoomInjectEntity[]> {
-    try {
-      return this.classRoomInjectsService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+  async getAll(): Promise<ClassRoomInjectEntity[]> {
+    return super.getAll();
   }
 
   @Mutation(() => ClassRoomInjectEntity, { name: 'classRoomInjectCreate' })
-  async createClassRoomInject(
+  async create(
     @Context() context: MyContext,
     @Args('input') input: CreateClassRoomInjectInput,
   ): Promise<ClassRoomInjectEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.classRoomInjectsService.create(input, user['id']);
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+    return super.create(context, input);
+  }
+
+  @Mutation(() => [ClassRoomInjectEntity], {
+    name: 'classRoomInjectCreateMany',
+  })
+  async createMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [CreateClassRoomInjectInput] })
+    input: [CreateClassRoomInjectInput],
+  ): Promise<ClassRoomInjectEntity[]> {
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'classRoomInjectDelete' })
-  async deleteClassRoomInject(@Args('id') id: number): Promise<boolean> {
-    try {
-      await this.classRoomInjectsService.remove(id);
-      const obj = await this.classRoomInjectsService.findOneById(id);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+  async delete(@Args('id') id: number): Promise<boolean> {
+    return super.delete(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'classRoomInjectDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => ClassRoomInjectEntity, { name: 'classRoomInjectUpdate' })
-  async updateClassRoomInject(
+  async update(
     @Context() context: MyContext,
     @Args('id') id: number,
-    @Args('input') input: CreateClassRoomInjectInput,
+    @Args('input') input: UpdateClassRoomInjectInput,
   ): Promise<ClassRoomInjectEntity> {
-    try {
-      const { user } = context.req;
-      const obj = await this.classRoomInjectsService.update(
-        id,
-        { ...input },
-        user['id'],
-      );
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(context, id, input);
   }
+
+  @Mutation(() => Boolean, { name: 'classRoomInjectUpdateMany' })
+  async updateMany(
+    @Context() context: MyContext,
+    @Args({ name: 'input', type: () => [UpdateClassRoomInjectInput] })
+    input: [UpdateClassRoomInjectInput],
+  ): Promise<boolean> {
+    return super.updateMany(context, input);
+  }
+
+  // **************************************  Resolucao de Campos
 
   @ResolveField('classroomItem')
   async classroomItem(
@@ -124,7 +127,7 @@ export class ClassRoomInjectsResolver {
     try {
       return this.classRoomItemsService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Materia-Série');
+      CustomException.catch(error, 'get', 'Matéria-Série');
     }
   }
 
@@ -139,7 +142,7 @@ export class ClassRoomInjectsResolver {
     try {
       return this.subjectsService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Materia');
+      CustomException.catch(error, 'get', 'Matéria');
     }
   }
 
@@ -154,7 +157,7 @@ export class ClassRoomInjectsResolver {
     try {
       return this.subjectsService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Materia');
+      CustomException.catch(error, 'get', 'Matéria');
     }
   }
 
@@ -169,7 +172,7 @@ export class ClassRoomInjectsResolver {
     try {
       return this.subjectsService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Materia');
+      CustomException.catch(error, 'get', 'Matéria');
     }
   }
 
@@ -184,7 +187,7 @@ export class ClassRoomInjectsResolver {
     try {
       return this.subjectsService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Materia');
+      CustomException.catch(error, 'get', 'Matéria');
     }
   }
 

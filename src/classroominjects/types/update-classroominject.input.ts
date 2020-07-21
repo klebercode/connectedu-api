@@ -2,8 +2,12 @@ import { Field, InputType } from '@nestjs/graphql';
 import { MaxLength, IsOptional } from 'class-validator';
 
 @InputType()
-export class CreateClassRoomInjectInput {
-  @Field({ nullable: false })
+export class UpdateClassRoomInjectInput {
+  @Field({ nullable: true })
+  @IsOptional()
+  id?: number;
+
+  @Field({ nullable: true })
   @IsOptional()
   classroomItemId?: number;
 
