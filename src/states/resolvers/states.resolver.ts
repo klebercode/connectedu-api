@@ -2,9 +2,11 @@ import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
-import { CreateStateInput } from '../types/create-state.input';
 import { StateEntity } from '../entities/state.object';
 import { StatesService } from '../states.service';
+import { CreateStateInput } from '../types/create-state.input';
+import { UpdateStateInput } from '../types/update-state.input';
+
 import {
   HttpExceptionFilter,
   CustomException,
@@ -68,7 +70,7 @@ export class StatesResolver {
   @Mutation(() => StateEntity, { name: 'stateUpdate' })
   async updateState(
     @Args('id') id: number,
-    @Args('input') input: CreateStateInput,
+    @Args('input') input: UpdateStateInput,
   ): Promise<StateEntity> {
     try {
       const obj = await this.statesService.update(id, { ...input });

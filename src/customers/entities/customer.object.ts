@@ -1,18 +1,6 @@
-import {
-  Column,
-  Entity,
-  PrimaryColumn,
-  Unique,
-  ManyToOne,
-  JoinColumn,
-  UpdateDateColumn,
-  CreateDateColumn,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Field, ObjectType, ID, GraphQLISODateTime } from '@nestjs/graphql';
-import { OrganizationEntity } from '../../organizations/entities/organization.object';
+import { Column, Entity, Unique } from 'typeorm';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { BaseEntity } from '../../base-entity';
-import { IsOptional, isEmail } from 'class-validator';
 
 @Entity()
 @ObjectType()

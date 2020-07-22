@@ -2,9 +2,11 @@ import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
-import { CreatePermissionInput } from '../types/create-permission.input';
 import { PermissionEntity } from '../entities/permission.object';
 import { PermissionsService } from '../permissions.service';
+import { CreatePermissionInput } from '../types/create-permission.input';
+import { UpdatePermissionInput } from '../types/update-permission.input';
+
 import {
   HttpExceptionFilter,
   CustomException,
@@ -68,7 +70,7 @@ export class PermissionsResolver {
   @Mutation(() => PermissionEntity, { name: 'permissionUpdate' })
   async updatePermission(
     @Args('id') id: number,
-    @Args('input') input: CreatePermissionInput,
+    @Args('input') input: UpdatePermissionInput,
   ): Promise<PermissionEntity> {
     try {
       const obj = await this.permissionsService.update(id, { ...input });

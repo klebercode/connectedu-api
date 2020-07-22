@@ -16,13 +16,13 @@ export class BaseEntity {
   @IsOptional()
   id: number;
 
+  @Field(() => GraphQLISODateTime, { nullable: true })
   @CreateDateColumn({ name: 'created_at', nullable: true })
-  @Field({ nullable: true })
   @IsOptional()
   createdAt?: Date;
 
+  @Field(() => GraphQLISODateTime, { nullable: true })
   @UpdateDateColumn({ name: 'updated_at', nullable: true })
-  @Field({ nullable: true })
   @IsOptional()
   updatedAt?: Date;
 }

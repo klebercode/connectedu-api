@@ -1,39 +1,22 @@
 import { Injectable, GoneException } from '@nestjs/common';
-import { CreateStateInput } from './types/create-state.input';
-import { StateEntity } from './entities/state.object';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ServicePublic } from '../common/services/public.service';
+
+import { StateEntity } from './entities/state.object';
+import { CreateStateInput } from './types/create-state.input';
+import { UpdateStateInput } from './types/update-state.input';
 
 @Injectable()
-export class StatesService {
+export class StatesService extends ServicePublic<
+  StateEntity,
+  CreateStateInput,
+  UpdateStateInput
+> {
   constructor(
     @InjectRepository(StateEntity)
-    private stateRepository: Repository<StateEntity>,
-  ) {}
-
-  async create(state: CreateStateInput): Promise<StateEntity> {
-    const obj = await this.stateRepository.save(state);
-    return obj;
-  }
-
-  async findOneById(id: number): Promise<StateEntity> {
-    const obj = await this.stateRepository.findOne(id);
-    if (!obj) {
-      return null;
-    }
-    return obj;
-  }
-
-  async findAll(): Promise<StateEntity[]> {
-    return await this.stateRepository.find();
-  }
-
-  async remove(id: number): Promise<void> {
-    await this.stateRepository.delete(id);
-  }
-
-  async update(id: number, state: Partial<StateEntity>): Promise<StateEntity> {
-    await this.stateRepository.update(id, state);
-    return this.findOneById(id);
+    private repository: Repository<StateEntity>,
+  ) {
+    super(repository);
   }
 }

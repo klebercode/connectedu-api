@@ -4,16 +4,18 @@
 
 type Customer {
   id: ID!
-  createdAt: Date
-  updatedAt: Date
+  createdAt: DateTime
+  updatedAt: DateTime
   host: String!
   domain: String!
   name: String!
   organizationId: Float
 }
 
-"""Date custom scalar type"""
-scalar Date
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type UserEntity {
   id: ID!
@@ -32,23 +34,18 @@ type UserEntity {
   userUpdated: UserEntity
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 type StateEntity {
   id: ID!
-  createdAt: Date
-  updatedAt: Date
+  createdAt: DateTime
+  updatedAt: DateTime
   description: String!
   uf: String!
 }
 
 type CityEntity {
   id: ID!
-  createdAt: Date
-  updatedAt: Date
+  createdAt: DateTime
+  updatedAt: DateTime
   description: String
   stateId: Float
   state: StateEntity
@@ -139,8 +136,8 @@ type StudentEntity {
 
 type PermissionEntity {
   id: ID!
-  createdAt: Date
-  updatedAt: Date
+  createdAt: DateTime
+  updatedAt: DateTime
   code: String!
   description: String!
 }
@@ -360,6 +357,9 @@ type StudentInformationEntity {
   relationshipPedag: Float
 }
 
+"""Date custom scalar type"""
+scalar Date
+
 type EmployeeEntity {
   id: ID!
   createdAt: DateTime
@@ -522,8 +522,8 @@ type ContentAppliedEntity {
 
 type OrganizationEntity {
   id: ID!
-  createdAt: Date
-  updatedAt: Date
+  createdAt: DateTime
+  updatedAt: DateTime
   description: String
   dateBegin: DateTime
   dateEnd: DateTime
@@ -619,7 +619,7 @@ type Mutation {
   studentUpdateMany(input: [UpdateStudentInput!]!): Boolean!
   stateCreate(input: CreateStateInput!): StateEntity!
   stateDelete(id: Float!): Boolean!
-  stateUpdate(input: CreateStateInput!, id: Float!): StateEntity!
+  stateUpdate(input: UpdateStateInput!, id: Float!): StateEntity!
   cityCreate(input: CreateCityInput!): CityEntity!
   cityDelete(id: Float!): Boolean!
   cityUpdate(input: CreateCityInput!, id: Float!): CityEntity!
@@ -637,7 +637,7 @@ type Mutation {
   userPermissionUpdateMany(input: [UpdateUserPermissionInput!]!): Boolean!
   permissionCreate(input: CreatePermissionInput!): PermissionEntity!
   permissionDelete(id: Float!): Boolean!
-  permissionUpdate(input: CreatePermissionInput!, id: Float!): PermissionEntity!
+  permissionUpdate(input: UpdatePermissionInput!, id: Float!): PermissionEntity!
   companyCreate(input: CreateCompanyInput!): CompanyEntity!
   companyCreateMany(input: [CreateCompanyInput!]!): [CompanyEntity!]!
   companyDelete(id: Float!): Boolean!
@@ -729,7 +729,7 @@ type Mutation {
   contentAppliedUpdateMany(input: [UpdateContentAppliedInput!]!): Boolean!
   organizationCreate(input: CreateOrganizationInput!): OrganizationEntity!
   organizationDelete(id: Float!): Boolean!
-  organizationUpdate(input: CreateOrganizationInput!, id: Float!): OrganizationEntity!
+  organizationUpdate(input: UpdateOrganizationInput!, id: Float!): OrganizationEntity!
 }
 
 input CreateCustomerInput {
@@ -829,6 +829,12 @@ input CreateStateInput {
   uf: String!
 }
 
+input UpdateStateInput {
+  id: Float
+  description: String!
+  uf: String!
+}
+
 input CreateCityInput {
   description: String
   stateId: Float
@@ -918,6 +924,12 @@ input UpdateUserPermissionInput {
 }
 
 input CreatePermissionInput {
+  code: String!
+  description: String!
+}
+
+input UpdatePermissionInput {
+  id: Float
   code: String!
   description: String!
 }
@@ -1353,6 +1365,13 @@ input UpdateContentAppliedInput {
 }
 
 input CreateOrganizationInput {
+  description: String
+  dateBegin: DateTime
+  dateEnd: DateTime
+}
+
+input UpdateOrganizationInput {
+  id: Float
   description: String
   dateBegin: DateTime
   dateEnd: DateTime

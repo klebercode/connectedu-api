@@ -3,6 +3,7 @@ import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { CreateOrganizationInput } from '../types/create-organization.input';
+import { UpdateOrganizationInput } from '../types/update-organization.input';
 import { OrganizationEntity } from '../entities/organization.object';
 import { OrganizationsService } from '../organizations.service';
 import {
@@ -68,7 +69,7 @@ export class OrganizationsResolver {
   @Mutation(() => OrganizationEntity, { name: 'organizationUpdate' })
   async updateOrganization(
     @Args('id') id: number,
-    @Args('input') input: CreateOrganizationInput,
+    @Args('input') input: UpdateOrganizationInput,
   ): Promise<OrganizationEntity> {
     try {
       const obj = await this.organizationsService.update(id, { ...input });
