@@ -19,7 +19,7 @@ export class OrganizationsResolver extends ResolverPublic<
   UpdateOrganizationInput
 > {
   constructor(private readonly organizationsService: OrganizationsService) {
-    super('Organização', OrganizationsService);
+    super('Organização', organizationsService);
   }
 
   @Query(() => OrganizationEntity, { name: 'organization' })
