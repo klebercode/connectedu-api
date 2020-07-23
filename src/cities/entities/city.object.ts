@@ -6,7 +6,7 @@ import { StateEntity } from '../../states/entities/state.object';
 
 @ObjectType()
 @Entity('city')
-@Unique(['description'])
+@Unique(['description', 'stateId'])
 export class CityEntity extends BaseEntity {
   @Field({ nullable: true })
   @Column({ length: 100, nullable: false })

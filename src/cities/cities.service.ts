@@ -17,6 +17,6 @@ export class CitiesService extends ServicePublic<
     @InjectRepository(CityEntity)
     private repository: Repository<CityEntity>,
   ) {
-    super(repository);
+    super(repository, CityEntity);
   }
 }

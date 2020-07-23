@@ -19,7 +19,7 @@ export class OrganizationsResolver {
   private nameApp = 'Organização';
 
   @Query(() => OrganizationEntity, { name: 'organization' })
-  async getOrganization(@Args('id') id: number): Promise<OrganizationEntity> {
+  async get(@Args('id') id: number): Promise<OrganizationEntity> {
     try {
       const obj = await this.organizationsService.findOneById(id);
       if (!obj) {
@@ -31,8 +31,24 @@ export class OrganizationsResolver {
     }
   }
 
+  @Query(() => [OrganizationEntity], { name: 'organizationMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<OrganizationEntity[]> {
+    try {
+      const obj = await this.organizationsService.findByIds(ids);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'getMany', this.nameApp);
+    }
+  }
+
   @Query(() => [OrganizationEntity], { name: 'organizationAll' })
-  async getOrganizations(): Promise<OrganizationEntity[]> {
+  async getAll(): Promise<OrganizationEntity[]> {
     try {
       return this.organizationsService.findAll();
     } catch (error) {
@@ -41,7 +57,7 @@ export class OrganizationsResolver {
   }
 
   @Mutation(() => OrganizationEntity, { name: 'organizationCreate' })
-  async createOrganization(
+  async create(
     @Args('input') input: CreateOrganizationInput,
   ): Promise<OrganizationEntity> {
     try {
@@ -52,11 +68,22 @@ export class OrganizationsResolver {
     }
   }
 
-  @Mutation(() => Boolean, { name: 'organizationDelete' })
-  async deleteOrganization(@Args('id') id: number): Promise<boolean> {
+  @Mutation(() => [OrganizationEntity], { name: 'organizationCreateMany' })
+  async createMany(
+    @Args({ name: 'input', type: () => [CreateOrganizationInput] })
+    input: [CreateOrganizationInput],
+  ): Promise<OrganizationEntity[]> {
     try {
-      await this.organizationsService.remove(id);
-      const obj = await this.organizationsService.findOneById(id);
+      return await this.organizationsService.createMany(input);
+    } catch (error) {
+      CustomException.catch(error, 'createMany', this.nameApp);
+    }
+  }
+
+  @Mutation(() => Boolean, { name: 'organizationDelete' })
+  async delete(@Args('id') id: number): Promise<boolean> {
+    try {
+      const obj = await this.organizationsService.remove(id);
       if (!obj) {
         return true;
       }
@@ -66,8 +93,24 @@ export class OrganizationsResolver {
     }
   }
 
+  @Mutation(() => Boolean, { name: 'organizationDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    try {
+      const obj = await this.organizationsService.removeMany(ids);
+      if (!obj) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'deleteMany', this.nameApp);
+    }
+  }
+
   @Mutation(() => OrganizationEntity, { name: 'organizationUpdate' })
-  async updateOrganization(
+  async update(
     @Args('id') id: number,
     @Args('input') input: UpdateOrganizationInput,
   ): Promise<OrganizationEntity> {

@@ -20,7 +20,7 @@ export class StatesResolver {
   private nameApp = 'Estado';
 
   @Query(() => StateEntity, { name: 'state' })
-  async getState(@Args('id') id: number): Promise<StateEntity> {
+  async get(@Args('id') id: number): Promise<StateEntity> {
     try {
       const obj = await this.statesService.findOneById(id);
       if (!obj) {
@@ -32,8 +32,24 @@ export class StatesResolver {
     }
   }
 
+  @Query(() => [StateEntity], { name: 'stateMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<StateEntity[]> {
+    try {
+      const obj = await this.statesService.findByIds(ids);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'getMany', this.nameApp);
+    }
+  }
+
   @Query(() => [StateEntity], { name: 'stateAll' })
-  async getStates(): Promise<StateEntity[]> {
+  async getAll(): Promise<StateEntity[]> {
     try {
       return this.statesService.findAll();
     } catch (error) {
@@ -42,9 +58,7 @@ export class StatesResolver {
   }
 
   @Mutation(() => StateEntity, { name: 'stateCreate' })
-  async createState(
-    @Args('input') input: CreateStateInput,
-  ): Promise<StateEntity> {
+  async create(@Args('input') input: CreateStateInput): Promise<StateEntity> {
     try {
       const obj = await this.statesService.create({ ...input });
       return obj;
@@ -53,11 +67,22 @@ export class StatesResolver {
     }
   }
 
-  @Mutation(() => Boolean, { name: 'stateDelete' })
-  async deleteState(@Args('id') id: number): Promise<boolean> {
+  @Mutation(() => [StateEntity], { name: 'stateCreateMany' })
+  async createMany(
+    @Args({ name: 'input', type: () => [CreateStateInput] })
+    input: [CreateStateInput],
+  ): Promise<StateEntity[]> {
     try {
-      await this.statesService.remove(id);
-      const obj = await this.statesService.findOneById(id);
+      return await this.statesService.createMany(input);
+    } catch (error) {
+      CustomException.catch(error, 'createMany', this.nameApp);
+    }
+  }
+
+  @Mutation(() => Boolean, { name: 'stateDelete' })
+  async delete(@Args('id') id: number): Promise<boolean> {
+    try {
+      const obj = await this.statesService.remove(id);
       if (!obj) {
         return true;
       }
@@ -67,8 +92,24 @@ export class StatesResolver {
     }
   }
 
+  @Mutation(() => Boolean, { name: 'stateDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    try {
+      const obj = await this.statesService.removeMany(ids);
+      if (!obj) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'deleteMany', this.nameApp);
+    }
+  }
+
   @Mutation(() => StateEntity, { name: 'stateUpdate' })
-  async updateState(
+  async update(
     @Args('id') id: number,
     @Args('input') input: UpdateStateInput,
   ): Promise<StateEntity> {

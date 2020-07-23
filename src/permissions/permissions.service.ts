@@ -17,6 +17,6 @@ export class PermissionsService extends ServicePublic<
     @InjectRepository(PermissionEntity)
     private repository: Repository<PermissionEntity>,
   ) {
-    super(repository);
+    super(repository, PermissionEntity);
   }
 }

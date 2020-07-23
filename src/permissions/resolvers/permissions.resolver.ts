@@ -20,7 +20,7 @@ export class PermissionsResolver {
   private nameApp = 'Permissões';
 
   @Query(() => PermissionEntity, { name: 'permission' })
-  async getPermission(@Args('id') id: number): Promise<PermissionEntity> {
+  async get(@Args('id') id: number): Promise<PermissionEntity> {
     try {
       const obj = await this.permissionsService.findOneById(id);
       if (!obj) {
@@ -32,8 +32,24 @@ export class PermissionsResolver {
     }
   }
 
+  @Query(() => [PermissionEntity], { name: 'permissionMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<PermissionEntity[]> {
+    try {
+      const obj = await this.permissionsService.findByIds(ids);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'getMany', this.nameApp);
+    }
+  }
+
   @Query(() => [PermissionEntity], { name: 'permissionAll' })
-  async getPermissions(): Promise<PermissionEntity[]> {
+  async getAll(): Promise<PermissionEntity[]> {
     try {
       return this.permissionsService.findAll();
     } catch (error) {
@@ -42,7 +58,7 @@ export class PermissionsResolver {
   }
 
   @Mutation(() => PermissionEntity, { name: 'permissionCreate' })
-  async createPermission(
+  async create(
     @Args('input') input: CreatePermissionInput,
   ): Promise<PermissionEntity> {
     try {
@@ -53,11 +69,22 @@ export class PermissionsResolver {
     }
   }
 
-  @Mutation(() => Boolean, { name: 'permissionDelete' })
-  async deletePermission(@Args('id') id: number): Promise<boolean> {
+  @Mutation(() => [PermissionEntity], { name: 'cityCreateMany' })
+  async createMany(
+    @Args({ name: 'input', type: () => [CreatePermissionInput] })
+    input: [CreatePermissionInput],
+  ): Promise<PermissionEntity[]> {
     try {
-      await this.permissionsService.remove(id);
-      const obj = await this.permissionsService.findOneById(id);
+      return await this.permissionsService.createMany(input);
+    } catch (error) {
+      CustomException.catch(error, 'createMany', this.nameApp);
+    }
+  }
+
+  @Mutation(() => Boolean, { name: 'permissionDelete' })
+  async delete(@Args('id') id: number): Promise<boolean> {
+    try {
+      const obj = await this.permissionsService.remove(id);
       if (!obj) {
         return true;
       }
@@ -67,8 +94,24 @@ export class PermissionsResolver {
     }
   }
 
+  @Mutation(() => Boolean, { name: 'permissionDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    try {
+      const obj = await this.permissionsService.removeMany(ids);
+      if (!obj) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'deleteMany', this.nameApp);
+    }
+  }
+
   @Mutation(() => PermissionEntity, { name: 'permissionUpdate' })
-  async updatePermission(
+  async update(
     @Args('id') id: number,
     @Args('input') input: UpdatePermissionInput,
   ): Promise<PermissionEntity> {

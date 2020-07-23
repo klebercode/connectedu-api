@@ -531,6 +531,7 @@ type OrganizationEntity {
 
 type Query {
   customer(id: Float!): Customer!
+  customerMany(ids: [Float!]!): [Customer!]!
   customerAll: [Customer!]!
   user(id: Float!): UserEntity!
   userMany(ids: [Float!]!): [UserEntity!]!
@@ -540,8 +541,10 @@ type Query {
   studentMany(ids: [Float!]!): [StudentEntity!]!
   studentAll: [StudentEntity!]!
   state(id: Float!): StateEntity!
+  stateMany(ids: [Float!]!): [StateEntity!]!
   stateAll: [StateEntity!]!
   city(id: Float!): CityEntity!
+  cityMany(ids: [Float!]!): [CityEntity!]!
   cityAll: [CityEntity!]!
   responsible(id: Float!): ResponsibleEntity!
   responsibleMany(ids: [Float!]!): [ResponsibleEntity!]!
@@ -550,6 +553,7 @@ type Query {
   userPermissionMany(ids: [Float!]!): [UserPermissionEntity!]!
   userPermissionAll: [UserPermissionEntity!]!
   permission(id: Float!): PermissionEntity!
+  permissionMany(ids: [Float!]!): [PermissionEntity!]!
   permissionAll: [PermissionEntity!]!
   company(id: Float!): CompanyEntity!
   companyMany(ids: [Float!]!): [CompanyEntity!]!
@@ -597,12 +601,15 @@ type Query {
   contentAppliedMany(ids: [Float!]!): [ContentAppliedEntity!]!
   contentAppliedAll: [ContentAppliedEntity!]!
   organization(id: Float!): OrganizationEntity!
+  organizationMany(ids: [Float!]!): [OrganizationEntity!]!
   organizationAll: [OrganizationEntity!]!
 }
 
 type Mutation {
   customerCreate(input: CreateCustomerInput!): Customer!
+  customerCreateMany(input: [CreateCustomerInput!]!): [Customer!]!
   customerDelete(id: Float!): Boolean!
+  customerDeleteMany(ids: [Float!]!): Boolean!
   customerUpdate(input: CreateCustomerInput!, id: Float!): Customer!
   userCreate(input: CreateUsersInput!): UserEntity!
   userCreateMany(input: [CreateUsersInput!]!): [UserEntity!]!
@@ -618,10 +625,14 @@ type Mutation {
   studentUpdate(input: UpdateStudentInput!, id: Float!): StudentEntity!
   studentUpdateMany(input: [UpdateStudentInput!]!): Boolean!
   stateCreate(input: CreateStateInput!): StateEntity!
+  stateCreateMany(input: [CreateStateInput!]!): [StateEntity!]!
   stateDelete(id: Float!): Boolean!
+  stateDeleteMany(ids: [Float!]!): Boolean!
   stateUpdate(input: UpdateStateInput!, id: Float!): StateEntity!
   cityCreate(input: CreateCityInput!): CityEntity!
+  cityCreateMany(input: [CreatePermissionInput!]!): [PermissionEntity!]!
   cityDelete(id: Float!): Boolean!
+  cityDeleteMany(ids: [Float!]!): Boolean!
   cityUpdate(input: CreateCityInput!, id: Float!): CityEntity!
   responsibleCreate(input: CreateResponsibleInput!): ResponsibleEntity!
   subjectCreateMany(input: [CreateSubjectInput!]!): [SubjectEntity!]!
@@ -637,6 +648,7 @@ type Mutation {
   userPermissionUpdateMany(input: [UpdateUserPermissionInput!]!): Boolean!
   permissionCreate(input: CreatePermissionInput!): PermissionEntity!
   permissionDelete(id: Float!): Boolean!
+  permissionDeleteMany(ids: [Float!]!): Boolean!
   permissionUpdate(input: UpdatePermissionInput!, id: Float!): PermissionEntity!
   companyCreate(input: CreateCompanyInput!): CompanyEntity!
   companyCreateMany(input: [CreateCompanyInput!]!): [CompanyEntity!]!
@@ -728,7 +740,9 @@ type Mutation {
   contentAppliedUpdate(input: UpdateContentAppliedInput!, id: Float!): ContentAppliedEntity!
   contentAppliedUpdateMany(input: [UpdateContentAppliedInput!]!): Boolean!
   organizationCreate(input: CreateOrganizationInput!): OrganizationEntity!
+  organizationCreateMany(input: [CreateOrganizationInput!]!): [OrganizationEntity!]!
   organizationDelete(id: Float!): Boolean!
+  organizationDeleteMany(ids: [Float!]!): Boolean!
   organizationUpdate(input: UpdateOrganizationInput!, id: Float!): OrganizationEntity!
 }
 
@@ -840,6 +854,11 @@ input CreateCityInput {
   stateId: Float
 }
 
+input CreatePermissionInput {
+  code: String!
+  description: String!
+}
+
 input CreateResponsibleInput {
   name: String
   dateBirth: DateTime
@@ -921,11 +940,6 @@ input UpdateUserPermissionInput {
   delete: Boolean
   list: Boolean
   visible: Boolean
-}
-
-input CreatePermissionInput {
-  code: String!
-  description: String!
 }
 
 input UpdatePermissionInput {

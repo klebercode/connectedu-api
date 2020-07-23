@@ -17,6 +17,6 @@ export class CustomersService extends ServicePublic<
     @InjectRepository(Customer)
     private repository: Repository<Customer>,
   ) {
-    super(repository);
+    super(repository, Customer);
   }
 }

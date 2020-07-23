@@ -17,6 +17,6 @@ export class OrganizationsService extends ServicePublic<
     @InjectRepository(OrganizationEntity)
     private repository: Repository<OrganizationEntity>,
   ) {
-    super(repository);
+    super(repository, OrganizationEntity);
   }
 }

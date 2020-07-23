@@ -17,6 +17,6 @@ export class StatesService extends ServicePublic<
     @InjectRepository(StateEntity)
     private repository: Repository<StateEntity>,
   ) {
-    super(repository);
+    super(repository, StateEntity);
   }
 }

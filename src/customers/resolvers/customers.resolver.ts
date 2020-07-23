@@ -19,7 +19,7 @@ export class CustomersResolver {
   private nameApp = 'Customer';
 
   @Query(() => Customer, { name: 'customer' })
-  async getCustomer(@Args('id') id: number): Promise<Customer> {
+  async get(@Args('id') id: number): Promise<Customer> {
     try {
       const obj = await this.customersService.findOneById(id);
       if (!obj) {
@@ -31,8 +31,24 @@ export class CustomersResolver {
     }
   }
 
+  @Query(() => [Customer], { name: 'customerMany' })
+  async getMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<Customer[]> {
+    try {
+      const obj = await this.customersService.findByIds(ids);
+      if (!obj) {
+        throw new NotFoundException();
+      }
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'getMany', this.nameApp);
+    }
+  }
+
   @Query(() => [Customer], { name: 'customerAll' })
-  async getCustomers(): Promise<Customer[]> {
+  async getAll(): Promise<Customer[]> {
     try {
       return this.customersService.findAll();
     } catch (error) {
@@ -41,9 +57,7 @@ export class CustomersResolver {
   }
 
   @Mutation(() => Customer, { name: 'customerCreate' })
-  async createCustomer(
-    @Args('input') input: CreateCustomerInput,
-  ): Promise<Customer> {
+  async create(@Args('input') input: CreateCustomerInput): Promise<Customer> {
     try {
       const obj = await this.customersService.create({ ...input });
       return obj;
@@ -52,11 +66,22 @@ export class CustomersResolver {
     }
   }
 
-  @Mutation(() => Boolean, { name: 'customerDelete' })
-  async deleteCustomer(@Args('id') id: number): Promise<boolean> {
+  @Mutation(() => [Customer], { name: 'customerCreateMany' })
+  async createMany(
+    @Args({ name: 'input', type: () => [CreateCustomerInput] })
+    input: [CreateCustomerInput],
+  ): Promise<Customer[]> {
     try {
-      await this.customersService.remove(id);
-      const obj = await this.customersService.findOneById(id);
+      return await this.customersService.createMany(input);
+    } catch (error) {
+      CustomException.catch(error, 'createMany', this.nameApp);
+    }
+  }
+
+  @Mutation(() => Boolean, { name: 'customerDelete' })
+  async delete(@Args('id') id: number): Promise<boolean> {
+    try {
+      const obj = await this.customersService.remove(id);
       if (!obj) {
         return true;
       }
@@ -66,8 +91,24 @@ export class CustomersResolver {
     }
   }
 
+  @Mutation(() => Boolean, { name: 'customerDeleteMany' })
+  async deleteMany(
+    @Args({ name: 'ids', type: () => [Number] })
+    ids: [number],
+  ): Promise<boolean> {
+    try {
+      const obj = await this.customersService.removeMany(ids);
+      if (!obj) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      CustomException.catch(error, 'deleteMany', this.nameApp);
+    }
+  }
+
   @Mutation(() => Customer, { name: 'customerUpdate' })
-  async updateCustomer(
+  async update(
     @Args('id') id: number,
     @Args('input') input: CreateCustomerInput,
   ): Promise<Customer> {
