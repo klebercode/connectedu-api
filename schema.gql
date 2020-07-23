@@ -630,10 +630,10 @@ type Mutation {
   stateDeleteMany(ids: [Float!]!): Boolean!
   stateUpdate(input: UpdateStateInput!, id: Float!): StateEntity!
   cityCreate(input: CreateCityInput!): CityEntity!
-  cityCreateMany(input: [CreatePermissionInput!]!): [PermissionEntity!]!
+  cityCreateMany(input: [CreateCityInput!]!): [CityEntity!]!
   cityDelete(id: Float!): Boolean!
   cityDeleteMany(ids: [Float!]!): Boolean!
-  cityUpdate(input: CreateCityInput!, id: Float!): CityEntity!
+  cityUpdate(input: UpdateCityInput!, id: Float!): CityEntity!
   responsibleCreate(input: CreateResponsibleInput!): ResponsibleEntity!
   subjectCreateMany(input: [CreateSubjectInput!]!): [SubjectEntity!]!
   responsibleDelete(id: Float!): Boolean!
@@ -647,6 +647,7 @@ type Mutation {
   userPermissionUpdate(input: UpdateUserPermissionInput!, id: Float!): UserPermissionEntity!
   userPermissionUpdateMany(input: [UpdateUserPermissionInput!]!): Boolean!
   permissionCreate(input: CreatePermissionInput!): PermissionEntity!
+  permissionCreateMany(input: [CreatePermissionInput!]!): [PermissionEntity!]!
   permissionDelete(id: Float!): Boolean!
   permissionDeleteMany(ids: [Float!]!): Boolean!
   permissionUpdate(input: UpdatePermissionInput!, id: Float!): PermissionEntity!
@@ -854,9 +855,10 @@ input CreateCityInput {
   stateId: Float
 }
 
-input CreatePermissionInput {
-  code: String!
-  description: String!
+input UpdateCityInput {
+  id: Float
+  description: String
+  stateId: Float
 }
 
 input CreateResponsibleInput {
@@ -940,6 +942,11 @@ input UpdateUserPermissionInput {
   delete: Boolean
   list: Boolean
   visible: Boolean
+}
+
+input CreatePermissionInput {
+  code: String!
+  description: String!
 }
 
 input UpdatePermissionInput {

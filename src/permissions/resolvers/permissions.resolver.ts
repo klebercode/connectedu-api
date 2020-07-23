@@ -69,7 +69,7 @@ export class PermissionsResolver {
     }
   }
 
-  @Mutation(() => [PermissionEntity], { name: 'cityCreateMany' })
+  @Mutation(() => [PermissionEntity], { name: 'permissionCreateMany' })
   async createMany(
     @Args({ name: 'input', type: () => [CreatePermissionInput] })
     input: [CreatePermissionInput],

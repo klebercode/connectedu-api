@@ -17,6 +17,7 @@ import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+import { UpdateCityInput } from '../types/update-city.input';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(of => CityEntity)
@@ -120,7 +121,7 @@ export class CitiesResolver {
   @Mutation(() => CityEntity, { name: 'cityUpdate' })
   async update(
     @Args('id') id: number,
-    @Args('input') input: CreateCityInput,
+    @Args('input') input: UpdateCityInput,
   ): Promise<CityEntity> {
     try {
       const obj = await this.citiesService.update(id, { ...input });
