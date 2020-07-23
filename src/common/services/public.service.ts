@@ -1,15 +1,11 @@
-import { Connection } from 'typeorm';
-
-import { NotFoundException, HttpException } from '@nestjs/common';
-import { Repository, EntitySchema } from 'typeorm';
+import { NotFoundException } from '@nestjs/common';
+import { Repository } from 'typeorm';
 
 export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
   repositoryPublic: Repository<EntityPublic>;
-  entityPublic: EntitySchema<EntityPublic>;
 
   constructor(repository: Repository<EntityPublic>, entity: any) {
     this.repositoryPublic = repository;
-    this.entityPublic = entity;
   }
 
   async findAll(): Promise<EntityPublic[]> {
@@ -32,7 +28,7 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
   }
 
   async create(input: CreatePublic): Promise<EntityPublic> {
-    const obj = await this.repositoryPublic.save(input);
+    const obj = await this.repositoryPublic.save({ ...input });
     return obj;
   }
 

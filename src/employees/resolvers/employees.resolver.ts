@@ -25,7 +25,7 @@ import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
-import { ResolverDefault } from '../../common/resolvers/global.resolver';
+import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => EmployeeEntity)

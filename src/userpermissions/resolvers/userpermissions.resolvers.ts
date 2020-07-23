@@ -1,4 +1,4 @@
-import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
+import { UseGuards, UseFilters } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -25,7 +25,7 @@ import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
-import { ResolverDefault } from '../../common/resolvers/global.resolver';
+import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => UserPermissionEntity)

@@ -1,6 +1,6 @@
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../types/myContext';
 import { NotFoundException } from '@nestjs/common';
-import { CustomException } from '../../common/filters/http-exception.filter';
+import { CustomException } from '../filters/http-exception.filter';
 
 export class ResolverDefault<EntityDefault, CreateDefault, UpdateDefault> {
   constructor(private nameApp: any, private services) {}

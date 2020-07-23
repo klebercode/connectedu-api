@@ -7,29 +7,24 @@ import { StatesService } from '../states.service';
 import { CreateStateInput } from '../types/create-state.input';
 import { UpdateStateInput } from '../types/update-state.input';
 
-import {
-  HttpExceptionFilter,
-  CustomException,
-} from '../../common/filters/http-exception.filter';
+import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
+import { ResolverPublic } from '../../common/resolvers/public.resolver';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(of => StateEntity)
 @UseFilters(HttpExceptionFilter)
-export class StatesResolver {
-  constructor(private readonly statesService: StatesService) {}
-  private nameApp = 'Estado';
+export class StatesResolver extends ResolverPublic<
+  StateEntity,
+  CreateStateInput,
+  UpdateStateInput
+> {
+  constructor(private readonly statesService: StatesService) {
+    super('Estado', statesService);
+  }
 
   @Query(() => StateEntity, { name: 'state' })
   async get(@Args('id') id: number): Promise<StateEntity> {
-    try {
-      const obj = await this.statesService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+    return super.get(id);
   }
 
   @Query(() => [StateEntity], { name: 'stateMany' })
@@ -37,34 +32,17 @@ export class StatesResolver {
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<StateEntity[]> {
-    try {
-      const obj = await this.statesService.findByIds(ids);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'getMany', this.nameApp);
-    }
+    return super.getMany(ids);
   }
 
   @Query(() => [StateEntity], { name: 'stateAll' })
   async getAll(): Promise<StateEntity[]> {
-    try {
-      return this.statesService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+    return super.getAll();
   }
 
   @Mutation(() => StateEntity, { name: 'stateCreate' })
   async create(@Args('input') input: CreateStateInput): Promise<StateEntity> {
-    try {
-      const obj = await this.statesService.create({ ...input });
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+    return super.create(input);
   }
 
   @Mutation(() => [StateEntity], { name: 'stateCreateMany' })
@@ -72,24 +50,12 @@ export class StatesResolver {
     @Args({ name: 'input', type: () => [CreateStateInput] })
     input: [CreateStateInput],
   ): Promise<StateEntity[]> {
-    try {
-      return await this.statesService.createMany(input);
-    } catch (error) {
-      CustomException.catch(error, 'createMany', this.nameApp);
-    }
+    return super.createMany(input);
   }
 
   @Mutation(() => Boolean, { name: 'stateDelete' })
   async delete(@Args('id') id: number): Promise<boolean> {
-    try {
-      const obj = await this.statesService.remove(id);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+    return super.delete(id);
   }
 
   @Mutation(() => Boolean, { name: 'stateDeleteMany' })
@@ -97,15 +63,7 @@ export class StatesResolver {
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    try {
-      const obj = await this.statesService.removeMany(ids);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'deleteMany', this.nameApp);
-    }
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => StateEntity, { name: 'stateUpdate' })
@@ -113,11 +71,6 @@ export class StatesResolver {
     @Args('id') id: number,
     @Args('input') input: UpdateStateInput,
   ): Promise<StateEntity> {
-    try {
-      const obj = await this.statesService.update(id, { ...input });
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(id, input);
   }
 }

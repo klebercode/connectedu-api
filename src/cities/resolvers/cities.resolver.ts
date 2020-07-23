@@ -1,4 +1,4 @@
-import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
+import { UseGuards, UseFilters } from '@nestjs/common';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import {
   Args,
@@ -9,37 +9,36 @@ import {
   Parent,
 } from '@nestjs/graphql';
 
-import { CreateCityInput } from '../types/create-city.input';
 import { CityEntity } from '../entities/city.object';
 import { CitiesService } from '../cities.service';
+import { CreateCityInput } from '../types/create-city.input';
+import { UpdateCityInput } from '../types/update-city.input';
+
 import { StatesService } from '../../states/states.service';
 import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
-import { UpdateCityInput } from '../types/update-city.input';
+import { ResolverPublic } from '../../common/resolvers/public.resolver';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(of => CityEntity)
 @UseFilters(HttpExceptionFilter)
-export class CitiesResolver {
+export class CitiesResolver extends ResolverPublic<
+  CityEntity,
+  CreateCityInput,
+  UpdateCityInput
+> {
   constructor(
     private readonly citiesService: CitiesService,
     private readonly statesService: StatesService,
-  ) {}
-  private nameApp = 'Cidade';
+  ) {
+    super('Cidade', citiesService);
+  }
 
   @Query(() => CityEntity, { name: 'city' })
   async get(@Args('id') id: number): Promise<CityEntity> {
-    try {
-      const obj = await this.citiesService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+    return super.get(id);
   }
 
   @Query(() => [CityEntity], { name: 'cityMany' })
@@ -47,34 +46,20 @@ export class CitiesResolver {
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<CityEntity[]> {
-    try {
-      const obj = await this.citiesService.findByIds(ids);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'getMany', this.nameApp);
-    }
+    return super.getMany(ids);
   }
 
   @Query(() => [CityEntity], { name: 'cityAll' })
   async getAll(): Promise<CityEntity[]> {
-    try {
-      return this.citiesService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+    return super.getAll();
   }
 
   @Mutation(() => CityEntity, { name: 'cityCreate' })
-  async create(@Args('input') input: CreateCityInput): Promise<CityEntity> {
-    try {
-      const obj = await this.citiesService.create({ ...input });
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+  async create(
+    @Args({ name: 'input', type: () => CreateCityInput })
+    input: CreateCityInput,
+  ): Promise<CityEntity> {
+    return super.create(input);
   }
 
   @Mutation(() => [CityEntity], { name: 'cityCreateMany' })
@@ -82,24 +67,12 @@ export class CitiesResolver {
     @Args({ name: 'input', type: () => [CreateCityInput] })
     input: [CreateCityInput],
   ): Promise<CityEntity[]> {
-    try {
-      return await this.citiesService.createMany(input);
-    } catch (error) {
-      CustomException.catch(error, 'createMany', this.nameApp);
-    }
+    return super.createMany(input);
   }
 
   @Mutation(() => Boolean, { name: 'cityDelete' })
   async delete(@Args('id') id: number): Promise<boolean> {
-    try {
-      const obj = await this.citiesService.remove(id);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+    return super.delete(id);
   }
 
   @Mutation(() => Boolean, { name: 'cityDeleteMany' })
@@ -107,15 +80,7 @@ export class CitiesResolver {
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    try {
-      const obj = await this.citiesService.removeMany(ids);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'deleteMany', this.nameApp);
-    }
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => CityEntity, { name: 'cityUpdate' })
@@ -123,12 +88,7 @@ export class CitiesResolver {
     @Args('id') id: number,
     @Args('input') input: UpdateCityInput,
   ): Promise<CityEntity> {
-    try {
-      const obj = await this.citiesService.update(id, { ...input });
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(id, input);
   }
 
   // **************************************  Resolucao de Campos

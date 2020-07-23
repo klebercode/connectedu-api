@@ -7,29 +7,24 @@ import { PermissionsService } from '../permissions.service';
 import { CreatePermissionInput } from '../types/create-permission.input';
 import { UpdatePermissionInput } from '../types/update-permission.input';
 
-import {
-  HttpExceptionFilter,
-  CustomException,
-} from '../../common/filters/http-exception.filter';
+import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
+import { ResolverPublic } from '../../common/resolvers/public.resolver';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(of => PermissionEntity)
 @UseFilters(HttpExceptionFilter)
-export class PermissionsResolver {
-  constructor(private readonly permissionsService: PermissionsService) {}
-  private nameApp = 'Permissões';
+export class PermissionsResolver extends ResolverPublic<
+  PermissionEntity,
+  CreatePermissionInput,
+  UpdatePermissionInput
+> {
+  constructor(private readonly permissionsService: PermissionsService) {
+    super('Permissões', permissionsService);
+  }
 
   @Query(() => PermissionEntity, { name: 'permission' })
   async get(@Args('id') id: number): Promise<PermissionEntity> {
-    try {
-      const obj = await this.permissionsService.findOneById(id);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'get', this.nameApp);
-    }
+    return super.get(id);
   }
 
   @Query(() => [PermissionEntity], { name: 'permissionMany' })
@@ -37,36 +32,19 @@ export class PermissionsResolver {
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<PermissionEntity[]> {
-    try {
-      const obj = await this.permissionsService.findByIds(ids);
-      if (!obj) {
-        throw new NotFoundException();
-      }
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'getMany', this.nameApp);
-    }
+    return super.getMany(ids);
   }
 
   @Query(() => [PermissionEntity], { name: 'permissionAll' })
   async getAll(): Promise<PermissionEntity[]> {
-    try {
-      return this.permissionsService.findAll();
-    } catch (error) {
-      CustomException.catch(error, 'gets', this.nameApp);
-    }
+    return super.getAll();
   }
 
   @Mutation(() => PermissionEntity, { name: 'permissionCreate' })
   async create(
     @Args('input') input: CreatePermissionInput,
   ): Promise<PermissionEntity> {
-    try {
-      const obj = await this.permissionsService.create({ ...input });
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'create', this.nameApp);
-    }
+    return super.create(input);
   }
 
   @Mutation(() => [PermissionEntity], { name: 'permissionCreateMany' })
@@ -74,24 +52,12 @@ export class PermissionsResolver {
     @Args({ name: 'input', type: () => [CreatePermissionInput] })
     input: [CreatePermissionInput],
   ): Promise<PermissionEntity[]> {
-    try {
-      return await this.permissionsService.createMany(input);
-    } catch (error) {
-      CustomException.catch(error, 'createMany', this.nameApp);
-    }
+    return super.createMany(input);
   }
 
   @Mutation(() => Boolean, { name: 'permissionDelete' })
   async delete(@Args('id') id: number): Promise<boolean> {
-    try {
-      const obj = await this.permissionsService.remove(id);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'delete', this.nameApp);
-    }
+    return super.delete(id);
   }
 
   @Mutation(() => Boolean, { name: 'permissionDeleteMany' })
@@ -99,15 +65,7 @@ export class PermissionsResolver {
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    try {
-      const obj = await this.permissionsService.removeMany(ids);
-      if (!obj) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      CustomException.catch(error, 'deleteMany', this.nameApp);
-    }
+    return super.deleteMany(ids);
   }
 
   @Mutation(() => PermissionEntity, { name: 'permissionUpdate' })
@@ -115,11 +73,6 @@ export class PermissionsResolver {
     @Args('id') id: number,
     @Args('input') input: UpdatePermissionInput,
   ): Promise<PermissionEntity> {
-    try {
-      const obj = await this.permissionsService.update(id, { ...input });
-      return obj;
-    } catch (error) {
-      CustomException.catch(error, 'update', this.nameApp);
-    }
+    return super.update(id, input);
   }
 }
