@@ -3,7 +3,7 @@ import { Connection } from 'typeorm';
 
 import { CustomersServiceDecorator } from '../customers/customers-service.decorator';
 import { CUSTOMER_CONNECTION } from '../customers/customers.module';
-import { ServiceDefault } from '../common/services/global.service';
+import { ServiceDefault } from '../common/services/schema.service';
 
 import { CreateClassRoomItemInput } from './types/create-classroomitem.input';
 import { UpdateClassRoomItemInput } from './types/update-classroomitem.input';

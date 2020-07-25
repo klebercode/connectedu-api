@@ -75,4 +75,12 @@ export class PermissionsResolver extends ResolverPublic<
   ): Promise<PermissionEntity> {
     return super.update(id, input);
   }
+
+  @Mutation(() => Boolean, { name: 'permissionUpdateMany' })
+  async updateMany(
+    @Args({ name: 'input', type: () => [UpdatePermissionInput] })
+    input: [UpdatePermissionInput],
+  ): Promise<boolean> {
+    return super.updateMany(input);
+  }
 }

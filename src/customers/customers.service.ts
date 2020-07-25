@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, Connection } from 'typeorm';
+import { InjectRepository, InjectConnection } from '@nestjs/typeorm';
 import { ServicePublic } from '../common/services/public.service';
 
 import { Customer } from './entities/customer.object';
@@ -14,9 +14,10 @@ export class CustomersService extends ServicePublic<
   UpdateCustomerInput
 > {
   constructor(
+    @InjectConnection() connection: Connection,
     @InjectRepository(Customer)
-    private repository: Repository<Customer>,
+    repository: Repository<Customer>,
   ) {
-    super(repository, Customer);
+    super(connection, repository, Customer);
   }
 }

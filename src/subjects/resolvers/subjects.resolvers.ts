@@ -13,7 +13,10 @@ import { MyContext } from '../../common/types/myContext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
-import { SubjectEntity } from '../entities/subject.entity';
+import {
+  SubjectEntity,
+  SubjectEntityPaginated,
+} from '../entities/subject.entity';
 import { SubjectsService } from '../subjects.service';
 import { CreateSubjectInput } from '../types/create-subject.input';
 import { UpdateSubjectInput } from '../types/update-subject.input';
@@ -52,11 +55,6 @@ export class SubjectsResolver extends ResolverDefault<
     ids: [number],
   ): Promise<SubjectEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [SubjectEntity], { name: 'subjectAll' })
-  async getAll(): Promise<SubjectEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => SubjectEntity, { name: 'subjectCreate' })

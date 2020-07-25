@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ServicePublic } from '../common/services/public.service';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, Connection } from 'typeorm';
+import { InjectRepository, InjectConnection } from '@nestjs/typeorm';
 
 import { PermissionEntity } from './entities/permission.object';
 import { CreatePermissionInput } from './types/create-permission.input';
@@ -14,9 +14,10 @@ export class PermissionsService extends ServicePublic<
   UpdatePermissionInput
 > {
   constructor(
+    @InjectConnection() connection: Connection,
     @InjectRepository(PermissionEntity)
-    private repository: Repository<PermissionEntity>,
+    repository: Repository<PermissionEntity>,
   ) {
-    super(repository, PermissionEntity);
+    super(connection, repository, PermissionEntity);
   }
 }

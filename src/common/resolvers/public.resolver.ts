@@ -74,4 +74,13 @@ export class ResolverPublic<EntityPublic, CreatePublic, UpdatePublic> {
       CustomException.catch(error, 'update', this.nameApp);
     }
   }
+
+  async updateMany(input: [UpdatePublic]): Promise<boolean> {
+    try {
+      const obj = await this.services.updateMany(input);
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'updateMany', this.nameApp);
+    }
+  }
 }

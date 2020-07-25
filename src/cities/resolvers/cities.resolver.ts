@@ -91,6 +91,14 @@ export class CitiesResolver extends ResolverPublic<
     return super.update(id, input);
   }
 
+  @Mutation(() => Boolean, { name: 'cityUpdateMany' })
+  async updateMany(
+    @Args({ name: 'input', type: () => [UpdateCityInput] })
+    input: [UpdateCityInput],
+  ): Promise<boolean> {
+    return super.updateMany(input);
+  }
+
   // **************************************  Resolucao de Campos
 
   @ResolveField('state')

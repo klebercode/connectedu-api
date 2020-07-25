@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common';
 import { Connection } from 'typeorm';
 import { CustomersServiceDecorator } from '../customers/customers-service.decorator';
 import { CUSTOMER_CONNECTION } from '../customers/customers.module';
-import { ServiceDefault } from '../common/services/global.service';
+import { ServiceDefault } from '../common/services/schema.service';
 
 import { CreateClassRoomInjectInput } from './types/create-classroominject.input';
 import { UpdateClassRoomInjectInput } from './types/update-classroominject.input';

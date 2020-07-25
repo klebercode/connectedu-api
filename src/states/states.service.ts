@@ -1,6 +1,6 @@
 import { Injectable, GoneException } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, Connection } from 'typeorm';
+import { InjectRepository, InjectConnection } from '@nestjs/typeorm';
 import { ServicePublic } from '../common/services/public.service';
 
 import { StateEntity } from './entities/state.object';
@@ -14,9 +14,10 @@ export class StatesService extends ServicePublic<
   UpdateStateInput
 > {
   constructor(
+    @InjectConnection() connection: Connection,
     @InjectRepository(StateEntity)
-    private repository: Repository<StateEntity>,
+    repository: Repository<StateEntity>,
   ) {
-    super(repository, StateEntity);
+    super(connection, repository, StateEntity);
   }
 }

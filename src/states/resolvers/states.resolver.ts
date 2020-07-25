@@ -73,4 +73,12 @@ export class StatesResolver extends ResolverPublic<
   ): Promise<StateEntity> {
     return super.update(id, input);
   }
+
+  @Mutation(() => Boolean, { name: 'stateUpdateMany' })
+  async updateMany(
+    @Args({ name: 'input', type: () => [UpdateStateInput] })
+    input: [UpdateStateInput],
+  ): Promise<boolean> {
+    return super.updateMany(input);
+  }
 }

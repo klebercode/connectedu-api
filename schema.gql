@@ -224,6 +224,11 @@ type SubjectEntity {
   status: Boolean
 }
 
+type SubjectEntityEdge {
+  cursor: String!
+  node: SubjectEntity!
+}
+
 type TeacherEntity {
   id: ID!
   createdAt: DateTime
@@ -563,7 +568,6 @@ type Query {
   yearAll: [YearEntity!]!
   subject(id: Float!): SubjectEntity!
   subjectMany(ids: [Float!]!): [SubjectEntity!]!
-  subjectAll: [SubjectEntity!]!
   teacher(id: Float!): TeacherEntity!
   teacherMany(ids: [Float!]!): [TeacherEntity!]!
   teacherAll: [TeacherEntity!]!
@@ -629,11 +633,13 @@ type Mutation {
   stateDelete(id: Float!): Boolean!
   stateDeleteMany(ids: [Float!]!): Boolean!
   stateUpdate(input: UpdateStateInput!, id: Float!): StateEntity!
+  stateUpdateMany(input: [UpdateStateInput!]!): Boolean!
   cityCreate(input: CreateCityInput!): CityEntity!
   cityCreateMany(input: [CreateCityInput!]!): [CityEntity!]!
   cityDelete(id: Float!): Boolean!
   cityDeleteMany(ids: [Float!]!): Boolean!
   cityUpdate(input: UpdateCityInput!, id: Float!): CityEntity!
+  cityUpdateMany(input: [UpdateCityInput!]!): Boolean!
   responsibleCreate(input: CreateResponsibleInput!): ResponsibleEntity!
   subjectCreateMany(input: [CreateSubjectInput!]!): [SubjectEntity!]!
   responsibleDelete(id: Float!): Boolean!
@@ -651,6 +657,7 @@ type Mutation {
   permissionDelete(id: Float!): Boolean!
   permissionDeleteMany(ids: [Float!]!): Boolean!
   permissionUpdate(input: UpdatePermissionInput!, id: Float!): PermissionEntity!
+  permissionUpdateMany(input: [UpdatePermissionInput!]!): Boolean!
   companyCreate(input: CreateCompanyInput!): CompanyEntity!
   companyCreateMany(input: [CreateCompanyInput!]!): [CompanyEntity!]!
   companyDelete(id: Float!): Boolean!
@@ -745,6 +752,7 @@ type Mutation {
   organizationDelete(id: Float!): Boolean!
   organizationDeleteMany(ids: [Float!]!): Boolean!
   organizationUpdate(input: UpdateOrganizationInput!, id: Float!): OrganizationEntity!
+  organizationUpdateMany(input: [UpdateOrganizationInput!]!): Boolean!
 }
 
 input CreateCustomerInput {

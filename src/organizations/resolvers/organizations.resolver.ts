@@ -75,4 +75,12 @@ export class OrganizationsResolver extends ResolverPublic<
   ): Promise<OrganizationEntity> {
     return super.update(id, input);
   }
+
+  @Mutation(() => Boolean, { name: 'organizationUpdateMany' })
+  async updateMany(
+    @Args({ name: 'input', type: () => [UpdateOrganizationInput] })
+    input: [UpdateOrganizationInput],
+  ): Promise<boolean> {
+    return super.updateMany(input);
+  }
 }
