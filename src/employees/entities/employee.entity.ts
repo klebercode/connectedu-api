@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, Column } from 'typeorm';
+import { Paginated } from '../../common/pages';
 
 import { StateEntity } from '../../states/entities/state.object';
 import { IsOptional, IsEmail } from 'class-validator';
@@ -124,3 +125,8 @@ export class EmployeeEntity extends UserBaseEntity {
   @IsOptional()
   profile?: string;
 }
+
+@ObjectType()
+export class EmployeePaginated extends Paginated<EmployeeEntity>(
+  EmployeeEntity,
+) {}

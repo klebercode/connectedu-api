@@ -56,6 +56,9 @@ export class CustomException extends HttpException {
       case 'UPDATEMANY':
         this.message = 'Erro ao tentar salvar lista de registros';
         break;
+      case 'GETPAGE':
+        this.message = 'Erro ao tentar montar pagina de registros';
+        break;
       default:
         this.message = 'Erro não identificado';
         break;

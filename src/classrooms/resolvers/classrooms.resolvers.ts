@@ -14,7 +14,10 @@ import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { MyContext } from '../../common/types/myContext';
 
-import { ClassRoomEntity } from '../entities/classroom.entity';
+import {
+  ClassRoomEntity,
+  ClassRoomPaginated,
+} from '../entities/classroom.entity';
 import { ClassRoomsService } from '../classrooms.service';
 import { CreateClassRoomInput } from '../types/create-classroom.input';
 import { UpdateClassRoomInput } from '../types/update-classroom.input';
@@ -28,6 +31,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ClassRoomEntity)
@@ -51,17 +55,24 @@ export class ClassRoomsResolver extends ResolverDefault<
     return super.get(id);
   }
 
+  @Query(() => [ClassRoomEntity], { name: 'classRoomAll' })
+  async getAll(): Promise<ClassRoomEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => ClassRoomPaginated, { name: 'classRoomPages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<ClassRoomPaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [ClassRoomEntity], { name: 'classRoomMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<ClassRoomEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [ClassRoomEntity], { name: 'classRoomAll' })
-  async getAll(): Promise<ClassRoomEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => ClassRoomEntity, { name: 'classRoomCreate' })

@@ -1,14 +1,18 @@
-import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
+import { UseGuards, UseFilters } from '@nestjs/common';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
-import { PermissionEntity } from '../entities/permission.object';
+import {
+  PermissionEntity,
+  PermissionPaginated,
+} from '../entities/permission.object';
 import { PermissionsService } from '../permissions.service';
 import { CreatePermissionInput } from '../types/create-permission.input';
 import { UpdatePermissionInput } from '../types/update-permission.input';
 
 import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
 import { ResolverPublic } from '../../common/resolvers/public.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(of => PermissionEntity)
@@ -27,17 +31,24 @@ export class PermissionsResolver extends ResolverPublic<
     return super.get(id);
   }
 
+  @Query(() => [PermissionEntity], { name: 'permissionAll' })
+  async getAll(): Promise<PermissionEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => PermissionPaginated, { name: 'permissionPages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<PermissionPaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [PermissionEntity], { name: 'permissionMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<PermissionEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [PermissionEntity], { name: 'permissionAll' })
-  async getAll(): Promise<PermissionEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => PermissionEntity, { name: 'permissionCreate' })

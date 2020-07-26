@@ -17,6 +17,17 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type PageInfo {
+  startCursor: String
+  endCursor: String
+  countBefore: Float
+  countNext: Float
+  countCurrent: Float
+  countTotal: Float
+  hasPreviousPage: Boolean!
+  hasNextPage: Boolean!
+}
+
 type UserEntity {
   id: ID!
   createdAt: DateTime
@@ -34,12 +45,32 @@ type UserEntity {
   userUpdated: UserEntity
 }
 
+type UserPaginated {
+  edges: [UserEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type UserEntityEdge {
+  cursor: String!
+  node: UserEntity!
+}
+
 type StateEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
   description: String!
   uf: String!
+}
+
+type StatePaginated {
+  edges: [StateEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type StateEntityEdge {
+  cursor: String!
+  node: StateEntity!
 }
 
 type CityEntity {
@@ -49,6 +80,16 @@ type CityEntity {
   description: String
   stateId: Float
   state: StateEntity
+}
+
+type CityPaginated {
+  edges: [CityEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type CityEntityEdge {
+  cursor: String!
+  node: CityEntity!
 }
 
 type ResponsibleEntity {
@@ -85,6 +126,16 @@ type ResponsibleEntity {
   workCompany: String
   workPhone: String
   profile: String
+}
+
+type ResponsiblePaginated {
+  edges: [ResponsibleEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type ResponsibleEntityEdge {
+  cursor: String!
+  node: ResponsibleEntity!
 }
 
 type StudentEntity {
@@ -134,12 +185,32 @@ type StudentEntity {
   profile: String
 }
 
+type StudentPaginated {
+  edges: [StudentEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type StudentEntityEdge {
+  cursor: String!
+  node: StudentEntity!
+}
+
 type PermissionEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
   code: String!
   description: String!
+}
+
+type PermissionPaginated {
+  edges: [PermissionEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type PermissionEntityEdge {
+  cursor: String!
+  node: PermissionEntity!
 }
 
 type UserPermissionEntity {
@@ -159,6 +230,16 @@ type UserPermissionEntity {
   delete: Boolean
   list: Boolean
   visible: Boolean
+}
+
+type UserPermissionPaginated {
+  edges: [UserPermissionEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type UserPermissionEntityEdge {
+  cursor: String!
+  node: UserPermissionEntity!
 }
 
 type CompanyEntity {
@@ -193,6 +274,16 @@ type CompanyEntity {
   image: String
 }
 
+type CompanyPaginated {
+  edges: [CompanyEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type CompanyEntityEdge {
+  cursor: String!
+  node: CompanyEntity!
+}
+
 type YearEntity {
   id: ID!
   createdAt: DateTime
@@ -210,6 +301,16 @@ type YearEntity {
   dateModule4: DateTime
 }
 
+type YearPaginated {
+  edges: [YearEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type YearEntityEdge {
+  cursor: String!
+  node: YearEntity!
+}
+
 type SubjectEntity {
   id: ID!
   createdAt: DateTime
@@ -222,6 +323,11 @@ type SubjectEntity {
   abbreviation: String
   descriptionMinutes: String
   status: Boolean
+}
+
+type SubjectPaginated {
+  edges: [SubjectEntityEdge!]
+  pageInfo: PageInfo
 }
 
 type SubjectEntityEdge {
@@ -259,6 +365,16 @@ type TeacherEntity {
   profile: String
 }
 
+type TeacherPaginated {
+  edges: [TeacherEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type TeacherEntityEdge {
+  cursor: String!
+  node: TeacherEntity!
+}
+
 type ClassRoomEntity {
   id: ID!
   createdAt: DateTime
@@ -279,6 +395,16 @@ type ClassRoomEntity {
   company: CompanyEntity
   yearId: Float
   year: YearEntity
+}
+
+type ClassRoomPaginated {
+  edges: [ClassRoomEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type ClassRoomEntityEdge {
+  cursor: String!
+  node: ClassRoomEntity!
 }
 
 type ClassRoomItemEntity {
@@ -307,6 +433,16 @@ type ClassRoomItemEntity {
   gradeMax: Float
 }
 
+type ClassRoomItemPaginated {
+  edges: [ClassRoomItemEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type ClassRoomItemEntityEdge {
+  cursor: String!
+  node: ClassRoomItemEntity!
+}
+
 type ClassRoomInjectEntity {
   id: ID!
   createdAt: DateTime
@@ -326,6 +462,16 @@ type ClassRoomInjectEntity {
   subject4Id: Float
   subject4: SubjectEntity
   average: Float
+}
+
+type ClassRoomInjecPaginated {
+  edges: [ClassRoomInjectEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type ClassRoomInjectEntityEdge {
+  cursor: String!
+  node: ClassRoomInjectEntity!
 }
 
 type StudentInformationEntity {
@@ -365,6 +511,16 @@ type StudentInformationEntity {
 """Date custom scalar type"""
 scalar Date
 
+type StudentInformationPaginated {
+  edges: [StudentInformationEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type StudentInformationEntityEdge {
+  cursor: String!
+  node: StudentInformationEntity!
+}
+
 type EmployeeEntity {
   id: ID!
   createdAt: DateTime
@@ -397,6 +553,16 @@ type EmployeeEntity {
   profile: String
 }
 
+type EmployeePaginated {
+  edges: [EmployeeEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type EmployeeEntityEdge {
+  cursor: String!
+  node: EmployeeEntity!
+}
+
 type OccurrenceEntity {
   id: ID!
   createdAt: DateTime
@@ -409,6 +575,16 @@ type OccurrenceEntity {
   status: Boolean
   type: Float
   points: Float
+}
+
+type OccurrencePaginated {
+  edges: [OccurrenceEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type OccurrenceEntityEdge {
+  cursor: String!
+  node: OccurrenceEntity!
 }
 
 type StudentOccurrenceEntity {
@@ -434,6 +610,16 @@ type StudentOccurrenceEntity {
   note: String
 }
 
+type StudentOccurrencePaginated {
+  edges: [StudentOccurrenceEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type StudentOccurrenceEntityEdge {
+  cursor: String!
+  node: StudentOccurrenceEntity!
+}
+
 type StudentGradeEntity {
   id: ID!
   createdAt: DateTime
@@ -455,6 +641,16 @@ type StudentGradeEntity {
   concept: String
 }
 
+type StudentGradePaginated {
+  edges: [StudentGradeEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type StudentGradeEntityEdge {
+  cursor: String!
+  node: StudentGradeEntity!
+}
+
 type StudentCallEntity {
   id: ID!
   createdAt: DateTime
@@ -472,6 +668,16 @@ type StudentCallEntity {
   state: String
   justify: Boolean
   reason: String
+}
+
+type StudentCallPaginated {
+  edges: [StudentCallEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type StudentCallEntityEdge {
+  cursor: String!
+  node: StudentCallEntity!
 }
 
 type ContentPlannedEntity {
@@ -497,6 +703,16 @@ type ContentPlannedEntity {
   ability: String
   classWork: String
   classHome: String
+}
+
+type ContentPlannedPaginated {
+  edges: [ContentPlannedEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type ContentPlannedEntityEdge {
+  cursor: String!
+  node: ContentPlannedEntity!
 }
 
 type ContentAppliedEntity {
@@ -525,6 +741,16 @@ type ContentAppliedEntity {
   justify: String
 }
 
+type ContentAppliedPaginated {
+  edges: [ContentAppliedEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type ContentAppliedEntityEdge {
+  cursor: String!
+  node: ContentAppliedEntity!
+}
+
 type OrganizationEntity {
   id: ID!
   createdAt: DateTime
@@ -534,79 +760,113 @@ type OrganizationEntity {
   dateEnd: DateTime
 }
 
+type OrganizationPaginated {
+  edges: [OrganizationEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type OrganizationEntityEdge {
+  cursor: String!
+  node: OrganizationEntity!
+}
+
 type Query {
   customer(id: Float!): Customer!
   customerMany(ids: [Float!]!): [Customer!]!
   customerAll: [Customer!]!
   user(id: Float!): UserEntity!
-  userMany(ids: [Float!]!): [UserEntity!]!
   userAll: [UserEntity!]!
+  userPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): UserPaginated!
+  userMany(ids: [Float!]!): [UserEntity!]!
   userLogin(password: String!, email: String!): String!
   student(id: Float!): StudentEntity!
-  studentMany(ids: [Float!]!): [StudentEntity!]!
   studentAll: [StudentEntity!]!
+  studentPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): StudentPaginated!
+  studentMany(ids: [Float!]!): [StudentEntity!]!
   state(id: Float!): StateEntity!
+  statePages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): StatePaginated!
   stateMany(ids: [Float!]!): [StateEntity!]!
   stateAll: [StateEntity!]!
   city(id: Float!): CityEntity!
-  cityMany(ids: [Float!]!): [CityEntity!]!
   cityAll: [CityEntity!]!
+  cityPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): CityPaginated!
+  cityMany(ids: [Float!]!): [CityEntity!]!
   responsible(id: Float!): ResponsibleEntity!
-  responsibleMany(ids: [Float!]!): [ResponsibleEntity!]!
+  responsiblePages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): ResponsiblePaginated!
   responsibleAll: [ResponsibleEntity!]!
+  responsibleMany(ids: [Float!]!): [ResponsibleEntity!]!
   userPermission(id: Float!): UserPermissionEntity!
-  userPermissionMany(ids: [Float!]!): [UserPermissionEntity!]!
   userPermissionAll: [UserPermissionEntity!]!
+  userPermissionPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): UserPermissionPaginated!
+  userPermissionMany(ids: [Float!]!): [UserPermissionEntity!]!
   permission(id: Float!): PermissionEntity!
-  permissionMany(ids: [Float!]!): [PermissionEntity!]!
   permissionAll: [PermissionEntity!]!
+  permissionPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): PermissionPaginated!
+  permissionMany(ids: [Float!]!): [PermissionEntity!]!
   company(id: Float!): CompanyEntity!
-  companyMany(ids: [Float!]!): [CompanyEntity!]!
   companyAll: [CompanyEntity!]!
+  companyPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): CompanyPaginated!
+  companyMany(ids: [Float!]!): [CompanyEntity!]!
   year(id: Float!): YearEntity!
-  yearMany(ids: [Float!]!): [YearEntity!]!
   yearAll: [YearEntity!]!
+  yearPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): YearPaginated!
+  yearMany(ids: [Float!]!): [YearEntity!]!
   subject(id: Float!): SubjectEntity!
+  subjectAll: [SubjectEntity!]!
+  subjectPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): SubjectPaginated!
   subjectMany(ids: [Float!]!): [SubjectEntity!]!
   teacher(id: Float!): TeacherEntity!
-  teacherMany(ids: [Float!]!): [TeacherEntity!]!
   teacherAll: [TeacherEntity!]!
+  teacherPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): TeacherPaginated!
+  teacherMany(ids: [Float!]!): [TeacherEntity!]!
   classRoom(id: Float!): ClassRoomEntity!
-  classRoomMany(ids: [Float!]!): [ClassRoomEntity!]!
   classRoomAll: [ClassRoomEntity!]!
+  classRoomPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): ClassRoomPaginated!
+  classRoomMany(ids: [Float!]!): [ClassRoomEntity!]!
   classRoomItem(id: Float!): ClassRoomItemEntity!
-  classRoomItemMany(ids: [Float!]!): [ClassRoomItemEntity!]!
   classRoomItemAll: [ClassRoomItemEntity!]!
+  classRoomItemPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): ClassRoomItemPaginated!
+  classRoomItemMany(ids: [Float!]!): [ClassRoomItemEntity!]!
   classRoomInject(id: Float!): ClassRoomInjectEntity!
-  classRoomInjectMany(ids: [Float!]!): [ClassRoomInjectEntity!]!
   classRoomInjectAll: [ClassRoomInjectEntity!]!
+  classRoomInjectPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): ClassRoomInjecPaginated!
+  classRoomInjectMany(ids: [Float!]!): [ClassRoomInjectEntity!]!
   studentInformation(id: Float!): StudentInformationEntity!
-  studentInformationMany(ids: [Float!]!): [StudentInformationEntity!]!
   studentInformationAll: [StudentInformationEntity!]!
+  studentInformationPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): StudentInformationPaginated!
+  studentInformationMany(ids: [Float!]!): [StudentInformationEntity!]!
   employee(id: Float!): EmployeeEntity!
-  employeetMany(ids: [Float!]!): [EmployeeEntity!]!
   employeeAll: [EmployeeEntity!]!
+  employeePages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): EmployeePaginated!
+  employeetMany(ids: [Float!]!): [EmployeeEntity!]!
   occurrence(id: Float!): OccurrenceEntity!
-  occurrenceMany(ids: [Float!]!): [OccurrenceEntity!]!
   occurrenceAll: [OccurrenceEntity!]!
+  occurrencePages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): OccurrencePaginated!
+  occurrenceMany(ids: [Float!]!): [OccurrenceEntity!]!
   studentOccurrence(id: Float!): StudentOccurrenceEntity!
-  studentOccurrenceMany(ids: [Float!]!): [StudentOccurrenceEntity!]!
   studentOccurrenceAll: [StudentOccurrenceEntity!]!
+  studentOccurrencePages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): StudentOccurrencePaginated!
+  studentOccurrenceMany(ids: [Float!]!): [StudentOccurrenceEntity!]!
   studentGrade(id: Float!): StudentGradeEntity!
+  studentGradePages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): StudentGradePaginated!
   studentGradeMany(ids: [Float!]!): [StudentGradeEntity!]!
   studentGradeAll: [StudentGradeEntity!]!
   studentCall(id: Float!): StudentCallEntity!
-  studentCallMany(ids: [Float!]!): [StudentCallEntity!]!
   studentCallAll: [StudentCallEntity!]!
+  studentCallPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): StudentCallPaginated!
+  studentCallMany(ids: [Float!]!): [StudentCallEntity!]!
   contentPlanned(id: Float!): ContentPlannedEntity!
-  contentPlannedMany(ids: [Float!]!): [ContentPlannedEntity!]!
   contentPlannedAll: [ContentPlannedEntity!]!
+  contentPlannedPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): ContentPlannedPaginated!
+  contentPlannedMany(ids: [Float!]!): [ContentPlannedEntity!]!
   contentApplied(id: Float!): ContentAppliedEntity!
-  contentAppliedMany(ids: [Float!]!): [ContentAppliedEntity!]!
   contentAppliedAll: [ContentAppliedEntity!]!
+  contentAppliedPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): ContentAppliedPaginated!
+  contentAppliedMany(ids: [Float!]!): [ContentAppliedEntity!]!
   organization(id: Float!): OrganizationEntity!
-  organizationMany(ids: [Float!]!): [OrganizationEntity!]!
   organizationAll: [OrganizationEntity!]!
+  organizationPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): OrganizationPaginated!
+  organizationMany(ids: [Float!]!): [OrganizationEntity!]!
 }
 
 type Mutation {

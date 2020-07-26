@@ -13,7 +13,10 @@ import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { MyContext } from '../../common/types/myContext';
 
-import { StudentInformationEntity } from '../entities/studentinformation.entity';
+import {
+  StudentInformationEntity,
+  StudentInformationPaginated,
+} from '../entities/studentinformation.entity';
 import { StudentInformationsService } from '../studentinformations.service';
 import { CreatStudentInformationInput } from '../types/create-studentinformation.input';
 import { UpdateStudentInformationInput } from '../types/update-studentinformation.input';
@@ -29,6 +32,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => StudentInformationEntity)
@@ -54,17 +58,24 @@ export class StudentInformationsResolver extends ResolverDefault<
     return super.get(id);
   }
 
+  @Query(() => [StudentInformationEntity], { name: 'studentInformationAll' })
+  async getAll(): Promise<StudentInformationEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => StudentInformationPaginated, { name: 'studentInformationPages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<StudentInformationPaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [StudentInformationEntity], { name: 'studentInformationMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<StudentInformationEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [StudentInformationEntity], { name: 'studentInformationAll' })
-  async getAll(): Promise<StudentInformationEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => StudentInformationEntity, {

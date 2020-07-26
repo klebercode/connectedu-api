@@ -2,13 +2,17 @@ import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
-import { OrganizationEntity } from '../entities/organization.object';
+import {
+  OrganizationEntity,
+  OrganizationPaginated,
+} from '../entities/organization.object';
 import { OrganizationsService } from '../organizations.service';
 import { CreateOrganizationInput } from '../types/create-organization.input';
 import { UpdateOrganizationInput } from '../types/update-organization.input';
 
 import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
 import { ResolverPublic } from '../../common/resolvers/public.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(of => OrganizationEntity)
@@ -27,17 +31,24 @@ export class OrganizationsResolver extends ResolverPublic<
     return super.get(id);
   }
 
+  @Query(() => [OrganizationEntity], { name: 'organizationAll' })
+  async getAll(): Promise<OrganizationEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => OrganizationPaginated, { name: 'organizationPages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<OrganizationPaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [OrganizationEntity], { name: 'organizationMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<OrganizationEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [OrganizationEntity], { name: 'organizationAll' })
-  async getAll(): Promise<OrganizationEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => OrganizationEntity, { name: 'organizationCreate' })

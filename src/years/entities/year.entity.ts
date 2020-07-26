@@ -1,8 +1,9 @@
 import { Field, ObjectType, GraphQLISODateTime } from '@nestjs/graphql';
-import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
+import { Entity, Column, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
+import { Paginated } from '../../common/pages';
+
 import { UserBaseEntity } from 'src/users/entities/user-base-entity';
-//import { UserEntity } from '../../users/entities/user.entity';
 
 @ObjectType()
 @Entity('year')
@@ -43,3 +44,6 @@ export class YearEntity extends UserBaseEntity {
   @IsOptional()
   dateModule4?: Date;
 }
+
+@ObjectType()
+export class YearPaginated extends Paginated<YearEntity>(YearEntity) {}

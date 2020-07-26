@@ -16,7 +16,10 @@ import { MyContext } from '../../common/types/myContext';
 import { UsersService } from '../../users/users.service';
 import { UserEntity } from '../../users/entities/user.entity';
 
-import { ClassRoomInjectEntity } from '../entities/classroominject.entity';
+import {
+  ClassRoomInjectEntity,
+  ClassRoomInjecPaginated,
+} from '../entities/classroominject.entity';
 import { ClassRoomInjectsService } from '../classroominjects.service';
 import { CreateClassRoomInjectInput } from '../types/create-classroominject.input';
 import { UpdateClassRoomInjectInput } from '../types/update-classroominject.input';
@@ -28,6 +31,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ClassRoomInjectEntity)
@@ -51,17 +55,24 @@ export class ClassRoomInjectsResolver extends ResolverDefault<
     return super.get(id);
   }
 
+  @Query(() => [ClassRoomInjectEntity], { name: 'classRoomInjectAll' })
+  async getAll(): Promise<ClassRoomInjectEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => ClassRoomInjecPaginated, { name: 'classRoomInjectPages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<ClassRoomInjecPaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [ClassRoomInjectEntity], { name: 'classRoomInjectMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<ClassRoomInjectEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [ClassRoomInjectEntity], { name: 'classRoomInjectAll' })
-  async getAll(): Promise<ClassRoomInjectEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => ClassRoomInjectEntity, { name: 'classRoomInjectCreate' })

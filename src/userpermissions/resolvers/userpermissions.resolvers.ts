@@ -13,7 +13,10 @@ import { MyContext } from '../../common/types/myContext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
-import { UserPermissionEntity } from '../entities/userpermission.entity';
+import {
+  UserPermissionEntity,
+  UserPermissionPaginated,
+} from '../entities/userpermission.entity';
 import { UserPermissionsService } from '../userpermissions.service';
 import { CreateUserPermissionInput } from '../types/create-userpermission.input';
 import { UpdateUserPermissionInput } from '../types/update-userpermission.input';
@@ -26,6 +29,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => UserPermissionEntity)
@@ -48,17 +52,24 @@ export class UserPermissionsResolver extends ResolverDefault<
     return super.get(id);
   }
 
+  @Query(() => [UserPermissionEntity], { name: 'userPermissionAll' })
+  async getAll(): Promise<UserPermissionEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => UserPermissionPaginated, { name: 'userPermissionPages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<UserPermissionPaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [UserPermissionEntity], { name: 'userPermissionMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<UserPermissionEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [UserPermissionEntity], { name: 'userPermissionAll' })
-  async getAll(): Promise<UserPermissionEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => UserPermissionEntity, { name: 'userPermissionCreate' })

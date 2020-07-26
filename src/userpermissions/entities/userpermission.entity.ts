@@ -1,6 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
+import { Paginated } from '../../common/pages';
+
 import { UserBaseEntity } from 'src/users/entities/user-base-entity';
 import { PermissionEntity } from '../../permissions/entities/permission.object';
 import { UserEntity } from '../../users/entities/user.entity';
@@ -56,3 +58,8 @@ export class UserPermissionEntity extends UserBaseEntity {
   @IsOptional()
   visible?: boolean;
 }
+
+@ObjectType()
+export class UserPermissionPaginated extends Paginated<UserPermissionEntity>(
+  UserPermissionEntity,
+) {}

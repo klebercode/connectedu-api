@@ -8,8 +8,9 @@ import {
   OneToOne,
 } from 'typeorm';
 import { IsOptional } from 'class-validator';
+import { Paginated } from '../../common/pages';
+
 import { UserBaseEntity } from 'src/users/entities/user-base-entity';
-import { UserEntity } from '../../users/entities/user.entity';
 import { SubjectEntity } from '../../subjects/entities/subject.entity';
 import { ClassRoomItemEntity } from '../../classroomitems/entities/classroomitem.entity';
 
@@ -77,3 +78,8 @@ export class ClassRoomInjectEntity extends UserBaseEntity {
   @IsOptional()
   average?: number;
 }
+
+@ObjectType()
+export class ClassRoomInjecPaginated extends Paginated<ClassRoomInjectEntity>(
+  ClassRoomInjectEntity,
+) {}

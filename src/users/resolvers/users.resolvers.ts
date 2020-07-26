@@ -13,7 +13,7 @@ import { MyContext } from '../../common/types/myContext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
-import { UserEntity } from '../entities/user.entity';
+import { UserEntity, UserPaginated } from '../entities/user.entity';
 import { UsersService } from '../users.service';
 import { CreateUsersInput } from '../types/create-user.input';
 import { UpdateUsersInput } from '../types/update-user.input';
@@ -23,6 +23,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => UserEntity)
@@ -41,17 +42,24 @@ export class UsersResolver extends ResolverDefault<
     return super.get(id);
   }
 
+  @Query(() => [UserEntity], { name: 'userAll' })
+  async getAll(): Promise<UserEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => UserPaginated, { name: 'userPages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<UserPaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [UserEntity], { name: 'userMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<UserEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [UserEntity], { name: 'userAll' })
-  async getAll(): Promise<UserEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => UserEntity, { name: 'userCreate' })

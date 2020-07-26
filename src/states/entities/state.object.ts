@@ -1,7 +1,8 @@
 import { Field, ObjectType, ID } from '@nestjs/graphql';
 import { Entity, Column, Unique } from 'typeorm';
+import { Paginated } from '../../common/pages';
+
 import { BaseEntity } from '../../base-entity';
-import { IsOptional } from 'class-validator';
 
 @ObjectType()
 @Entity('state')
@@ -15,3 +16,6 @@ export class StateEntity extends BaseEntity {
   @Column({ length: 2, nullable: false })
   uf?: string;
 }
+
+@ObjectType()
+export class StatePaginated extends Paginated<StateEntity>(StateEntity) {}

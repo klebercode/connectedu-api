@@ -1,10 +1,12 @@
 import { MyContext } from '../types/myContext';
 import { NotFoundException } from '@nestjs/common';
 import { CustomException } from '../filters/http-exception.filter';
+import { PaginationArgs } from '../../common/pages';
 
 export class ResolverDefault<EntityDefault, CreateDefault, UpdateDefault> {
   constructor(private nameApp: any, private services) {}
 
+  // metodos de queries
   async get(id: number): Promise<EntityDefault> {
     try {
       const obj = await this.services.findOneById(id);
@@ -33,6 +35,16 @@ export class ResolverDefault<EntityDefault, CreateDefault, UpdateDefault> {
     }
   }
 
+  async getPagenated(pagination: PaginationArgs): Promise<any> {
+    try {
+      const obj = await this.services.getPageServ(pagination);
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'getPage', this.nameApp);
+    }
+  }
+
+  // metodos de mutations
   async create(
     context: MyContext,
     input: CreateDefault,

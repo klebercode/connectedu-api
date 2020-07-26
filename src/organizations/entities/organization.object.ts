@@ -1,7 +1,9 @@
-import { Field, ObjectType, ID, GraphQLISODateTime } from '@nestjs/graphql';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { BaseEntity } from '../../base-entity';
+import { Field, ObjectType, GraphQLISODateTime } from '@nestjs/graphql';
+import { Entity, Column } from 'typeorm';
 import { IsOptional } from 'class-validator';
+import { Paginated } from '../../common/pages';
+
+import { BaseEntity } from '../../base-entity';
 
 @ObjectType()
 @Entity('organization')
@@ -20,3 +22,8 @@ export class OrganizationEntity extends BaseEntity {
   @IsOptional()
   dateEnd?: Date;
 }
+
+@ObjectType()
+export class OrganizationPaginated extends Paginated<OrganizationEntity>(
+  OrganizationEntity,
+) {}

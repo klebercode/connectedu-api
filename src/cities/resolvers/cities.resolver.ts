@@ -9,7 +9,7 @@ import {
   Parent,
 } from '@nestjs/graphql';
 
-import { CityEntity } from '../entities/city.object';
+import { CityEntity, CityPaginated } from '../entities/city.object';
 import { CitiesService } from '../cities.service';
 import { CreateCityInput } from '../types/create-city.input';
 import { UpdateCityInput } from '../types/update-city.input';
@@ -20,6 +20,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverPublic } from '../../common/resolvers/public.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(of => CityEntity)
@@ -41,17 +42,24 @@ export class CitiesResolver extends ResolverPublic<
     return super.get(id);
   }
 
+  @Query(() => [CityEntity], { name: 'cityAll' })
+  async getAll(): Promise<CityEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => CityPaginated, { name: 'cityPages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<CityPaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [CityEntity], { name: 'cityMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<CityEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [CityEntity], { name: 'cityAll' })
-  async getAll(): Promise<CityEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => CityEntity, { name: 'cityCreate' })

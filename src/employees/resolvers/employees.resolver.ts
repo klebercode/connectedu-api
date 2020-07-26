@@ -11,7 +11,7 @@ import {
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
-import { EmployeeEntity } from '../entities/employee.entity';
+import { EmployeeEntity, EmployeePaginated } from '../entities/employee.entity';
 import { EmployeesService } from '../employees.service';
 import { CreateEmploeeInput } from '../types/create-employee.input';
 import { UpdateEmploeeInput } from '../types/update-employee.input';
@@ -26,6 +26,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => EmployeeEntity)
@@ -49,17 +50,24 @@ export class EmployeesResolver extends ResolverDefault<
     return super.get(id);
   }
 
+  @Query(() => [EmployeeEntity], { name: 'employeeAll' })
+  async getAll(): Promise<EmployeeEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => EmployeePaginated, { name: 'employeePages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<EmployeePaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [EmployeeEntity], { name: 'employeetMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<EmployeeEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [EmployeeEntity], { name: 'employeeAll' })
-  async getAll(): Promise<EmployeeEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => EmployeeEntity, { name: 'employeeCreate' })

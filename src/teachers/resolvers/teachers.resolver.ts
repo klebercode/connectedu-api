@@ -12,7 +12,7 @@ import {
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
-import { TeacherEntity } from '../entities/teacher.entity';
+import { TeacherEntity, TeacherPaginated } from '../entities/teacher.entity';
 import { TeachersService } from '../teachers.service';
 import { CreateTeacherInput } from '../types/create-teacher.input';
 import { UpdateTeacherInput } from '../types/update-teacher.input';
@@ -27,6 +27,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => TeacherEntity)
@@ -50,17 +51,24 @@ export class TeachersResolver extends ResolverDefault<
     return super.get(id);
   }
 
+  @Query(() => [TeacherEntity], { name: 'teacherAll' })
+  async getAll(): Promise<TeacherEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => TeacherPaginated, { name: 'teacherPages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<TeacherPaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [TeacherEntity], { name: 'teacherMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<TeacherEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [TeacherEntity], { name: 'teacherAll' })
-  async getAll(): Promise<TeacherEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => TeacherEntity, { name: 'teacherCreate' })

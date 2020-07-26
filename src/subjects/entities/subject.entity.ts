@@ -1,8 +1,9 @@
-import { Field, ObjectType, PartialType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { Entity, Column } from 'typeorm';
 import { IsOptional } from 'class-validator';
+import { Paginated } from '../../common/pages';
+
 import { UserBaseEntity } from 'src/users/entities/user-base-entity';
-import { Paginated } from '../../common/types/paginated';
 
 @ObjectType()
 @Entity('subject')
@@ -34,4 +35,4 @@ export class SubjectEntity extends UserBaseEntity {
 }
 
 @ObjectType()
-export class SubjectEntityPaginated extends Paginated(SubjectEntity) {}
+export class SubjectPaginated extends Paginated<SubjectEntity>(SubjectEntity) {}

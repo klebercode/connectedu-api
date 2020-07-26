@@ -14,7 +14,10 @@ import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { MyContext } from '../../common/types/myContext';
 
-import { ContentAppliedEntity } from '../entities/contentapplied.entity';
+import {
+  ContentAppliedEntity,
+  ContentAppliedPaginated,
+} from '../entities/contentapplied.entity';
 import { ContentAppliedsService } from '../contentapplieds.service';
 import { CreatContentAppliedInput } from '../types/create-contentapplied.input';
 import { UpdateContentAppliedInput } from '../types/update-contentapplied.input';
@@ -31,6 +34,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ContentAppliedEntity)
@@ -56,17 +60,24 @@ export class ContentAppliedsResolver extends ResolverDefault<
     return super.get(id);
   }
 
+  @Query(() => [ContentAppliedEntity], { name: 'contentAppliedAll' })
+  async getAll(): Promise<ContentAppliedEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => ContentAppliedPaginated, { name: 'contentAppliedPages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<ContentAppliedPaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [ContentAppliedEntity], { name: 'contentAppliedMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<ContentAppliedEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [ContentAppliedEntity], { name: 'contentAppliedAll' })
-  async getAll(): Promise<ContentAppliedEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => ContentAppliedEntity, {

@@ -1,4 +1,4 @@
-import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
+import { UseGuards, UseFilters } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -13,7 +13,10 @@ import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { MyContext } from '../../common/types/myContext';
 
-import { StudentOccurrenceEntity } from '../entities/studentoccurrence.entity';
+import {
+  StudentOccurrenceEntity,
+  StudentOccurrencePaginated,
+} from '../entities/studentoccurrence.entity';
 import { StudentOccurrencesService } from '../studentinformations.service';
 import { CreatStudentOccurrenceInput } from '../types/create-studentoccurrences.input';
 import { UpdateStudentOccurrenceInput } from '../types/update-studentoccurrences.input';
@@ -31,6 +34,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => StudentOccurrenceEntity)
@@ -57,17 +61,24 @@ export class StudentOccurrencesResolver extends ResolverDefault<
     return super.get(id);
   }
 
+  @Query(() => [StudentOccurrenceEntity], { name: 'studentOccurrenceAll' })
+  async getAll(): Promise<StudentOccurrenceEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => StudentOccurrencePaginated, { name: 'studentOccurrencePages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<StudentOccurrencePaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [StudentOccurrenceEntity], { name: 'studentOccurrenceMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<StudentOccurrenceEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [StudentOccurrenceEntity], { name: 'studentOccurrenceAll' })
-  async getAll(): Promise<StudentOccurrenceEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => StudentOccurrenceEntity, {

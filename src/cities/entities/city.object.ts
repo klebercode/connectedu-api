@@ -3,6 +3,7 @@ import { Entity, Column, Unique, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../base-entity';
 import { IsOptional } from 'class-validator';
 import { StateEntity } from '../../states/entities/state.object';
+import { Paginated } from '../../common/pages';
 
 @ObjectType()
 @Entity('city')
@@ -23,3 +24,6 @@ export class CityEntity extends BaseEntity {
   @IsOptional()
   state?: StateEntity;
 }
+
+@ObjectType()
+export class CityPaginated extends Paginated<CityEntity>(CityEntity) {}

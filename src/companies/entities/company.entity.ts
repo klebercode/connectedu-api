@@ -1,10 +1,10 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, Column } from 'typeorm';
+import { Paginated } from '../../common/pages';
 
 import { StateEntity } from '../../states/entities/state.object';
 import { IsOptional, IsEmail } from 'class-validator';
 import { UserBaseEntity } from '../../users/entities/user-base-entity';
-import { UserEntity } from '../../users/entities/user.entity';
 import { CityEntity } from '../../cities/entities/city.object';
 
 @ObjectType()
@@ -130,3 +130,6 @@ export class CompanyEntity extends UserBaseEntity {
   @IsOptional()
   image?: string;
 }
+
+@ObjectType()
+export class CompanyPaginated extends Paginated<CompanyEntity>(CompanyEntity) {}

@@ -1,6 +1,7 @@
 import { Field, ObjectType, GraphQLISODateTime } from '@nestjs/graphql';
-import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
+import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm';
 import { IsOptional } from 'class-validator';
+import { Paginated } from '../../common/pages';
 
 import { UserBaseEntity } from 'src/users/entities/user-base-entity';
 import { StudentEntity } from '../../students/entities/student.entity';
@@ -56,3 +57,8 @@ export class StudentCallEntity extends UserBaseEntity {
   @IsOptional()
   reason?: string;
 }
+
+@ObjectType()
+export class StudentCallPaginated extends Paginated<StudentCallEntity>(
+  StudentCallEntity,
+) {}

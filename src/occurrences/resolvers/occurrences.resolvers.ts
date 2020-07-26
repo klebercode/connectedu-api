@@ -1,4 +1,4 @@
-import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
+import { UseGuards, UseFilters } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -13,7 +13,10 @@ import { MyContext } from '../../common/types/myContext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
-import { OccurrenceEntity } from '../entities/occurrence.entity';
+import {
+  OccurrenceEntity,
+  OccurrencePaginated,
+} from '../entities/occurrence.entity';
 import { OccurrencesService } from '../occurrences.service';
 import { CreateOccurrenceInput } from '../types/create-occurrence.input';
 import { UpdateOccurrenceInput } from '../types/update-occurrence.input';
@@ -25,6 +28,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => OccurrenceEntity)
@@ -46,17 +50,24 @@ export class OccurrencesResolver extends ResolverDefault<
     return super.get(id);
   }
 
+  @Query(() => [OccurrenceEntity], { name: 'occurrenceAll' })
+  async getAll(): Promise<OccurrenceEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => OccurrencePaginated, { name: 'occurrencePages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<OccurrencePaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [OccurrenceEntity], { name: 'occurrenceMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<OccurrenceEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [OccurrenceEntity], { name: 'occurrenceAll' })
-  async getAll(): Promise<OccurrenceEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => OccurrenceEntity, { name: 'occurrenceCreate' })

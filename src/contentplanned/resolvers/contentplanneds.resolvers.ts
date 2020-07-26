@@ -13,7 +13,10 @@ import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { MyContext } from '../../common/types/myContext';
 
-import { ContentPlannedEntity } from '../entities/contentplanned.entity';
+import {
+  ContentPlannedEntity,
+  ContentPlannedPaginated,
+} from '../entities/contentplanned.entity';
 import { ContentPlannedsService } from '../contentplanneds.service';
 import { CreatContentPlannedInput } from '../types/create-contentplanned.input';
 import { UpdateContentPlannedInput } from '../types/update-contentplanned.input';
@@ -30,6 +33,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ContentPlannedEntity)
@@ -55,17 +59,24 @@ export class ContentPlannedsResolver extends ResolverDefault<
     return super.get(id);
   }
 
+  @Query(() => [ContentPlannedEntity], { name: 'contentPlannedAll' })
+  async getAll(): Promise<ContentPlannedEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => ContentPlannedPaginated, { name: 'contentPlannedPages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<ContentPlannedPaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [ContentPlannedEntity], { name: 'contentPlannedMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<ContentPlannedEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [ContentPlannedEntity], { name: 'contentPlannedAll' })
-  async getAll(): Promise<ContentPlannedEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => ContentPlannedEntity, {

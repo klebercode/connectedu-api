@@ -1,8 +1,9 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
+import { Paginated } from '../../common/pages';
+
 import { UserBaseEntity } from 'src/users/entities/user-base-entity';
-import { UserEntity } from '../../users/entities/user.entity';
 import { CompanyEntity } from '../../companies/entities/company.entity';
 import { YearEntity } from '../../years/entities/year.entity';
 
@@ -76,3 +77,8 @@ export class ClassRoomEntity extends UserBaseEntity {
   @IsOptional()
   year?: YearEntity;
 }
+
+@ObjectType()
+export class ClassRoomPaginated extends Paginated<ClassRoomEntity>(
+  ClassRoomEntity,
+) {}

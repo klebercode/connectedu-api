@@ -2,13 +2,14 @@ import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
-import { StateEntity } from '../entities/state.object';
+import { StateEntity, StatePaginated } from '../entities/state.object';
 import { StatesService } from '../states.service';
 import { CreateStateInput } from '../types/create-state.input';
 import { UpdateStateInput } from '../types/update-state.input';
 
 import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
 import { ResolverPublic } from '../../common/resolvers/public.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(of => StateEntity)
@@ -25,6 +26,13 @@ export class StatesResolver extends ResolverPublic<
   @Query(() => StateEntity, { name: 'state' })
   async get(@Args('id') id: number): Promise<StateEntity> {
     return super.get(id);
+  }
+
+  @Query(() => StatePaginated, { name: 'statePages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<StatePaginated> {
+    return super.getPagenated(pagination);
   }
 
   @Query(() => [StateEntity], { name: 'stateMany' })

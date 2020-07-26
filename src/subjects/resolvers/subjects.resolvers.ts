@@ -13,10 +13,7 @@ import { MyContext } from '../../common/types/myContext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
-import {
-  SubjectEntity,
-  SubjectEntityPaginated,
-} from '../entities/subject.entity';
+import { SubjectEntity, SubjectPaginated } from '../entities/subject.entity';
 import { SubjectsService } from '../subjects.service';
 import { CreateSubjectInput } from '../types/create-subject.input';
 import { UpdateSubjectInput } from '../types/update-subject.input';
@@ -28,6 +25,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => SubjectEntity)
@@ -47,6 +45,18 @@ export class SubjectsResolver extends ResolverDefault<
   @Query(() => SubjectEntity, { name: 'subject' })
   async get(@Args('id') id: number): Promise<SubjectEntity> {
     return super.get(id);
+  }
+
+  @Query(() => [SubjectEntity], { name: 'subjectAll' })
+  async getAll(): Promise<SubjectEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => SubjectPaginated, { name: 'subjectPages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<SubjectPaginated> {
+    return super.getPagenated(pagination);
   }
 
   @Query(() => [SubjectEntity], { name: 'subjectMany' })

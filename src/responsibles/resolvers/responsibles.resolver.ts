@@ -11,7 +11,10 @@ import {
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
-import { ResponsibleEntity } from '../entities/responsible.entity';
+import {
+  ResponsibleEntity,
+  ResponsiblePaginated,
+} from '../entities/responsible.entity';
 import { ResponsiblesService } from '../responsibles.service';
 import { CreateResponsibleInput } from '../types/create-responsible.input';
 import { UpdateResponsibleInput } from '../types/update-responsible.input';
@@ -26,6 +29,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ResponsibleEntity)
@@ -49,17 +53,24 @@ export class ResponsiblesResolver extends ResolverDefault<
     return super.get(id);
   }
 
+  @Query(() => ResponsiblePaginated, { name: 'responsiblePages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<ResponsiblePaginated> {
+    return super.getPagenated(pagination);
+  }
+
+  @Query(() => [ResponsibleEntity], { name: 'responsibleAll' })
+  async getAll(): Promise<ResponsibleEntity[]> {
+    return super.getAll();
+  }
+
   @Query(() => [ResponsibleEntity], { name: 'responsibleMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<ResponsibleEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [ResponsibleEntity], { name: 'responsibleAll' })
-  async getAll(): Promise<ResponsibleEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => ResponsibleEntity, { name: 'responsibleCreate' })

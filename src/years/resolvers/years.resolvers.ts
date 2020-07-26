@@ -13,7 +13,7 @@ import { MyContext } from '../../common/types/myContext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
-import { YearEntity } from '../entities/year.entity';
+import { YearEntity, YearPaginated } from '../entities/year.entity';
 import { YearsService } from '../years.service';
 import { CreateYearInput } from '../types/create-year.input';
 import { UpdateYearInput } from '../types/update-year.input';
@@ -25,6 +25,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => YearEntity)
@@ -46,17 +47,24 @@ export class YearsResolver extends ResolverDefault<
     return super.get(id);
   }
 
+  @Query(() => [YearEntity], { name: 'yearAll' })
+  async getAll(): Promise<YearEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => YearPaginated, { name: 'yearPages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<YearPaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [YearEntity], { name: 'yearMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<YearEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [YearEntity], { name: 'yearAll' })
-  async getAll(): Promise<YearEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => YearEntity, { name: 'yearCreate' })

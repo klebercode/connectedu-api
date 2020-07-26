@@ -1,9 +1,4 @@
-import {
-  UseGuards,
-  HttpException,
-  UseFilters,
-  NotFoundException,
-} from '@nestjs/common';
+import { UseGuards, UseFilters } from '@nestjs/common';
 
 import {
   Args,
@@ -21,7 +16,10 @@ import { MyContext } from '../../common/types/myContext';
 import { UsersService } from '../../users/users.service';
 import { UserEntity } from '../../users/entities/user.entity';
 
-import { ClassRoomItemEntity } from '../entities/classroomitem.entity';
+import {
+  ClassRoomItemEntity,
+  ClassRoomItemPaginated,
+} from '../entities/classroomitem.entity';
 import { ClassRoomItemsService } from '../classroomitems.service';
 import { CreateClassRoomItemInput } from '../types/create-classroomitem.input';
 import { UpdateClassRoomItemInput } from '../types/update-classroomitem.input';
@@ -34,6 +32,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ClassRoomItemEntity)
@@ -58,17 +57,24 @@ export class ClassRoomItemsResolver extends ResolverDefault<
     return super.get(id);
   }
 
+  @Query(() => [ClassRoomItemEntity], { name: 'classRoomItemAll' })
+  async getAll(): Promise<ClassRoomItemEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => ClassRoomItemPaginated, { name: 'classRoomItemPages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<ClassRoomItemPaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [ClassRoomItemEntity], { name: 'classRoomItemMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<ClassRoomItemEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [ClassRoomItemEntity], { name: 'classRoomItemAll' })
-  async getAll(): Promise<ClassRoomItemEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => ClassRoomItemEntity, { name: 'classRoomItemCreate' })

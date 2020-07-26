@@ -13,7 +13,10 @@ import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { MyContext } from '../../common/types/myContext';
 
-import { StudentGradeEntity } from '../entities/studentgrade.entity';
+import {
+  StudentGradeEntity,
+  StudentGradePaginated,
+} from '../entities/studentgrade.entity';
 import { StudentGradesService } from '../studentgrades.service';
 import { CreatStudentGradeInput } from '../types/create-studentgrade.input';
 import { UpdateStudentGradeInput } from '../types/update-studentgrade.input';
@@ -29,6 +32,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => StudentGradeEntity)
@@ -51,6 +55,13 @@ export class StudentGradesResolver extends ResolverDefault<
   @Query(() => StudentGradeEntity, { name: 'studentGrade' })
   async get(@Args('id') id: number): Promise<StudentGradeEntity> {
     return super.get(id);
+  }
+
+  @Query(() => StudentGradePaginated, { name: 'studentGradePages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<StudentGradePaginated> {
+    return super.getPagenated(pagination);
   }
 
   @Query(() => [StudentGradeEntity], { name: 'studentGradeMany' })

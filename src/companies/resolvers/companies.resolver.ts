@@ -17,7 +17,7 @@ import {
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
-import { CompanyEntity } from '../entities/company.entity';
+import { CompanyEntity, CompanyPaginated } from '../entities/company.entity';
 import { CompaniesService } from '../companies.service';
 import { CreateCompanyInput } from '../types/create-company.input';
 import { UpdateCompanyInput } from '../types/update-company.input';
@@ -32,6 +32,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => CompanyEntity)
@@ -55,17 +56,24 @@ export class CompaniesResolver extends ResolverDefault<
     return super.get(id);
   }
 
+  @Query(() => [CompanyEntity], { name: 'companyAll' })
+  async getAll(): Promise<CompanyEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => CompanyPaginated, { name: 'companyPages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<CompanyPaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [CompanyEntity], { name: 'companyMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<CompanyEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [CompanyEntity], { name: 'companyAll' })
-  async getAll(): Promise<CompanyEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => CompanyEntity, { name: 'companyCreate' })

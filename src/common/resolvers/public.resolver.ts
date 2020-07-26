@@ -1,9 +1,11 @@
 import { NotFoundException } from '@nestjs/common';
 import { CustomException } from '../../common/filters/http-exception.filter';
+import { PaginationArgs } from '../../common/pages';
 
 export class ResolverPublic<EntityPublic, CreatePublic, UpdatePublic> {
   constructor(private nameApp: any, private services) {}
 
+  // metodos de queries
   async get(id: number): Promise<EntityPublic> {
     try {
       const obj = await this.services.findOneById(id);
@@ -32,6 +34,16 @@ export class ResolverPublic<EntityPublic, CreatePublic, UpdatePublic> {
     }
   }
 
+  async getPagenated(pagination: PaginationArgs): Promise<any> {
+    try {
+      const obj = await this.services.getPageServ(pagination);
+      return obj;
+    } catch (error) {
+      CustomException.catch(error, 'getPage', this.nameApp);
+    }
+  }
+
+  // metodos de mutations
   async create(input: CreatePublic): Promise<EntityPublic> {
     try {
       const obj = await this.services.create(input);

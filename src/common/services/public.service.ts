@@ -1,5 +1,6 @@
 import { NotFoundException, HttpException } from '@nestjs/common';
 import { Repository, Connection, EntitySchema } from 'typeorm';
+import { PaginationArgs, paginate } from '../../common/pages';
 
 export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
   repository: Repository<EntityPublic>;
@@ -130,5 +131,23 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async getPageServ(paginationArgs: PaginationArgs): Promise<any> {
+    const query = await this.repository.createQueryBuilder().select();
+
+    if (paginationArgs.filter) {
+      query.where(paginationArgs.filter);
+    }
+    if (paginationArgs.orderby && paginationArgs.orderby_desc) {
+      query.orderBy({ [paginationArgs.orderby]: 'DESC' });
+    } else if (paginationArgs.orderby) {
+      query.orderBy({ [paginationArgs.orderby]: 'ASC' });
+    } else if (paginationArgs.orderby_desc) {
+      query.orderBy({ ['id']: 'DESC' });
+    } else {
+      query.orderBy({ ['id']: 'ASC' });
+    }
+    return paginate(query, paginationArgs);
   }
 }

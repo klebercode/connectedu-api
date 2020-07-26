@@ -1,5 +1,6 @@
-import { HttpException, NotFoundException } from '@nestjs/common';
-import { Repository, Connection, Entity } from 'typeorm';
+import { HttpException, NotFoundException, All } from '@nestjs/common';
+import { Repository, Connection } from 'typeorm';
+import { PaginationArgs, paginate } from '../../common/pages';
 
 export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
   repository: Repository<EntityDefault>;
@@ -137,5 +138,23 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async getPageServ(paginationArgs: PaginationArgs): Promise<any> {
+    const query = await this.repository.createQueryBuilder().select();
+
+    if (paginationArgs.filter) {
+      query.where(paginationArgs.filter);
+    }
+    if (paginationArgs.orderby && paginationArgs.orderby_desc) {
+      query.orderBy({ [paginationArgs.orderby]: 'DESC' });
+    } else if (paginationArgs.orderby) {
+      query.orderBy({ [paginationArgs.orderby]: 'ASC' });
+    } else if (paginationArgs.orderby_desc) {
+      query.orderBy({ ['id']: 'DESC' });
+    } else {
+      query.orderBy({ ['id']: 'ASC' });
+    }
+    return paginate(query, paginationArgs);
   }
 }

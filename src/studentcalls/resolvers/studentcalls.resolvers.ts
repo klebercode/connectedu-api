@@ -1,4 +1,4 @@
-import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
+import { UseGuards, UseFilters } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -13,7 +13,10 @@ import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { MyContext } from '../../common/types/myContext';
 
-import { StudentCallEntity } from '../entities/studentcall.entity';
+import {
+  StudentCallEntity,
+  StudentCallPaginated,
+} from '../entities/studentcall.entity';
 import { StudentCallsService } from '../studentcalls.service';
 import { CreatStudentCallInput } from '../types/create-studentcall.input';
 import { UpdateStudentCallInput } from '../types/update-studentcall.input';
@@ -28,6 +31,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => StudentCallEntity)
@@ -51,17 +55,24 @@ export class StudentCallsResolver extends ResolverDefault<
     return super.get(id);
   }
 
+  @Query(() => [StudentCallEntity], { name: 'studentCallAll' })
+  async getAll(): Promise<StudentCallEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => StudentCallPaginated, { name: 'studentCallPages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<StudentCallPaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [StudentCallEntity], { name: 'studentCallMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<StudentCallEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [StudentCallEntity], { name: 'studentCallAll' })
-  async getAll(): Promise<StudentCallEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => StudentCallEntity, {

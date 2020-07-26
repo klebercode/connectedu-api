@@ -1,4 +1,4 @@
-import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
+import { UseGuards, UseFilters } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -12,7 +12,7 @@ import {
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
-import { StudentEntity } from '../entities/student.entity';
+import { StudentEntity, StudentPaginated } from '../entities/student.entity';
 import { StudentsService } from '../students.service';
 import { CreateStudentInput } from '../types/create-student.input';
 import { UpdateStudentInput } from '../types/update-student.input';
@@ -28,6 +28,7 @@ import {
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
+import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => StudentEntity)
@@ -52,17 +53,24 @@ export class studentsResolver extends ResolverDefault<
     return super.get(id);
   }
 
+  @Query(() => [StudentEntity], { name: 'studentAll' })
+  async getAll(): Promise<StudentEntity[]> {
+    return super.getAll();
+  }
+
+  @Query(() => StudentPaginated, { name: 'studentPages' })
+  async getPagenated(
+    @Args() pagination: PaginationArgs,
+  ): Promise<StudentPaginated> {
+    return super.getPagenated(pagination);
+  }
+
   @Query(() => [StudentEntity], { name: 'studentMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<StudentEntity[]> {
     return super.getMany(ids);
-  }
-
-  @Query(() => [StudentEntity], { name: 'studentAll' })
-  async getAll(): Promise<StudentEntity[]> {
-    return super.getAll();
   }
 
   @Mutation(() => StudentEntity, { name: 'studentCreate' })

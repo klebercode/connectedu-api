@@ -1,8 +1,9 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
+import { Paginated } from '../../common/pages';
+
 import { UserBaseEntity } from 'src/users/entities/user-base-entity';
-import { UserEntity } from '../../users/entities/user.entity';
 import { ClassRoomEntity } from '../../classrooms/entities/classroom.entity';
 import { SubjectEntity } from '../../subjects/entities/subject.entity';
 import { TeacherEntity } from '../../teachers/entities/teacher.entity';
@@ -94,3 +95,8 @@ export class ClassRoomItemEntity extends UserBaseEntity {
   @IsOptional()
   gradeMax?: number;
 }
+
+@ObjectType()
+export class ClassRoomItemPaginated extends Paginated<ClassRoomItemEntity>(
+  ClassRoomItemEntity,
+) {}
