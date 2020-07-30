@@ -126,6 +126,7 @@ type ResponsibleEntity {
   workCompany: String
   workPhone: String
   profile: String
+  token: String
 }
 
 type ResponsiblePaginated {
@@ -183,6 +184,7 @@ type StudentEntity {
   OrgIdentity: String
   note: String
   profile: String
+  token: String
 }
 
 type StudentPaginated {
@@ -363,6 +365,7 @@ type TeacherEntity {
   status: Boolean
   note: String
   profile: String
+  token: String
 }
 
 type TeacherPaginated {
@@ -551,6 +554,7 @@ type EmployeeEntity {
   function: Float
   note: String
   profile: String
+  token: String
 }
 
 type EmployeePaginated {
@@ -770,6 +774,30 @@ type OrganizationEntityEdge {
   node: OrganizationEntity!
 }
 
+type UserTokenEntity {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  customer: Customer
+  customerId: Float!
+  organization: OrganizationEntity
+  organizationId: Float!
+  statusAtivation: Boolean
+  dateAtivation: DateTime
+  typeUser: String!
+  token: String!
+}
+
+type UserTokensPaginated {
+  edges: [UserTokenEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type UserTokenEntityEdge {
+  cursor: String!
+  node: UserTokenEntity!
+}
+
 type Query {
   customer(id: Float!): Customer!
   customerMany(ids: [Float!]!): [Customer!]!
@@ -863,6 +891,10 @@ type Query {
   contentAppliedAll: [ContentAppliedEntity!]!
   contentAppliedPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): ContentAppliedPaginated!
   contentAppliedMany(ids: [Float!]!): [ContentAppliedEntity!]!
+  userToken(id: Float!): UserTokenEntity!
+  userTokenAll: [UserTokenEntity!]!
+  userTokenPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): UserTokensPaginated!
+  userTokenMany(ids: [Float!]!): [UserTokenEntity!]!
   organization(id: Float!): OrganizationEntity!
   organizationAll: [OrganizationEntity!]!
   organizationPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): OrganizationPaginated!
@@ -1007,6 +1039,12 @@ type Mutation {
   contentAppliedDeleteMany(ids: [Float!]!): Boolean!
   contentAppliedUpdate(input: UpdateContentAppliedInput!, id: Float!): ContentAppliedEntity!
   contentAppliedUpdateMany(input: [UpdateContentAppliedInput!]!): Boolean!
+  userTokenCreate(input: CreateUserTokenInput!): UserTokenEntity!
+  userTokenCreateMany(input: [CreateUserTokenInput!]!): [UserTokenEntity!]!
+  userTokenDelete(id: Float!): Boolean!
+  userTokenDeleteMany(ids: [Float!]!): Boolean!
+  userTokenUpdate(input: UpdateUserTokenInput!, id: Float!): UserTokenEntity!
+  userTokenUpdateMany(input: [UpdateUserTokenInput!]!): Boolean!
   organizationCreate(input: CreateOrganizationInput!): OrganizationEntity!
   organizationCreateMany(input: [CreateOrganizationInput!]!): [OrganizationEntity!]!
   organizationDelete(id: Float!): Boolean!
@@ -1651,6 +1689,16 @@ input UpdateContentAppliedInput {
   classWork: String
   classHome: String
   justify: String
+}
+
+input CreateUserTokenInput {
+  ownerId: Float!
+  typeOwer: String!
+}
+
+input UpdateUserTokenInput {
+  ownerId: Float!
+  typeOwer: String!
 }
 
 input CreateOrganizationInput {

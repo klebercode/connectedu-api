@@ -33,7 +33,7 @@ export const CUSTOMER_CONNECTION = 'CUSTOMER_CONNECTION';
     CustomersService,
     CustomersResolver,
   ],
-  exports: [CUSTOMER_CONNECTION],
+  exports: [CUSTOMER_CONNECTION, CustomersService],
 })
 export class CustomersModule {
   constructor(private readonly connection: Connection) {}

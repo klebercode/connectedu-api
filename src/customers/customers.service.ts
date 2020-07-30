@@ -20,4 +20,15 @@ export class CustomersService extends ServicePublic<
   ) {
     super(connection, repository, Customer);
   }
+
+  async findHost(host: string): Promise<Customer> {
+    if (!host) {
+      return null;
+    }
+    const obj = await this.repository.findOne({ host });
+    if (!obj) {
+      return null;
+    }
+    return obj;
+  }
 }

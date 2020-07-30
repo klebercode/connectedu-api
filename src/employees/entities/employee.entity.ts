@@ -124,6 +124,10 @@ export class EmployeeEntity extends UserBaseEntity {
   @Column({ type: 'varchar', length: 100, nullable: true })
   @IsOptional()
   profile?: string;
+
+  @Field({ nullable: true })
+  @Column({ length: 10, nullable: true })
+  token?: string;
 }
 
 @ObjectType()

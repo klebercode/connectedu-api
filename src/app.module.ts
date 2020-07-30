@@ -29,7 +29,7 @@ import { StudentGradesModule } from './studentgrades/studentgrades.module';
 import { StudentCallsModule } from './studentcalls/studentcalls.module';
 import { ContentPlannedsModule } from './contentplanned/contentplanneds.module';
 import { ContentAppliedsModule } from './contentapplied/contentapplieds.module';
-
+import { UserTokensModule } from './usertokens/usertokens.module';
 // Modulos Publicos
 import { PermisisonsModule } from './permissions/permissions.module';
 import { PermissionEntity } from './permissions/entities/permission.object';
@@ -39,7 +39,7 @@ import { StatesModule } from './states/states.module';
 import { StateEntity } from './states/entities/state.object';
 import { CitiesModule } from './cities/cities.module';
 import { CityEntity } from './cities/entities/city.object';
-
+import { UserTokenEntity } from './usertokens/entities/usertokens.object';
 // Schema do postgres
 import { CustomersModule } from './customers/customers.module';
 import { Customer } from './customers/entities/customer.object';
@@ -65,6 +65,7 @@ import { Customer } from './customers/entities/customer.object';
           OrganizationEntity,
           PermissionEntity,
           CityEntity,
+          UserTokenEntity,
         ],
       }),
       inject: [ConfigService],
@@ -100,6 +101,7 @@ import { Customer } from './customers/entities/customer.object';
     StudentCallsModule,
     ContentPlannedsModule,
     ContentAppliedsModule,
+    UserTokensModule,
   ],
   controllers: [AppController],
   providers: [AppService],
