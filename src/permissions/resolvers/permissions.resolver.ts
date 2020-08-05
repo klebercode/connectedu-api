@@ -1,6 +1,7 @@
 import { UseGuards, UseFilters } from '@nestjs/common';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
 import {
   PermissionEntity,
@@ -14,7 +15,7 @@ import { HttpExceptionFilter } from '../../common/filters/http-exception.filter'
 import { ResolverPublic } from '../../common/resolvers/public.resolver';
 import { PaginationArgs } from '../../common/pages';
 
-@UseGuards(GqlAuthGuard)
+@UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => PermissionEntity)
 @UseFilters(HttpExceptionFilter)
 export class PermissionsResolver extends ResolverPublic<

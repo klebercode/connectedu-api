@@ -4,16 +4,12 @@ import { PaginationArgs, paginate } from '../../common/pages';
 
 export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
   repository: Repository<EntityPublic>;
-  connection: Connection;
+  connectionPublic: Connection;
   entity: EntitySchema<EntityPublic>;
 
-  constructor(
-    connection: Connection,
-    repository: Repository<EntityPublic>,
-    entity: any,
-  ) {
-    this.repository = repository;
-    this.connection = connection;
+  constructor(connectionPublic: Connection, entity: any) {
+    this.repository = connectionPublic.getRepository<EntityPublic>(entity);
+    this.connectionPublic = connectionPublic;
     this.entity = entity;
   }
 
@@ -50,7 +46,7 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
       });
     });
 
-    const queryRunner = this.connection.createQueryRunner();
+    const queryRunner = this.connectionPublic.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
@@ -80,7 +76,7 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
   }
 
   async updateMany(input: [UpdatePublic], idUser: any): Promise<boolean> {
-    const queryRunner = this.connection.createQueryRunner();
+    const queryRunner = this.connectionPublic.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
@@ -114,7 +110,7 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
   }
 
   async removeMany(ids: number[]): Promise<boolean> {
-    const queryRunner = this.connection.createQueryRunner();
+    const queryRunner = this.connectionPublic.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 

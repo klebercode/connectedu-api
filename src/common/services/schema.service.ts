@@ -28,6 +28,18 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     return obj;
   }
 
+  async findOne(input: any): Promise<EntityDefault> {
+    if (!input) {
+      return null;
+    }
+
+    const obj = await this.repository.findOne(input);
+    if (!obj) {
+      return null;
+    }
+    return obj;
+  }
+
   async create(input: CreateDefault, idUser: any): Promise<EntityDefault> {
     const obj = await this.repository.save({
       ...input,
@@ -156,5 +168,36 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
       query.orderBy({ ['id']: 'ASC' });
     }
     return paginate(query, paginationArgs);
+  }
+
+  async updateToken(
+    id: number,
+    token: string,
+    idUser: number,
+  ): Promise<Boolean> {
+    const obj = await this.findOneById(id);
+    if (!obj) {
+      throw new NotFoundException();
+    }
+
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      await queryRunner.manager.update(this.entity, id, {
+        token: token,
+        userUpdatedId: idUser,
+      });
+
+      await queryRunner.commitTransaction();
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      throw new HttpException(error, error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

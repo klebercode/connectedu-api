@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { UserEntity } from './user.entity';
+import { TypeUser } from '../../common/enums/enum-usertoken';
 
 @ObjectType()
 @Entity()
@@ -35,6 +36,11 @@ export class UserBaseEntity {
   @IsOptional()
   userCreatedId?: number;
 
+  @Field(type => TypeUser, { nullable: true })
+  @Column({ name: 'user_created_type', nullable: true })
+  @IsOptional()
+  userTypeCreated?: TypeUser;
+
   @Field(type => UserEntity, { nullable: true })
   @JoinColumn({ name: 'user_created_id' })
   @ManyToOne(type => UserEntity, { nullable: true })
@@ -45,6 +51,11 @@ export class UserBaseEntity {
   @Column({ name: 'user_updated_id', nullable: true })
   @IsOptional()
   userUpdatedId?: number;
+
+  @Field(type => TypeUser, { nullable: true })
+  @Column({ name: 'user_updated_type', nullable: true })
+  @IsOptional()
+  userTypeUpdated?: TypeUser;
 
   @Field(type => UserEntity, { nullable: true })
   @JoinColumn({ name: 'user_updated_id' })

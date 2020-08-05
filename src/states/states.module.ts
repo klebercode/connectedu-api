@@ -6,9 +6,16 @@ import { StatesService } from './states.service';
 import { StatesResolver } from './resolvers/states.resolver';
 import { StateEntity } from './entities/state.object';
 import { AuthModule } from '../auth/auth.module';
+import { UsersModule } from '../users/users.module';
+import { CustomersModule } from '../customers/customers.module';
 
 @Module({
-  imports: [AuthModule, TypeOrmModule.forFeature([StateEntity])],
+  imports: [
+    AuthModule,
+    UsersModule,
+    CustomersModule,
+    TypeOrmModule.forFeature([StateEntity]),
+  ],
   providers: [StatesResolver, StatesService, DateScalar],
   exports: [StatesService],
 })

@@ -12,8 +12,6 @@ import { Customer } from './entities/customer.object';
 import { CustomersService } from './customers.service';
 import { CustomersResolver } from './resolvers/customers.resolver';
 
-import { AuthModule } from '../auth/auth.module';
-
 export const CUSTOMER_CONNECTION = 'CUSTOMER_CONNECTION';
 
 @Module({

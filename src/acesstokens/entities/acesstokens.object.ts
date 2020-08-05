@@ -1,15 +1,16 @@
 import { Field, ObjectType, GraphQLISODateTime } from '@nestjs/graphql';
 import { Entity, Column, Unique } from 'typeorm';
 import { Paginated } from '../../common/pages';
+import { TypeUser } from '../../common/enums/enum-usertoken';
 
 import { BaseEntity } from '../../base-entity';
 import { OrganizationEntity } from '../../organizations/entities/organization.object';
 import { Customer } from '../../customers/entities/customer.object';
 
 @ObjectType()
-@Entity('usertoken')
+@Entity('acesstoken')
 @Unique(['token'])
-export class UserTokenEntity extends BaseEntity {
+export class AcessTokenEntity extends BaseEntity {
   @Field(type => Customer, { nullable: true })
   customer?: Customer;
 
@@ -25,23 +26,23 @@ export class UserTokenEntity extends BaseEntity {
   organizationId: number;
 
   @Field({ nullable: true })
-  @Column({ name: 'status_ativation', nullable: true })
-  statusAtivation?: boolean;
+  @Column({ name: 'status_ativation_app', nullable: false })
+  statusAtivationApp?: boolean;
 
-  @Field(() => GraphQLISODateTime, { nullable: true })
-  @Column({ name: 'date_ativation', nullable: true })
-  dateAtivation?: Date;
+  @Field({ nullable: true })
+  @Column({ name: 'status_ativation_web', nullable: false })
+  statusAtivationWeb?: boolean;
 
-  @Field({ nullable: false })
-  @Column({ name: 'type_user', type: 'varchar', length: 1, nullable: false })
-  typeUser: string;
+  @Field(type => TypeUser, { nullable: true })
+  @Column({ name: 'type_user', nullable: false })
+  typeUser?: TypeUser;
 
-  @Field({ nullable: false })
-  @Column({ length: 10, nullable: false })
+  @Field({ nullable: true })
+  @Column({ length: 12, nullable: false })
   token?: string;
 }
 
 @ObjectType()
-export class UserTokensPaginated extends Paginated<UserTokenEntity>(
-  UserTokenEntity,
+export class AcessTokensPaginated extends Paginated<AcessTokenEntity>(
+  AcessTokenEntity,
 ) {}

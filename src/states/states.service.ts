@@ -1,11 +1,12 @@
-import { Injectable, GoneException } from '@nestjs/common';
-import { Repository, Connection } from 'typeorm';
-import { InjectRepository, InjectConnection } from '@nestjs/typeorm';
+import { Injectable, Inject } from '@nestjs/common';
+import { Connection } from 'typeorm';
+import { InjectConnection } from '@nestjs/typeorm';
 import { ServicePublic } from '../common/services/public.service';
 
 import { StateEntity } from './entities/state.object';
 import { CreateStateInput } from './types/create-state.input';
 import { UpdateStateInput } from './types/update-state.input';
+import { CUSTOMER_CONNECTION } from '../customers/customers.module';
 
 @Injectable()
 export class StatesService extends ServicePublic<
@@ -14,10 +15,9 @@ export class StatesService extends ServicePublic<
   UpdateStateInput
 > {
   constructor(
-    @InjectConnection() connection: Connection,
-    @InjectRepository(StateEntity)
-    repository: Repository<StateEntity>,
+    @InjectConnection() connectionPublic: Connection,
+    @Inject(CUSTOMER_CONNECTION) connection: Connection,
   ) {
-    super(connection, repository, StateEntity);
+    super(connectionPublic, StateEntity);
   }
 }

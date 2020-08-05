@@ -126,7 +126,7 @@ export class EmployeeEntity extends UserBaseEntity {
   profile?: string;
 
   @Field({ nullable: true })
-  @Column({ length: 10, nullable: true })
+  @Column({ length: 12, nullable: true })
   token?: string;
 }
 

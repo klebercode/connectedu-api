@@ -18,16 +18,4 @@ export class EmployeesService extends ServiceDefault<
   constructor(@Inject(CUSTOMER_CONNECTION) connection: Connection) {
     super(connection, EmployeeEntity);
   }
-
-  async updateToken(
-    id: number,
-    token: string,
-    idUser: number,
-  ): Promise<Boolean> {
-    await this.repository.update(id, {
-      token: token,
-      userUpdatedId: idUser,
-    });
-    return true;
-  }
 }

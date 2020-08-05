@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { DateScalar } from '../common/scalars/date.scalar';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { UserTokensService } from './usertokens.service';
-import { UserTokensResolver } from './resolvers/usertokens.resolver';
-import { UserTokenEntity } from './entities/usertokens.object';
+import { AcessTokensService } from './acesstokens.service';
+import { AcessTokensResolver } from './resolvers/acesstokens.resolver';
+import { AcessTokenEntity } from './entities/acesstokens.object';
+import { AcessFirstResolver } from './resolvers/acessfirst.resolver';
 
 import { AuthModule } from '../auth/auth.module';
 import { OrganizationsModule } from '../organizations/organizations.module';
@@ -25,9 +26,14 @@ import { UsersModule } from '../users/users.module';
     EmployeesModule,
     ResponsiblesModule,
     UsersModule,
-    TypeOrmModule.forFeature([UserTokenEntity]),
+    TypeOrmModule.forFeature([AcessTokenEntity]),
   ],
-  providers: [UserTokensResolver, UserTokensService, DateScalar],
-  exports: [UserTokensService],
+  providers: [
+    AcessTokensResolver,
+    AcessFirstResolver,
+    AcessTokensService,
+    DateScalar,
+  ],
+  exports: [AcessTokensService],
 })
-export class UserTokensModule {}
+export class AcessTokensModule {}

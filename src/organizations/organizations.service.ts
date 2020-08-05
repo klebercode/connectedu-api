@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { Repository, Connection } from 'typeorm';
 import { InjectRepository, InjectConnection } from '@nestjs/typeorm';
 import { ServicePublic } from '../common/services/public.service';
+import { CUSTOMER_CONNECTION } from '../customers/customers.module';
 
 import { OrganizationEntity } from './entities/organization.object';
 import { CreateOrganizationInput } from './types/create-organization.input';
@@ -14,10 +15,9 @@ export class OrganizationsService extends ServicePublic<
   UpdateOrganizationInput
 > {
   constructor(
-    @InjectConnection() connection: Connection,
-    @InjectRepository(OrganizationEntity)
-    repository: Repository<OrganizationEntity>,
+    @InjectConnection() connectionPublic: Connection,
+    @Inject(CUSTOMER_CONNECTION) connection: Connection,
   ) {
-    super(connection, repository, OrganizationEntity);
+    super(connectionPublic, OrganizationEntity);
   }
 }

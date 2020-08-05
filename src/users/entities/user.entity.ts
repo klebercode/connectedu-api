@@ -1,15 +1,26 @@
-import { Field, ObjectType, GraphQLISODateTime } from '@nestjs/graphql';
-import { Entity, Column, JoinColumn, Unique } from 'typeorm';
+import { ID, Field, ObjectType, GraphQLISODateTime } from '@nestjs/graphql';
+import {
+  Entity,
+  Column,
+  JoinColumn,
+  Unique,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { IsOptional, isEmail } from 'class-validator';
 import { Optional } from '@nestjs/common';
 import { Paginated } from '../../common/pages';
 
-import { BaseEntity } from '../../base-entity';
-
 @ObjectType()
 @Entity('user')
 @Unique(['login'])
-export class UserEntity extends BaseEntity {
+export class UserEntity {
+  @Field(() => ID)
+  @PrimaryGeneratedColumn()
+  @IsOptional()
+  id: number;
+
   @Field({ nullable: false })
   @Optional()
   @Column({ type: 'varchar', length: 100, nullable: false })
@@ -68,11 +79,13 @@ export class UserEntity extends BaseEntity {
   userUpdated?: UserEntity;
 
   @Field(() => GraphQLISODateTime, { nullable: true })
-  @Optional()
+  @CreateDateColumn({ name: 'created_at', nullable: true })
+  @IsOptional()
   createdAt?: Date;
 
   @Field(() => GraphQLISODateTime, { nullable: true })
-  @Optional()
+  @UpdateDateColumn({ name: 'updated_at', nullable: true })
+  @IsOptional()
   updatedAt?: Date;
 }
 
