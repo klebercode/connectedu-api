@@ -44,8 +44,8 @@ import { StateEntity } from './states/entities/state.object';
 import { CitiesModule } from './cities/cities.module';
 import { CityEntity } from './cities/entities/city.object';
 
-import { KeyAcessEntity } from './keyacess/entities/keyacess.object';
-import { KeyAcessModule } from './keyacess/keyacess.module';
+import { KeyAccessEntity } from './keyaccess/entities/keyaccess.object';
+import { KeyAccessModule } from './keyaccess/keyaccess.module';
 
 // Schema do postgres
 import { CustomersModule } from './customers/customers.module';
@@ -72,7 +72,7 @@ import { Customer } from './customers/entities/customer.object';
           StateEntity,
           CityEntity,
           PermissionEntity,
-          KeyAcessEntity,
+          KeyAccessEntity,
         ],
       }),
       inject: [ConfigService],
@@ -108,7 +108,7 @@ import { Customer } from './customers/entities/customer.object';
     StudentCallsModule,
     ContentPlannedsModule,
     ContentAppliedsModule,
-    KeyAcessModule,
+    KeyAccessModule,
     UserCentesModule,
   ],
   controllers: [AppController],

@@ -10,9 +10,9 @@ import * as crypto from 'crypto';
 
 import { ServicePublic } from '../common/services/public.service';
 
-import { KeyAcessEntity } from './entities/keyacess.object';
-import { CreateKeyAcessInput } from './types/create-keyacess.input';
-import { UpdateKeyAcessInput } from './types/update-keyacess.input';
+import { KeyAccessEntity } from './entities/keyaccess.object';
+import { CreateKeyAccessInput } from './types/create-keyaccess.input';
+import { UpdateKeyAccessInput } from './types/update-keyaccess.input';
 import { MyContext } from '../common/types/myContext';
 import { CUSTOMER_CONNECTION } from '../customers/customers.module';
 
@@ -27,10 +27,10 @@ import { UserCentersService } from '../usercenter/usercenters.service';
 import { UsersService } from '../users/users.service';
 
 @Injectable()
-export class KeyAcessService extends ServicePublic<
-  KeyAcessEntity,
-  CreateKeyAcessInput,
-  UpdateKeyAcessInput
+export class KeyAccessService extends ServicePublic<
+  KeyAccessEntity,
+  CreateKeyAccessInput,
+  UpdateKeyAccessInput
 > {
   constructor(
     @InjectConnection() connectionPublic: Connection,
@@ -44,12 +44,12 @@ export class KeyAcessService extends ServicePublic<
     private readonly userCentersService: UserCentersService,
     private readonly usersService: UsersService,
   ) {
-    super(connectionPublic, KeyAcessEntity);
+    super(connectionPublic, KeyAccessEntity);
   }
 
   async createToken(
     context: MyContext,
-    input: CreateKeyAcessInput,
+    input: CreateKeyAccessInput,
   ): Promise<any> {
     const { typeUser } = input;
     const { ownerId } = input;
@@ -103,11 +103,11 @@ export class KeyAcessService extends ServicePublic<
     };
 
     try {
-      const keyAcess = await this.repository.save(objKeyAcess);
+      const keyAccess = await this.repository.save(objKeyAcess);
 
       await this.userCentersService.createUserCenter(objUserCenter);
 
-      return objKeyAcess;
+      return keyAccess;
     } catch (error) {
       throw new HttpException(error, error);
     }
@@ -156,8 +156,8 @@ export class KeyAcessService extends ServicePublic<
     return retornarResto ? resto : 11 - resto >= 10 ? 0 : 11 - resto;
   }
 
-  async FindKeyAcess(key: string): Promise<any> {
-    const obj = await this.repository.findOne({ keyAcess: key });
+  async FindKeyAccess(key: string): Promise<any> {
+    const obj = await this.repository.findOne({ keyAccess: key });
     let ower: any;
 
     if (!obj) {

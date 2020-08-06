@@ -11,10 +11,13 @@ import {
   Context,
 } from '@nestjs/graphql';
 
-import { KeyAcessEntity, KeyAcessPaginated } from '../entities/keyacess.object';
-import { KeyAcessService } from '../keyacess.service';
-import { CreateKeyAcessInput } from '../types/create-keyacess.input';
-import { UpdateKeyAcessInput } from '../types/update-keyacess.input';
+import {
+  KeyAccessEntity,
+  KeyAccessPaginated,
+} from '../entities/keyaccess.object';
+import { KeyAccessService } from '../keyaccess.service';
+import { CreateKeyAccessInput } from '../types/create-keyaccess.input';
+import { UpdateKeyAccessInput } from '../types/update-keyaccess.input';
 
 import { MyContext } from '../../common/types/myContext';
 import { OrganizationsService } from '../../organizations/organizations.service';
@@ -26,69 +29,69 @@ import { ResolverPublic } from '../../common/resolvers/public.resolver';
 import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
-@Resolver(of => KeyAcessEntity)
+@Resolver(of => KeyAccessEntity)
 @UseFilters(HttpExceptionFilter)
-export class KeyAcessResolver extends ResolverPublic<
-  KeyAcessEntity,
-  CreateKeyAcessInput,
-  UpdateKeyAcessInput
+export class KeyAccessResolver extends ResolverPublic<
+  KeyAccessEntity,
+  CreateKeyAccessInput,
+  UpdateKeyAccessInput
 > {
   constructor(
-    private readonly keyAcessService: KeyAcessService,
+    private readonly keyAccessService: KeyAccessService,
     private readonly organizationsService: OrganizationsService,
     private readonly customersService: CustomersService,
   ) {
-    super('Chaves de Acesso', keyAcessService);
+    super('Chaves de Acesso', keyAccessService);
   }
 
-  @Query(() => KeyAcessEntity, { name: 'keyAcess' })
-  async get(@Args('id') id: number): Promise<KeyAcessEntity> {
+  @Query(() => KeyAccessEntity, { name: 'keyAccess' })
+  async get(@Args('id') id: number): Promise<KeyAccessEntity> {
     return super.get(id);
   }
 
-  @Query(() => [KeyAcessEntity], { name: 'keyAcessAll' })
-  async getAll(): Promise<KeyAcessEntity[]> {
+  @Query(() => [KeyAccessEntity], { name: 'keyAccessAll' })
+  async getAll(): Promise<KeyAccessEntity[]> {
     return super.getAll();
   }
 
-  @Query(() => KeyAcessPaginated, { name: 'keyAcessPages' })
+  @Query(() => KeyAccessPaginated, { name: 'keyAccessPages' })
   async getPagenated(
     @Args() pagination: PaginationArgs,
-  ): Promise<KeyAcessPaginated> {
+  ): Promise<KeyAccessPaginated> {
     return super.getPagenated(pagination);
   }
 
-  @Query(() => [KeyAcessEntity], { name: 'keyAcessMany' })
+  @Query(() => [KeyAccessEntity], { name: 'keyAccessMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
-  ): Promise<KeyAcessEntity[]> {
+  ): Promise<KeyAccessEntity[]> {
     return super.getMany(ids);
   }
 
-  @Mutation(() => KeyAcessEntity, { name: 'keyAcessCreate' })
+  @Mutation(() => KeyAccessEntity, { name: 'keyAccessCreate' })
   async createOwerToken(
     @Context() context: MyContext,
-    @Args({ name: 'input', type: () => CreateKeyAcessInput })
-    input: CreateKeyAcessInput,
-  ): Promise<KeyAcessEntity> {
-    return this.keyAcessService.createToken(context, input);
+    @Args({ name: 'input', type: () => CreateKeyAccessInput })
+    input: CreateKeyAccessInput,
+  ): Promise<KeyAccessEntity> {
+    return this.keyAccessService.createToken(context, input);
   }
 
-  @Mutation(() => [KeyAcessEntity], { name: 'keyAcessCreateMany' })
+  @Mutation(() => [KeyAccessEntity], { name: 'keyAccessCreateMany' })
   async createMany(
-    @Args({ name: 'input', type: () => [CreateKeyAcessInput] })
-    input: [CreateKeyAcessInput],
-  ): Promise<KeyAcessEntity[]> {
+    @Args({ name: 'input', type: () => [CreateKeyAccessInput] })
+    input: [CreateKeyAccessInput],
+  ): Promise<KeyAccessEntity[]> {
     return super.createMany(input);
   }
 
-  @Mutation(() => Boolean, { name: 'keyAcessDelete' })
+  @Mutation(() => Boolean, { name: 'keyAccessDelete' })
   async delete(@Args('id') id: number): Promise<boolean> {
     return super.delete(id);
   }
 
-  @Mutation(() => Boolean, { name: 'keyAcessDeleteMany' })
+  @Mutation(() => Boolean, { name: 'keyAccessDeleteMany' })
   async deleteMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
@@ -96,18 +99,18 @@ export class KeyAcessResolver extends ResolverPublic<
     return super.deleteMany(ids);
   }
 
-  @Mutation(() => KeyAcessEntity, { name: 'keyAcessUpdate' })
+  @Mutation(() => KeyAccessEntity, { name: 'keyAccessUpdate' })
   async update(
     @Args('id') id: number,
-    @Args('input') input: UpdateKeyAcessInput,
-  ): Promise<KeyAcessEntity> {
+    @Args('input') input: UpdateKeyAccessInput,
+  ): Promise<KeyAccessEntity> {
     return super.update(id, input);
   }
 
-  @Mutation(() => Boolean, { name: 'keyAcessUpdateMany' })
+  @Mutation(() => Boolean, { name: 'keyAccessUpdateMany' })
   async updateMany(
-    @Args({ name: 'input', type: () => [UpdateKeyAcessInput] })
-    input: [UpdateKeyAcessInput],
+    @Args({ name: 'input', type: () => [UpdateKeyAccessInput] })
+    input: [UpdateKeyAccessInput],
   ): Promise<boolean> {
     return super.updateMany(input);
   }
@@ -115,8 +118,8 @@ export class KeyAcessResolver extends ResolverPublic<
   // **************************************  Resolucao de Campos
 
   @ResolveField('organization')
-  async organization(@Parent() keyAcessEntity: KeyAcessEntity): Promise<any> {
-    const id = keyAcessEntity.organizationId;
+  async organization(@Parent() keyAccessEntity: KeyAccessEntity): Promise<any> {
+    const id = keyAccessEntity.organizationId;
     if (!id) {
       return null;
     }
@@ -128,8 +131,8 @@ export class KeyAcessResolver extends ResolverPublic<
   }
 
   @ResolveField('customer')
-  async customer(@Parent() keyAcessEntity: KeyAcessEntity): Promise<any> {
-    const id = keyAcessEntity.customerId;
+  async customer(@Parent() keyAccessEntity: KeyAccessEntity): Promise<any> {
+    const id = keyAccessEntity.customerId;
     if (!id) {
       return null;
     }

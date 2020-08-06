@@ -1,15 +1,12 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 import { MaxLength } from 'class-validator';
 import { TypeUser } from '../../common/enums/enum-usertoken';
 
-@ObjectType()
-export class KeyAcessFirstObject {
+@InputType()
+export class CreateKeyAccessInput {
   @Field({ nullable: false })
   ownerId: number;
 
-  @Field({ nullable: false })
-  customer: string;
-
   @Field(type => TypeUser, { nullable: false })
-  TypeUser: TypeUser;
+  typeUser: TypeUser;
 }

@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { DateScalar } from '../common/scalars/date.scalar';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { KeyAcessService } from './keyacess.service';
-import { KeyAcessResolver } from './resolvers/keyacess.resolver';
-import { KeyAcessEntity } from './entities/keyacess.object';
-import { KeyAcessFirstResolver } from './resolvers/keyacessfirst.resolver';
+import { KeyAccessService } from './keyaccess.service';
+import { KeyAccessResolver } from './resolvers/keyaccess.resolver';
+import { KeyAccessEntity } from './entities/keyaccess.object';
+import { KeyAccessFirstResolver } from './resolvers/keyaccessfirst.resolver';
 
 import { AuthModule } from '../auth/auth.module';
 import { OrganizationsModule } from '../organizations/organizations.module';
@@ -28,14 +28,14 @@ import { UserCentesModule } from '../usercenter/usercenters.module';
     ResponsiblesModule,
     UsersModule,
     UserCentesModule,
-    TypeOrmModule.forFeature([KeyAcessEntity]),
+    TypeOrmModule.forFeature([KeyAccessEntity]),
   ],
   providers: [
-    KeyAcessResolver,
-    KeyAcessFirstResolver,
-    KeyAcessService,
+    KeyAccessResolver,
+    KeyAccessFirstResolver,
+    KeyAccessService,
     DateScalar,
   ],
-  exports: [KeyAcessService],
+  exports: [KeyAccessService],
 })
-export class KeyAcessModule {}
+export class KeyAccessModule {}

@@ -845,7 +845,7 @@ type OrganizationEntityEdge {
   node: OrganizationEntity!
 }
 
-type KeyAcessEntity {
+type KeyAccessEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
@@ -856,20 +856,20 @@ type KeyAcessEntity {
   statusActiveApp: Boolean
   statusActiveWeb: Boolean
   typeUser: TypeOwer
-  keyAcess: String
+  keyAccess: String
 }
 
-type KeyAcessPaginated {
-  edges: [KeyAcessEntityEdge!]
+type KeyAccessPaginated {
+  edges: [KeyAccessEntityEdge!]
   pageInfo: PageInfo
 }
 
-type KeyAcessEntityEdge {
+type KeyAccessEntityEdge {
   cursor: String!
-  node: KeyAcessEntity!
+  node: KeyAccessEntity!
 }
 
-type KeyAcessFirstObject {
+type KeyAccessFirstObject {
   ownerId: Float!
   customer: String!
   TypeUser: TypeOwer!
@@ -976,11 +976,11 @@ type Query {
   organizationAll: [OrganizationEntity!]!
   organizationPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): OrganizationPaginated!
   organizationMany(ids: [Float!]!): [OrganizationEntity!]!
-  keyAcess(id: Float!): KeyAcessEntity!
-  keyAcessAll: [KeyAcessEntity!]!
-  keyAcessPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): KeyAcessPaginated!
-  keyAcessMany(ids: [Float!]!): [KeyAcessEntity!]!
-  keyAcessFirst(key: String!): KeyAcessFirstObject!
+  keyAccess(id: Float!): KeyAccessEntity!
+  keyAccessAll: [KeyAccessEntity!]!
+  keyAccessPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): KeyAccessPaginated!
+  keyAccessMany(ids: [Float!]!): [KeyAccessEntity!]!
+  keyAccessFirst(key: String!): KeyAccessFirstObject!
 }
 
 type Mutation {
@@ -1133,12 +1133,12 @@ type Mutation {
   organizationDeleteMany(ids: [Float!]!): Boolean!
   organizationUpdate(input: UpdateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationUpdateMany(input: [UpdateOrganizationInput!]!): Boolean!
-  keyAcessCreate(input: CreateKeyAcessInput!): KeyAcessEntity!
-  keyAcessCreateMany(input: [CreateKeyAcessInput!]!): [KeyAcessEntity!]!
-  keyAcessDelete(id: Float!): Boolean!
-  keyAcessDeleteMany(ids: [Float!]!): Boolean!
-  keyAcessUpdate(input: UpdateKeyAcessInput!, id: Float!): KeyAcessEntity!
-  keyAcessUpdateMany(input: [UpdateKeyAcessInput!]!): Boolean!
+  keyAccessCreate(input: CreateKeyAccessInput!): KeyAccessEntity!
+  keyAccessCreateMany(input: [CreateKeyAccessInput!]!): [KeyAccessEntity!]!
+  keyAccessDelete(id: Float!): Boolean!
+  keyAccessDeleteMany(ids: [Float!]!): Boolean!
+  keyAccessUpdate(input: UpdateKeyAccessInput!, id: Float!): KeyAccessEntity!
+  keyAccessUpdateMany(input: [UpdateKeyAccessInput!]!): Boolean!
 }
 
 input CreateCustomerInput {
@@ -1817,12 +1817,12 @@ input UpdateOrganizationInput {
   dateEnd: DateTime
 }
 
-input CreateKeyAcessInput {
+input CreateKeyAccessInput {
   ownerId: Float!
   typeUser: TypeOwer!
 }
 
-input UpdateKeyAcessInput {
+input UpdateKeyAccessInput {
   ownerId: Float!
   TypeUser: TypeOwer!
 }

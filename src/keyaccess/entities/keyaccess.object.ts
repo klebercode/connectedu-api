@@ -8,9 +8,9 @@ import { Customer } from '../../customers/entities/customer.object';
 import { BaseEntity } from '../../base-entity';
 
 @ObjectType()
-@Entity('keyacess')
-@Unique(['keyAcess'])
-export class KeyAcessEntity extends BaseEntity {
+@Entity('keyaccess')
+@Unique(['keyAccess'])
+export class KeyAccessEntity extends BaseEntity {
   @Field(type => Customer, { nullable: true })
   customer?: Customer;
 
@@ -38,11 +38,11 @@ export class KeyAcessEntity extends BaseEntity {
   typeUser?: TypeUser;
 
   @Field({ nullable: true })
-  @Column({ name: 'key_acess', length: 20, nullable: true })
-  keyAcess?: string;
+  @Column({ name: 'key_access', length: 20, nullable: true })
+  keyAccess?: string;
 }
 
 @ObjectType()
-export class KeyAcessPaginated extends Paginated<KeyAcessEntity>(
-  KeyAcessEntity,
+export class KeyAccessPaginated extends Paginated<KeyAccessEntity>(
+  KeyAccessEntity,
 ) {}
