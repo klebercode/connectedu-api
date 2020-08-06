@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { DateScalar } from '../common/scalars/date.scalar';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AcessTokensService } from './acesstokens.service';
-import { AcessTokensResolver } from './resolvers/acesstokens.resolver';
-import { AcessTokenEntity } from './entities/acesstokens.object';
-import { AcessFirstResolver } from './resolvers/acessfirst.resolver';
+import { KeyAcessService } from './keyacess.service';
+import { KeyAcessResolver } from './resolvers/keyacess.resolver';
+import { KeyAcessEntity } from './entities/keyacess.object';
+import { KeyAcessFirstResolver } from './resolvers/keyacessfirst.resolver';
 
 import { AuthModule } from '../auth/auth.module';
 import { OrganizationsModule } from '../organizations/organizations.module';
@@ -15,6 +15,7 @@ import { TeachersModule } from '../teachers/teachers.module';
 import { EmployeesModule } from '../employees/employees.module';
 import { ResponsiblesModule } from '../responsibles/responsibles.module';
 import { UsersModule } from '../users/users.module';
+import { UserCentesModule } from '../usercenter/usercenters.module';
 
 @Module({
   imports: [
@@ -26,14 +27,15 @@ import { UsersModule } from '../users/users.module';
     EmployeesModule,
     ResponsiblesModule,
     UsersModule,
-    TypeOrmModule.forFeature([AcessTokenEntity]),
+    UserCentesModule,
+    TypeOrmModule.forFeature([KeyAcessEntity]),
   ],
   providers: [
-    AcessTokensResolver,
-    AcessFirstResolver,
-    AcessTokensService,
+    KeyAcessResolver,
+    KeyAcessFirstResolver,
+    KeyAcessService,
     DateScalar,
   ],
-  exports: [AcessTokensService],
+  exports: [KeyAcessService],
 })
-export class AcessTokensModule {}
+export class KeyAcessModule {}

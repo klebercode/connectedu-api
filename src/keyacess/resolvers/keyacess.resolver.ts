@@ -11,13 +11,10 @@ import {
   Context,
 } from '@nestjs/graphql';
 
-import {
-  AcessTokenEntity,
-  AcessTokensPaginated,
-} from '../entities/acesstokens.object';
-import { AcessTokensService } from '../acesstokens.service';
-import { CreateAcessTokenInput } from '../types/create-acesstoken.input';
-import { UpdateAcessTokenInput } from '../types/update-acesstoken.input';
+import { KeyAcessEntity, KeyAcessPaginated } from '../entities/keyacess.object';
+import { KeyAcessService } from '../keyacess.service';
+import { CreateKeyAcessInput } from '../types/create-keyacess.input';
+import { UpdateKeyAcessInput } from '../types/update-keyacess.input';
 
 import { MyContext } from '../../common/types/myContext';
 import { OrganizationsService } from '../../organizations/organizations.service';
@@ -29,69 +26,69 @@ import { ResolverPublic } from '../../common/resolvers/public.resolver';
 import { PaginationArgs } from '../../common/pages';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
-@Resolver(of => AcessTokenEntity)
+@Resolver(of => KeyAcessEntity)
 @UseFilters(HttpExceptionFilter)
-export class AcessTokensResolver extends ResolverPublic<
-  AcessTokenEntity,
-  CreateAcessTokenInput,
-  UpdateAcessTokenInput
+export class KeyAcessResolver extends ResolverPublic<
+  KeyAcessEntity,
+  CreateKeyAcessInput,
+  UpdateKeyAcessInput
 > {
   constructor(
-    private readonly acessTokensService: AcessTokensService,
+    private readonly keyAcessService: KeyAcessService,
     private readonly organizationsService: OrganizationsService,
     private readonly customersService: CustomersService,
   ) {
-    super('Tokens de Acesso', AcessTokensService);
+    super('Chaves de Acesso', keyAcessService);
   }
 
-  @Query(() => AcessTokenEntity, { name: 'acessToken' })
-  async get(@Args('id') id: number): Promise<AcessTokenEntity> {
+  @Query(() => KeyAcessEntity, { name: 'keyAcess' })
+  async get(@Args('id') id: number): Promise<KeyAcessEntity> {
     return super.get(id);
   }
 
-  @Query(() => [AcessTokenEntity], { name: 'acessTokenAll' })
-  async getAll(): Promise<AcessTokenEntity[]> {
+  @Query(() => [KeyAcessEntity], { name: 'keyAcessAll' })
+  async getAll(): Promise<KeyAcessEntity[]> {
     return super.getAll();
   }
 
-  @Query(() => AcessTokensPaginated, { name: 'acessTokenPages' })
+  @Query(() => KeyAcessPaginated, { name: 'keyAcessPages' })
   async getPagenated(
     @Args() pagination: PaginationArgs,
-  ): Promise<AcessTokensPaginated> {
+  ): Promise<KeyAcessPaginated> {
     return super.getPagenated(pagination);
   }
 
-  @Query(() => [AcessTokenEntity], { name: 'acessTokenMany' })
+  @Query(() => [KeyAcessEntity], { name: 'keyAcessMany' })
   async getMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
-  ): Promise<AcessTokenEntity[]> {
+  ): Promise<KeyAcessEntity[]> {
     return super.getMany(ids);
   }
 
-  @Mutation(() => AcessTokenEntity, { name: 'acessTokenCreate' })
+  @Mutation(() => KeyAcessEntity, { name: 'keyAcessCreate' })
   async createOwerToken(
     @Context() context: MyContext,
-    @Args({ name: 'input', type: () => CreateAcessTokenInput })
-    input: CreateAcessTokenInput,
-  ): Promise<AcessTokenEntity> {
-    return this.acessTokensService.createToken(context, input);
+    @Args({ name: 'input', type: () => CreateKeyAcessInput })
+    input: CreateKeyAcessInput,
+  ): Promise<KeyAcessEntity> {
+    return this.keyAcessService.createToken(context, input);
   }
 
-  @Mutation(() => [AcessTokenEntity], { name: 'acessTokenCreateMany' })
+  @Mutation(() => [KeyAcessEntity], { name: 'keyAcessCreateMany' })
   async createMany(
-    @Args({ name: 'input', type: () => [CreateAcessTokenInput] })
-    input: [CreateAcessTokenInput],
-  ): Promise<AcessTokenEntity[]> {
+    @Args({ name: 'input', type: () => [CreateKeyAcessInput] })
+    input: [CreateKeyAcessInput],
+  ): Promise<KeyAcessEntity[]> {
     return super.createMany(input);
   }
 
-  @Mutation(() => Boolean, { name: 'acessTokenDelete' })
+  @Mutation(() => Boolean, { name: 'keyAcessDelete' })
   async delete(@Args('id') id: number): Promise<boolean> {
     return super.delete(id);
   }
 
-  @Mutation(() => Boolean, { name: 'acessTokenDeleteMany' })
+  @Mutation(() => Boolean, { name: 'keyAcessDeleteMany' })
   async deleteMany(
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
@@ -99,18 +96,18 @@ export class AcessTokensResolver extends ResolverPublic<
     return super.deleteMany(ids);
   }
 
-  @Mutation(() => AcessTokenEntity, { name: 'acessTokenUpdate' })
+  @Mutation(() => KeyAcessEntity, { name: 'keyAcessUpdate' })
   async update(
     @Args('id') id: number,
-    @Args('input') input: UpdateAcessTokenInput,
-  ): Promise<AcessTokenEntity> {
+    @Args('input') input: UpdateKeyAcessInput,
+  ): Promise<KeyAcessEntity> {
     return super.update(id, input);
   }
 
-  @Mutation(() => Boolean, { name: 'acessTokenUpdateMany' })
+  @Mutation(() => Boolean, { name: 'keyAcessUpdateMany' })
   async updateMany(
-    @Args({ name: 'input', type: () => [UpdateAcessTokenInput] })
-    input: [UpdateAcessTokenInput],
+    @Args({ name: 'input', type: () => [UpdateKeyAcessInput] })
+    input: [UpdateKeyAcessInput],
   ): Promise<boolean> {
     return super.updateMany(input);
   }
@@ -118,10 +115,8 @@ export class AcessTokensResolver extends ResolverPublic<
   // **************************************  Resolucao de Campos
 
   @ResolveField('organization')
-  async organization(
-    @Parent() acessTokenEntity: AcessTokenEntity,
-  ): Promise<any> {
-    const id = acessTokenEntity.organizationId;
+  async organization(@Parent() keyAcessEntity: KeyAcessEntity): Promise<any> {
+    const id = keyAcessEntity.organizationId;
     if (!id) {
       return null;
     }
@@ -133,8 +128,8 @@ export class AcessTokensResolver extends ResolverPublic<
   }
 
   @ResolveField('customer')
-  async customer(@Parent() acessTokenEntity: AcessTokenEntity): Promise<any> {
-    const id = acessTokenEntity.customerId;
+  async customer(@Parent() keyAcessEntity: KeyAcessEntity): Promise<any> {
+    const id = keyAcessEntity.customerId;
     if (!id) {
       return null;
     }

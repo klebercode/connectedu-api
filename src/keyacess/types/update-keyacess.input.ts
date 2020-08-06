@@ -3,7 +3,7 @@ import { IsOptional, MaxLength } from 'class-validator';
 import { TypeUser } from '../../common/enums/enum-usertoken';
 
 @InputType()
-export class UpdateAcessTokenInput {
+export class UpdateKeyAcessInput {
   @Field({ nullable: false })
   ownerId: number;
 

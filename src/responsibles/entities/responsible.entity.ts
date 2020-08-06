@@ -156,10 +156,6 @@ export class ResponsibleEntity extends UserBaseEntity {
   @Column({ type: 'varchar', length: 100, nullable: true })
   @IsOptional()
   profile?: string;
-
-  @Field({ nullable: true })
-  @Column({ length: 12, nullable: true })
-  token?: string;
 }
 
 @ObjectType()

@@ -128,7 +128,6 @@ type ResponsibleEntity {
   workCompany: String
   workPhone: String
   profile: String
-  token: String
 }
 
 enum TypeOwer {
@@ -196,7 +195,6 @@ type StudentEntity {
   OrgIdentity: String
   note: String
   profile: String
-  token: String
 }
 
 type StudentPaginated {
@@ -387,7 +385,6 @@ type TeacherEntity {
   status: Boolean
   note: String
   profile: String
-  token: String
 }
 
 type TeacherPaginated {
@@ -586,7 +583,6 @@ type EmployeeEntity {
   function: Float
   note: String
   profile: String
-  token: String
 }
 
 type EmployeePaginated {
@@ -799,6 +795,37 @@ type ContentAppliedEntityEdge {
   node: ContentAppliedEntity!
 }
 
+type UserCenterEntity {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userTypeCreated: TypeOwer
+  userCreated: UserEntity!
+  userUpdatedId: Float
+  userTypeUpdated: TypeOwer
+  userUpdated: UserEntity!
+  idUser: Float!
+  userType: TypeOwer!
+  login: String
+  email: String
+  statusActiveWeb: Boolean!
+  password: String
+  tokenApp: String
+  statusActiveApp: Boolean!
+  keyAcessFirst: String!
+}
+
+type UserCenterPaginated {
+  edges: [UserCenterEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type UserCenterEntityEdge {
+  cursor: String!
+  node: UserCenterEntity!
+}
+
 type OrganizationEntity {
   id: ID!
   createdAt: DateTime
@@ -818,7 +845,7 @@ type OrganizationEntityEdge {
   node: OrganizationEntity!
 }
 
-type AcessTokenEntity {
+type KeyAcessEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
@@ -826,23 +853,23 @@ type AcessTokenEntity {
   customerId: Float!
   organization: OrganizationEntity
   organizationId: Float!
-  statusAtivationApp: Boolean
-  statusAtivationWeb: Boolean
+  statusActiveApp: Boolean
+  statusActiveWeb: Boolean
   typeUser: TypeOwer
-  token: String
+  keyAcess: String
 }
 
-type AcessTokensPaginated {
-  edges: [AcessTokenEntityEdge!]
+type KeyAcessPaginated {
+  edges: [KeyAcessEntityEdge!]
   pageInfo: PageInfo
 }
 
-type AcessTokenEntityEdge {
+type KeyAcessEntityEdge {
   cursor: String!
-  node: AcessTokenEntity!
+  node: KeyAcessEntity!
 }
 
-type AcessFirstObject {
+type KeyAcessFirstObject {
   ownerId: Float!
   customer: String!
   TypeUser: TypeOwer!
@@ -941,15 +968,19 @@ type Query {
   contentAppliedAll: [ContentAppliedEntity!]!
   contentAppliedPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): ContentAppliedPaginated!
   contentAppliedMany(ids: [Float!]!): [ContentAppliedEntity!]!
-  acessToken(id: Float!): AcessTokenEntity!
-  acessTokenAll: [AcessTokenEntity!]!
-  acessTokenPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): AcessTokensPaginated!
-  acessTokenMany(ids: [Float!]!): [AcessTokenEntity!]!
-  acessTokenFirst(token: String!): AcessFirstObject!
+  userCenter(id: Float!): UserCenterEntity!
+  userCenterAll: [UserCenterEntity!]!
+  userCenterPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): UserCenterPaginated!
+  userCenterMany(ids: [Float!]!): [UserCenterEntity!]!
   organization(id: Float!): OrganizationEntity!
   organizationAll: [OrganizationEntity!]!
   organizationPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): OrganizationPaginated!
   organizationMany(ids: [Float!]!): [OrganizationEntity!]!
+  keyAcess(id: Float!): KeyAcessEntity!
+  keyAcessAll: [KeyAcessEntity!]!
+  keyAcessPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): KeyAcessPaginated!
+  keyAcessMany(ids: [Float!]!): [KeyAcessEntity!]!
+  keyAcessFirst(key: String!): KeyAcessFirstObject!
 }
 
 type Mutation {
@@ -1090,18 +1121,24 @@ type Mutation {
   contentAppliedDeleteMany(ids: [Float!]!): Boolean!
   contentAppliedUpdate(input: UpdateContentAppliedInput!, id: Float!): ContentAppliedEntity!
   contentAppliedUpdateMany(input: [UpdateContentAppliedInput!]!): Boolean!
-  acessTokenCreate(input: CreateAcessTokenInput!): AcessTokenEntity!
-  acessTokenCreateMany(input: [CreateAcessTokenInput!]!): [AcessTokenEntity!]!
-  acessTokenDelete(id: Float!): Boolean!
-  acessTokenDeleteMany(ids: [Float!]!): Boolean!
-  acessTokenUpdate(input: UpdateAcessTokenInput!, id: Float!): AcessTokenEntity!
-  acessTokenUpdateMany(input: [UpdateAcessTokenInput!]!): Boolean!
+  userCenterCreate(input: CreateUserCenterInput!): UserCenterEntity!
+  userCenterCreateMany(input: [CreateUserCenterInput!]!): [UserCenterEntity!]!
+  userCenterDelete(id: Float!): Boolean!
+  userCenterDeleteMany(ids: [Float!]!): Boolean!
+  userCenterUpdate(input: UpdateUserCenterInput!, id: Float!): UserCenterEntity!
+  userCenterUpdateMany(input: [UpdateUserCenterInput!]!): Boolean!
   organizationCreate(input: CreateOrganizationInput!): OrganizationEntity!
   organizationCreateMany(input: [CreateOrganizationInput!]!): [OrganizationEntity!]!
   organizationDelete(id: Float!): Boolean!
   organizationDeleteMany(ids: [Float!]!): Boolean!
   organizationUpdate(input: UpdateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationUpdateMany(input: [UpdateOrganizationInput!]!): Boolean!
+  keyAcessCreate(input: CreateKeyAcessInput!): KeyAcessEntity!
+  keyAcessCreateMany(input: [CreateKeyAcessInput!]!): [KeyAcessEntity!]!
+  keyAcessDelete(id: Float!): Boolean!
+  keyAcessDeleteMany(ids: [Float!]!): Boolean!
+  keyAcessUpdate(input: UpdateKeyAcessInput!, id: Float!): KeyAcessEntity!
+  keyAcessUpdateMany(input: [UpdateKeyAcessInput!]!): Boolean!
 }
 
 input CreateCustomerInput {
@@ -1742,14 +1779,29 @@ input UpdateContentAppliedInput {
   justify: String
 }
 
-input CreateAcessTokenInput {
-  ownerId: Float!
-  typeUser: TypeOwer!
+input CreateUserCenterInput {
+  idUser: Float!
+  userType: TypeOwer!
+  login: String
+  email: String
+  password: String
+  statusActiveWeb: Boolean!
+  tokenApp: String
+  statusActiveApp: Boolean!
+  keyAcessFirst: String!
 }
 
-input UpdateAcessTokenInput {
-  ownerId: Float!
-  TypeUser: TypeOwer!
+input UpdateUserCenterInput {
+  id: Float
+  idUser: Float
+  userType: TypeOwer
+  login: String
+  email: String
+  password: String
+  statusActiveWeb: Boolean
+  tokenApp: String
+  statusActiveApp: Boolean
+  keyAcessFirst: String
 }
 
 input CreateOrganizationInput {
@@ -1763,4 +1815,14 @@ input UpdateOrganizationInput {
   description: String
   dateBegin: DateTime
   dateEnd: DateTime
+}
+
+input CreateKeyAcessInput {
+  ownerId: Float!
+  typeUser: TypeOwer!
+}
+
+input UpdateKeyAcessInput {
+  ownerId: Float!
+  TypeUser: TypeOwer!
 }

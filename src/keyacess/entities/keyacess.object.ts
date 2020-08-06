@@ -3,14 +3,14 @@ import { Entity, Column, Unique } from 'typeorm';
 import { Paginated } from '../../common/pages';
 import { TypeUser } from '../../common/enums/enum-usertoken';
 
-import { BaseEntity } from '../../base-entity';
 import { OrganizationEntity } from '../../organizations/entities/organization.object';
 import { Customer } from '../../customers/entities/customer.object';
+import { BaseEntity } from '../../base-entity';
 
 @ObjectType()
-@Entity('acesstoken')
-@Unique(['token'])
-export class AcessTokenEntity extends BaseEntity {
+@Entity('keyacess')
+@Unique(['keyAcess'])
+export class KeyAcessEntity extends BaseEntity {
   @Field(type => Customer, { nullable: true })
   customer?: Customer;
 
@@ -26,23 +26,23 @@ export class AcessTokenEntity extends BaseEntity {
   organizationId: number;
 
   @Field({ nullable: true })
-  @Column({ name: 'status_ativation_app', nullable: false })
-  statusAtivationApp?: boolean;
+  @Column({ name: 'status_active_app', nullable: false })
+  statusActiveApp?: boolean;
 
   @Field({ nullable: true })
-  @Column({ name: 'status_ativation_web', nullable: false })
-  statusAtivationWeb?: boolean;
+  @Column({ name: 'status_active_web', nullable: false })
+  statusActiveWeb?: boolean;
 
   @Field(type => TypeUser, { nullable: true })
   @Column({ name: 'type_user', nullable: false })
   typeUser?: TypeUser;
 
   @Field({ nullable: true })
-  @Column({ length: 12, nullable: false })
-  token?: string;
+  @Column({ name: 'key_acess', length: 20, nullable: true })
+  keyAcess?: string;
 }
 
 @ObjectType()
-export class AcessTokensPaginated extends Paginated<AcessTokenEntity>(
-  AcessTokenEntity,
+export class KeyAcessPaginated extends Paginated<KeyAcessEntity>(
+  KeyAcessEntity,
 ) {}

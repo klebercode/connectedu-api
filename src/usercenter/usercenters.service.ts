@@ -1,0 +1,45 @@
+import { Inject, NotFoundException, HttpException } from '@nestjs/common';
+import { Connection } from 'typeorm';
+
+import { CustomersServiceDecorator } from '../customers/customers-service.decorator';
+import { CUSTOMER_CONNECTION } from '../customers/customers.module';
+import { ServiceDefault } from '../common/services/schema.service';
+
+import { UserCenterEntity } from './entities/usercenter.entity';
+import { CreateUserCenterInput } from './types/create-usercenter.input';
+import { UpdateUserCenterInput } from './types/update-usercenter.input';
+
+@CustomersServiceDecorator()
+export class UserCentersService extends ServiceDefault<
+  UserCenterEntity,
+  CreateUserCenterInput,
+  UpdateUserCenterInput
+> {
+  private connectionLocal: Connection;
+
+  constructor(@Inject(CUSTOMER_CONNECTION) connection: Connection) {
+    super(connection, UserCenterEntity);
+    this.connectionLocal = connection;
+  }
+
+  // metodo usado no momento da criação da chave
+  // de acesso
+  async createUserCenter(input: any): Promise<Boolean> {
+    const queryRunner = this.connectionLocal.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      await queryRunner.manager.save(UserCenterEntity, input);
+
+      await queryRunner.commitTransaction();
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      throw new HttpException(error, error);
+    } finally {
+      await queryRunner.release();
+    }
+  }
+}

@@ -3,7 +3,7 @@ import { MaxLength } from 'class-validator';
 import { TypeUser } from '../../common/enums/enum-usertoken';
 
 @ObjectType()
-export class AcessFirstObject {
+export class KeyAcessFirstObject {
   @Field({ nullable: false })
   ownerId: number;
 
