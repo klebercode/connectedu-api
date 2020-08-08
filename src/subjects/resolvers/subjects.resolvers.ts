@@ -24,6 +24,8 @@ import {
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
+import { UserCentersService } from '../../usercenter/usercenters.service';
+import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => SubjectEntity)
@@ -33,7 +35,10 @@ export class SubjectsResolver extends ResolverDefault<
   CreateSubjectInput,
   UpdateSubjectInput
 > {
-  constructor(private readonly subjectsService: SubjectsService) {
+  constructor(
+    private readonly subjectsService: SubjectsService,
+    private readonly userCentersService: UserCentersService,
+  ) {
     super('Matéria', subjectsService);
   }
 
@@ -112,33 +117,31 @@ export class SubjectsResolver extends ResolverDefault<
 
   // **************************************  Resolucao de Campos
 
-  /*
-  @ResolveField(() => UserEntity)
-  async userCreated(@Parent() subjectEntity: SubjectEntity): Promise<any> {
-    const id = subjectEntity.userCreatedId;
+  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
+  async userCreated(@Parent() subject: SubjectEntity) {
+    const id = subject.userCreatedId;
     if (!id) {
       return null;
     }
 
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 
-  @ResolveField(() => UserEntity)
-  async userUpdated(@Parent() subjectEntity: SubjectEntity): Promise<any> {
-    const id = subjectEntity.userUpdatedId;
+  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
+  async userUpdated(@Parent() subject: SubjectEntity) {
+    const id = subject.userUpdatedId;
     if (!id) {
       return null;
     }
 
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
-  */
 }

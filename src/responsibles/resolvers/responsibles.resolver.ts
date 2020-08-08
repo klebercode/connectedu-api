@@ -21,15 +21,15 @@ import { UpdateResponsibleInput } from '../types/update-responsible.input';
 
 import { MyContext } from '../../common/types/mycontext';
 import { StatesService } from '../../states/states.service';
-import { UsersService } from '../../users/users.service';
 import { CitiesService } from '../../cities/cities.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
+import { UserCentersService } from '../../usercenter/usercenters.service';
+import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ResponsibleEntity)
@@ -43,6 +43,7 @@ export class ResponsiblesResolver extends ResolverDefault<
     private readonly responsiblesService: ResponsiblesService,
     private readonly statesService: StatesService,
     private readonly citiesService: CitiesService,
+    private readonly userCentersService: UserCentersService,
   ) {
     super('Responsável', responsiblesService);
   }
@@ -148,25 +149,31 @@ export class ResponsiblesResolver extends ResolverDefault<
     }
   }
 
-  /*
-  @ResolveField(() => UserEntity)
-  async userCreated(@Parent() responsible: ResponsibleEntity): Promise<any> {
+  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
+  async userCreated(@Parent() responsible: ResponsibleEntity) {
     const id = responsible.userCreatedId;
+    if (!id) {
+      return null;
+    }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 
-  @ResolveField(() => UserEntity)
+  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
   async userUpdated(@Parent() responsible: ResponsibleEntity) {
     const id = responsible.userUpdatedId;
+    if (!id) {
+      return null;
+    }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
-  */
 }

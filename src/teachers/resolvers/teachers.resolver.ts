@@ -19,15 +19,16 @@ import { UpdateTeacherInput } from '../types/update-teacher.input';
 
 import { MyContext } from '../../common/types/mycontext';
 import { StatesService } from '../../states/states.service';
-import { UsersService } from '../../users/users.service';
 import { CitiesService } from '../../cities/cities.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
+
+import { UserCentersService } from '../../usercenter/usercenters.service';
+import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => TeacherEntity)
@@ -41,6 +42,7 @@ export class TeachersResolver extends ResolverDefault<
     private readonly teachersService: TeachersService,
     private readonly statesService: StatesService,
     private readonly citiesService: CitiesService,
+    private readonly userCentersService: UserCentersService,
   ) {
     super('Professor', teachersService);
   }
@@ -148,22 +150,21 @@ export class TeachersResolver extends ResolverDefault<
     }
   }
 
-  /*
-  @ResolveField(() => UserEntity)
-  async userCreated(@Parent() teacher: TeacherEntity): Promise<any> {
+  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
+  async userCreated(@Parent() teacher: TeacherEntity) {
     const id = teacher.userCreatedId;
     if (!id) {
       return null;
     }
 
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 
-  @ResolveField(() => UserEntity)
+  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
   async userUpdated(@Parent() teacher: TeacherEntity) {
     const id = teacher.userUpdatedId;
     if (!id) {
@@ -171,10 +172,9 @@ export class TeachersResolver extends ResolverDefault<
     }
 
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
-  */
 }

@@ -22,8 +22,6 @@ import { CreatContentPlannedInput } from '../types/create-contentplanned.input';
 import { UpdateContentPlannedInput } from '../types/update-contentplanned.input';
 
 //importados
-import { UsersService } from '../../users/users.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import { YearsService } from '../../years/years.service';
 import { SubjectsService } from '../../subjects/subjects.service';
 import { TeachersService } from '../../teachers/teachers.service';
@@ -34,6 +32,8 @@ import {
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
+import { UserCentersService } from '../../usercenter/usercenters.service';
+import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ContentPlannedEntity)
@@ -49,6 +49,7 @@ export class ContentPlannedsResolver extends ResolverDefault<
     private readonly subjectsService: SubjectsService,
     private readonly teachersService: TeachersService,
     private readonly classRoomsService: ClassRoomsService,
+    private readonly userCentersService: UserCentersService,
   ) {
     super('Conteúdo Planejado', contentPlannedsService);
   }
@@ -192,33 +193,31 @@ export class ContentPlannedsResolver extends ResolverDefault<
     }
   }
 
-  /*
-  @ResolveField(type => UserEntity)
-  async userCreated(
-    @Parent() contentPlannedEntity: ContentPlannedEntity,
-  ): Promise<any> {
-    const id = contentPlannedEntity.userCreatedId;
+  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
+  async userCreated(@Parent() contentPlanned: ContentPlannedEntity) {
+    const id = contentPlanned.userCreatedId;
     if (!id) {
       return null;
     }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 
-  @ResolveField(type => UserEntity)
-  async userUpdated(@Parent() contentPlannedEntity: ContentPlannedEntity) {
-    const id = contentPlannedEntity.userUpdatedId;
+  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
+  async userUpdated(@Parent() contentPlanned: ContentPlannedEntity) {
+    const id = contentPlanned.userUpdatedId;
     if (!id) {
       return null;
     }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
-  */
 }

@@ -123,6 +123,14 @@ type KeyAccessEntityEdge {
 
 type UserEntity {
   id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userTypeCreated: TypeOwer
+  userCreated: UserCenterEntity!
+  userUpdatedId: Float
+  userTypeUpdated: TypeOwer
+  userUpdated: UserCenterEntity!
   name: String!
   nickName: String
   login: String!
@@ -130,12 +138,6 @@ type UserEntity {
   password: String!
   profile: String
   codeToken: Float
-  userCreatedId: Float
-  userCreated: UserEntity
-  userUpdatedId: Float
-  userUpdated: UserEntity
-  createdAt: DateTime
-  updatedAt: DateTime
 }
 
 type UserPaginated {
@@ -199,10 +201,10 @@ type ResponsibleEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity
   name: String
   dateBirth: DateTime
   gender: String
@@ -247,10 +249,10 @@ type StudentEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity!
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity!
   name: String
   useNickName: Boolean
   nickName: String
@@ -328,10 +330,10 @@ type UserPermissionEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity!
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity!
   userId: Float
   user: UserEntity
   codeId: Float!
@@ -359,10 +361,10 @@ type CompanyEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity!
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity!
   socialReason: String
   nameFantasy: String
   adress: String
@@ -403,10 +405,10 @@ type YearEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity!
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity!
   year: String
   dateBegin: DateTime
   dateEnd: DateTime
@@ -432,10 +434,10 @@ type SubjectEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity!
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity!
   description: String
   abbreviation: String
   descriptionMinutes: String
@@ -458,10 +460,10 @@ type TeacherEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity!
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity!
   name: String
   nickName: String
   adress: String
@@ -500,10 +502,10 @@ type ClassRoomEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity!
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity!
   description: String
   abbreviation: String
   descriptionMinutes: String
@@ -534,10 +536,10 @@ type ClassRoomItemEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity!
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity!
   classroomId: Float
   classroom: ClassRoomEntity
   subjectId: Float
@@ -572,10 +574,10 @@ type ClassRoomInjectEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity
   classroomItemId: Float
   classroomItem: ClassRoomItemEntity
   subject1Id: Float
@@ -605,10 +607,10 @@ type StudentInformationEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity!
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity!
   studentId: Float
   student: StudentEntity
   yearId: Float
@@ -654,10 +656,10 @@ type EmployeeEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity!
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity!
   name: String
   nickName: String
   adress: String
@@ -698,10 +700,10 @@ type OccurrenceEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity!
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity!
   description: String
   status: Boolean
   type: Float
@@ -724,10 +726,10 @@ type StudentOccurrenceEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity!
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity!
   occurrenceId: Float
   occurrence: OccurrenceEntity
   studentId: Float
@@ -759,10 +761,10 @@ type StudentGradeEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity!
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity!
   studentId: Float!
   student: StudentEntity!
   yearId: Float!
@@ -792,10 +794,10 @@ type StudentCallEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity!
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity!
   studentId: Float!
   student: StudentEntity!
   subjectId: Float!
@@ -823,10 +825,10 @@ type ContentPlannedEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity!
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity!
   yearId: Float!
   year: YearEntity!
   subjectId: Float!
@@ -860,10 +862,10 @@ type ContentAppliedEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity
+  userCreated: UserCenterEntity!
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity
+  userUpdated: UserCenterEntity!
   yearId: Float!
   year: YearEntity!
   subjectId: Float!
@@ -1024,7 +1026,6 @@ type Mutation {
   userDeleteMany(ids: [Float!]!): Boolean!
   userUpdate(input: UpdateUsersInput!, id: Float!): UserEntity!
   userUpdateMany(input: [UpdateUsersInput!]!): Boolean!
-  userUpdatePassword(input: String!, id: Float!): Boolean!
   studentCreate(input: CreateStudentInput!): StudentEntity!
   studentCreateMany(input: [CreateStudentInput!]!): [StudentEntity!]!
   studentDelete(id: Float!): Boolean!

@@ -21,14 +21,14 @@ import { OccurrencesService } from '../occurrences.service';
 import { CreateOccurrenceInput } from '../types/create-occurrence.input';
 import { UpdateOccurrenceInput } from '../types/update-occurrence.input';
 
-import { UsersService } from '../../users/users.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
+import { UserCentersService } from '../../usercenter/usercenters.service';
+import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => OccurrenceEntity)
@@ -38,7 +38,10 @@ export class OccurrencesResolver extends ResolverDefault<
   CreateOccurrenceInput,
   UpdateOccurrenceInput
 > {
-  constructor(private readonly occurrencesService: OccurrencesService) {
+  constructor(
+    private readonly occurrencesService: OccurrencesService,
+    private readonly userCentersService: UserCentersService,
+  ) {
     super('Ocorrência', occurrencesService);
   }
 
@@ -116,31 +119,32 @@ export class OccurrencesResolver extends ResolverDefault<
   }
 
   // **************************************  Resolucao de Campos
-  /*
-  @ResolveField(() => UserEntity)
-  async userCreated(@Parent() occurrence: OccurrenceEntity): Promise<any> {
+
+  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
+  async userCreated(@Parent() occurrence: OccurrenceEntity) {
     const id = occurrence.userCreatedId;
     if (!id) {
       return null;
     }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 
-  @ResolveField(() => UserEntity)
-  async userUpdated(@Parent() occurrence: OccurrenceEntity): Promise<any> {
+  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
+  async userUpdated(@Parent() occurrence: OccurrenceEntity) {
     const id = occurrence.userUpdatedId;
     if (!id) {
       return null;
     }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
-  */
 }

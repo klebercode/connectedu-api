@@ -22,8 +22,6 @@ import { CreatStudentGradeInput } from '../types/create-studentgrade.input';
 import { UpdateStudentGradeInput } from '../types/update-studentgrade.input';
 
 //importados
-import { UsersService } from '../../users/users.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import { StudentsService } from '../../students/students.service';
 import { YearsService } from '../../years/years.service';
 import { SubjectsService } from '../../subjects/subjects.service';
@@ -33,6 +31,8 @@ import {
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
+import { UserCentersService } from '../../usercenter/usercenters.service';
+import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => StudentGradeEntity)
@@ -47,6 +47,7 @@ export class StudentGradesResolver extends ResolverDefault<
     private readonly studentsService: StudentsService,
     private readonly yearsService: YearsService,
     private readonly subjectsService: SubjectsService,
+    private readonly userCentersService: UserCentersService,
   ) {
     super('Notas Estudante', studentGradesService);
   }
@@ -173,33 +174,31 @@ export class StudentGradesResolver extends ResolverDefault<
     }
   }
 
-  /*
-  @ResolveField(type => UserEntity)
-  async userCreated(
-    @Parent() studentGradeEntity: StudentGradeEntity,
-  ): Promise<any> {
-    const id = studentGradeEntity.userCreatedId;
+  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
+  async userCreated(@Parent() studentGrade: StudentGradeEntity) {
+    const id = studentGrade.userCreatedId;
     if (!id) {
       return null;
     }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 
-  @ResolveField(type => UserEntity)
-  async userUpdated(@Parent() studentGradeEntity: StudentGradeEntity) {
-    const id = studentGradeEntity.userUpdatedId;
+  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
+  async userUpdated(@Parent() studentGrade: StudentGradeEntity) {
+    const id = studentGrade.userUpdatedId;
     if (!id) {
       return null;
     }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
-  */
 }

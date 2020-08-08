@@ -13,9 +13,6 @@ import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { MyContext } from '../../common/types/mycontext';
 
-import { UsersService } from '../../users/users.service';
-import { UserEntity } from '../../users/entities/user.entity';
-
 import {
   ClassRoomInjectEntity,
   ClassRoomInjecPaginated,
@@ -32,6 +29,8 @@ import {
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
+import { UserCentersService } from '../../usercenter/usercenters.service';
+import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ClassRoomInjectEntity)
@@ -45,6 +44,7 @@ export class ClassRoomInjectsResolver extends ResolverDefault<
     private readonly classRoomInjectsService: ClassRoomInjectsService,
     private readonly classRoomItemsService: ClassRoomItemsService,
     private readonly subjectsService: SubjectsService,
+    private readonly userCentersService: UserCentersService,
   ) {
     super('Matéria-Composta', classRoomInjectsService);
   }
@@ -128,9 +128,9 @@ export class ClassRoomInjectsResolver extends ResolverDefault<
 
   @ResolveField('classroomItem')
   async classroomItem(
-    @Parent() classRoomInjectEntity: ClassRoomInjectEntity,
+    @Parent() classRoomInjec: ClassRoomInjectEntity,
   ): Promise<any> {
-    const id = classRoomInjectEntity.classroomItemId;
+    const id = classRoomInjec.classroomItemId;
     if (!id) {
       return null;
     }
@@ -143,9 +143,9 @@ export class ClassRoomInjectsResolver extends ResolverDefault<
 
   @ResolveField('subject1')
   async subject1(
-    @Parent() classRoomInjectEntity: ClassRoomInjectEntity,
+    @Parent() classRoomInjec: ClassRoomInjectEntity,
   ): Promise<any> {
-    const id = classRoomInjectEntity.subject1Id;
+    const id = classRoomInjec.subject1Id;
     if (!id) {
       return null;
     }
@@ -158,9 +158,9 @@ export class ClassRoomInjectsResolver extends ResolverDefault<
 
   @ResolveField('subject2')
   async subject2(
-    @Parent() classRoomInjectEntity: ClassRoomInjectEntity,
+    @Parent() classRoomInjec: ClassRoomInjectEntity,
   ): Promise<any> {
-    const id = classRoomInjectEntity.subject2Id;
+    const id = classRoomInjec.subject2Id;
     if (!id) {
       return null;
     }
@@ -173,9 +173,9 @@ export class ClassRoomInjectsResolver extends ResolverDefault<
 
   @ResolveField('subject3')
   async subject3(
-    @Parent() classRoomInjectEntity: ClassRoomInjectEntity,
+    @Parent() classRoomInjec: ClassRoomInjectEntity,
   ): Promise<any> {
-    const id = classRoomInjectEntity.subject3Id;
+    const id = classRoomInjec.subject3Id;
     if (!id) {
       return null;
     }
@@ -188,9 +188,9 @@ export class ClassRoomInjectsResolver extends ResolverDefault<
 
   @ResolveField('subject4')
   async subject4(
-    @Parent() classRoomInjectEntity: ClassRoomInjectEntity,
+    @Parent() classRoomInjec: ClassRoomInjectEntity,
   ): Promise<any> {
-    const id = classRoomInjectEntity.subject4Id;
+    const id = classRoomInjec.subject4Id;
     if (!id) {
       return null;
     }
@@ -201,33 +201,31 @@ export class ClassRoomInjectsResolver extends ResolverDefault<
     }
   }
 
-  /*
-  @ResolveField(type => UserEntity)
-  async userCreated(
-    @Parent() classRoomInjectEntity: ClassRoomInjectEntity,
-  ): Promise<any> {
-    const id = classRoomInjectEntity.userCreatedId;
+  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
+  async userCreated(@Parent() classRoomInjec: ClassRoomInjectEntity) {
+    const id = classRoomInjec.userCreatedId;
     if (!id) {
       return null;
     }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuario');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 
-  @ResolveField(type => UserEntity)
-  async userUpdated(@Parent() classRoomInjectEntity: ClassRoomInjectEntity) {
-    const id = classRoomInjectEntity.userUpdatedId;
+  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
+  async userUpdated(@Parent() classRoomInjec: ClassRoomInjectEntity) {
+    const id = classRoomInjec.userUpdatedId;
     if (!id) {
       return null;
     }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuario');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
-  */
 }

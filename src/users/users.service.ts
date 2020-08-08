@@ -28,6 +28,7 @@ export class UsersService extends ServiceDefault<
     return obj;
   }
 
+  /*
   async updateCodeToken(id: number, codeToken: number): Promise<boolean> {
     await this.repository.update(id, { codeToken });
     return true;
@@ -43,6 +44,7 @@ export class UsersService extends ServiceDefault<
     await this.repository.update(id, { password: password_hash });
     return this.updateCodeToken(id, 0);
   }
+*/
 
   async create(
     input: CreateUsersInput,

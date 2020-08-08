@@ -20,7 +20,6 @@ import { CreateKeyAccessInput } from '../types/create-keyaccess.input';
 import { UpdateKeyAccessInput } from '../types/update-keyaccess.input';
 
 import { MyContext } from '../../common/types/mycontext';
-import { OrganizationsService } from '../../organizations/organizations.service';
 import { CustomersService } from '../../customers/customers.service';
 import { CustomException } from '../../common/filters/http-exception.filter';
 
@@ -38,7 +37,6 @@ export class KeyAccessResolver extends ResolverPublic<
 > {
   constructor(
     private readonly keyAccessService: KeyAccessService,
-    //private readonly organizationsService: OrganizationsService,
     private readonly customersService: CustomersService,
   ) {
     super('Chaves de Acesso', keyAccessService);
@@ -116,21 +114,6 @@ export class KeyAccessResolver extends ResolverPublic<
   }
 
   // **************************************  Resolucao de Campos
-
-  /*
-  @ResolveField('organization')  
-  async organization(@Parent() keyAccessEntity: KeyAccessEntity): Promise<any> {
-    const id = keyAccessEntity.organizationId;
-    if (!id) {
-      return null;
-    }
-    try {
-      return this.organizationsService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Organização');
-    }
-  }
-  */
 
   @ResolveField('customer')
   async customer(@Parent() keyAccessEntity: KeyAccessEntity): Promise<any> {

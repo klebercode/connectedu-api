@@ -24,6 +24,8 @@ import {
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
+import { UserCentersService } from '../../usercenter/usercenters.service';
+import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => UserEntity)
@@ -33,7 +35,10 @@ export class UsersResolver extends ResolverDefault<
   CreateUsersInput,
   UpdateUsersInput
 > {
-  constructor(private readonly usersService: UsersService) {
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly userCentersService: UserCentersService,
+  ) {
     super('Usuário', usersService);
   }
 
@@ -110,6 +115,7 @@ export class UsersResolver extends ResolverDefault<
     return super.updateMany(context, input);
   }
 
+  /*
   @Mutation(() => Boolean, { name: 'userUpdatePassword' })
   async updatePasswordUser(
     @Context() context: MyContext,
@@ -124,24 +130,25 @@ export class UsersResolver extends ResolverDefault<
       CustomException.catch(error, 'update', 'Password Usuário');
     }
   }
+*/
 
   // **************************************  Resolucao de Campos
 
-  @ResolveField('userCreated')
-  async userCreated(@Parent() user: UserEntity): Promise<any> {
+  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
+  async userCreated(@Parent() user: UserEntity) {
     const id = user.userCreatedId;
     if (!id) {
       return null;
     }
 
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 
-  @ResolveField('userUpdated')
+  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
   async userUpdated(@Parent() user: UserEntity) {
     const id = user.userUpdatedId;
     if (!id) {
@@ -149,9 +156,9 @@ export class UsersResolver extends ResolverDefault<
     }
 
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 }

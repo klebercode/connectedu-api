@@ -22,8 +22,6 @@ import { CreatStudentCallInput } from '../types/create-studentcall.input';
 import { UpdateStudentCallInput } from '../types/update-studentcall.input';
 
 //importados
-import { UsersService } from '../../users/users.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import { StudentsService } from '../../students/students.service';
 import { SubjectsService } from '../../subjects/subjects.service';
 import {
@@ -32,6 +30,8 @@ import {
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
+import { UserCentersService } from '../../usercenter/usercenters.service';
+import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => StudentCallEntity)
@@ -45,6 +45,7 @@ export class StudentCallsResolver extends ResolverDefault<
     private readonly studentCallsService: StudentCallsService,
     private readonly studentsService: StudentsService,
     private readonly subjectsService: SubjectsService,
+    private readonly userCentersService: UserCentersService,
   ) {
     super('Chamada Estudantes', studentCallsService);
   }
@@ -153,33 +154,32 @@ export class StudentCallsResolver extends ResolverDefault<
       CustomException.catch(error, 'get', 'Estudante');
     }
   }
-  /*
-  @ResolveField(type => UserEntity)
-  async userCreated(
-    @Parent() studentCallEntity: StudentCallEntity,
-  ): Promise<any> {
-    const id = studentCallEntity.userCreatedId;
+
+  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
+  async userCreated(@Parent() studentCall: StudentCallEntity) {
+    const id = studentCall.userCreatedId;
     if (!id) {
       return null;
     }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 
-  @ResolveField(type => UserEntity)
-  async userUpdated(@Parent() studentCallEntity: StudentCallEntity) {
-    const id = studentCallEntity.userUpdatedId;
+  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
+  async userUpdated(@Parent() studentCall: StudentCallEntity) {
+    const id = studentCall.userUpdatedId;
     if (!id) {
       return null;
     }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
-  */
 }

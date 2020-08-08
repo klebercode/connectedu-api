@@ -22,16 +22,16 @@ import { ClassRoomsService } from '../classrooms.service';
 import { CreateClassRoomInput } from '../types/create-classroom.input';
 import { UpdateClassRoomInput } from '../types/update-classroom.input';
 
-import { UsersService } from '../../users/users.service';
 import { CompaniesService } from '../../companies/companies.service';
 import { YearsService } from '../../years/years.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
+import { UserCentersService } from '../../usercenter/usercenters.service';
+import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ClassRoomEntity)
@@ -45,6 +45,7 @@ export class ClassRoomsResolver extends ResolverDefault<
     private readonly classRoomsService: ClassRoomsService,
     private readonly yearsService: YearsService,
     private readonly companiesService: CompaniesService,
+    private readonly userCentersService: UserCentersService,
   ) {
     super('Série', classRoomsService);
   }
@@ -125,8 +126,8 @@ export class ClassRoomsResolver extends ResolverDefault<
   // **************************************  Resolucao de Campos
 
   @ResolveField('year')
-  async year(@Parent() classRoomEntity: ClassRoomEntity): Promise<any> {
-    const id = classRoomEntity.yearId;
+  async year(@Parent() classRoom: ClassRoomEntity): Promise<any> {
+    const id = classRoom.yearId;
     if (!id) {
       return null;
     }
@@ -138,8 +139,8 @@ export class ClassRoomsResolver extends ResolverDefault<
   }
 
   @ResolveField('company')
-  async company(@Parent() classRoomEntity: ClassRoomEntity): Promise<any> {
-    const id = classRoomEntity.companyId;
+  async company(@Parent() classRoom: ClassRoomEntity): Promise<any> {
+    const id = classRoom.companyId;
     if (!id) {
       return null;
     }
@@ -150,31 +151,31 @@ export class ClassRoomsResolver extends ResolverDefault<
     }
   }
 
-  /*
-  @ResolveField(type => UserEntity)
-  async userCreated(@Parent() classRoomEntity: ClassRoomEntity): Promise<any> {
-    const id = classRoomEntity.userCreatedId;
+  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
+  async userCreated(@Parent() classRoom: ClassRoomEntity) {
+    const id = classRoom.userCreatedId;
     if (!id) {
       return null;
     }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuario');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 
-  @ResolveField(type => UserEntity)
-  async userUpdated(@Parent() classRoomEntity: ClassRoomEntity) {
-    const id = classRoomEntity.userUpdatedId;
+  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
+  async userUpdated(@Parent() classRoom: ClassRoomEntity) {
+    const id = classRoom.userUpdatedId;
     if (!id) {
       return null;
     }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuario');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
-  */
 }

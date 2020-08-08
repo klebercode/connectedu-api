@@ -13,8 +13,6 @@ import {
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { MyContext } from '../../common/types/mycontext';
-import { UsersService } from '../../users/users.service';
-import { UserEntity } from '../../users/entities/user.entity';
 
 import {
   ClassRoomItemEntity,
@@ -33,6 +31,8 @@ import {
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
+import { UserCentersService } from '../../usercenter/usercenters.service';
+import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ClassRoomItemEntity)
@@ -47,6 +47,7 @@ export class ClassRoomItemsResolver extends ResolverDefault<
     private readonly classRoomsService: ClassRoomsService,
     private readonly subjectsService: SubjectsService,
     private readonly teachersService: TeachersService,
+    private readonly userCentersService: UserCentersService,
   ) {
     super('Matéria-Série', classRoomItemsService);
   }
@@ -127,10 +128,8 @@ export class ClassRoomItemsResolver extends ResolverDefault<
   // **************************************  Resolucao de Campos
 
   @ResolveField('classroom')
-  async classroom(
-    @Parent() classRoomItemEntity: ClassRoomItemEntity,
-  ): Promise<any> {
-    const id = classRoomItemEntity.classroomId;
+  async classroom(@Parent() classRoomItem: ClassRoomItemEntity): Promise<any> {
+    const id = classRoomItem.classroomId;
     if (!id) {
       return null;
     }
@@ -142,10 +141,8 @@ export class ClassRoomItemsResolver extends ResolverDefault<
   }
 
   @ResolveField('subject')
-  async subject(
-    @Parent() classRoomItemEntity: ClassRoomItemEntity,
-  ): Promise<any> {
-    const id = classRoomItemEntity.subjectId;
+  async subject(@Parent() classRoomItem: ClassRoomItemEntity): Promise<any> {
+    const id = classRoomItem.subjectId;
     if (!id) {
       return null;
     }
@@ -157,10 +154,8 @@ export class ClassRoomItemsResolver extends ResolverDefault<
   }
 
   @ResolveField('teacher')
-  async teacher(
-    @Parent() classRoomItemEntity: ClassRoomItemEntity,
-  ): Promise<any> {
-    const id = classRoomItemEntity.teacherId;
+  async teacher(@Parent() classRoomItem: ClassRoomItemEntity): Promise<any> {
+    const id = classRoomItem.teacherId;
     if (!id) {
       return null;
     }
@@ -171,33 +166,31 @@ export class ClassRoomItemsResolver extends ResolverDefault<
     }
   }
 
-  /*
-  @ResolveField(type => UserEntity)
-  async userCreated(
-    @Parent() classRoomItemEntity: ClassRoomItemEntity,
-  ): Promise<any> {
-    const id = classRoomItemEntity.userCreatedId;
+  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
+  async userCreated(@Parent() classRoomItem: ClassRoomItemEntity) {
+    const id = classRoomItem.userCreatedId;
     if (!id) {
       return null;
     }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuario');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 
-  @ResolveField(type => UserEntity)
-  async userUpdated(@Parent() classRoomItemEntity: ClassRoomItemEntity) {
-    const id = classRoomItemEntity.userUpdatedId;
+  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
+  async userUpdated(@Parent() classRoomItem: ClassRoomItemEntity) {
+    const id = classRoomItem.userUpdatedId;
     if (!id) {
       return null;
     }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuario');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
-  */
 }

@@ -21,15 +21,16 @@ import { UserPermissionsService } from '../userpermissions.service';
 import { CreateUserPermissionInput } from '../types/create-userpermission.input';
 import { UpdateUserPermissionInput } from '../types/update-userpermission.input';
 
-import { UsersService } from '../../users/users.service';
 import { PermissionsService } from '../../permissions/permissions.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
+import { UserCentersService } from '../../usercenter/usercenters.service';
+import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => UserPermissionEntity)
@@ -42,6 +43,7 @@ export class UserPermissionsResolver extends ResolverDefault<
   constructor(
     private readonly userPermissionsService: UserPermissionsService,
     private readonly permissionsService: PermissionsService,
+    private readonly userCentersService: UserCentersService,
   ) {
     super('Permissões Usuário', userPermissionsService);
   }
@@ -120,7 +122,7 @@ export class UserPermissionsResolver extends ResolverDefault<
   }
 
   // **************************************  Resolucao de Campos
-  /*
+
   @ResolveField('user')
   async user(@Parent() userPermission: UserPermissionEntity): Promise<any> {
     const id = userPermission.userId;
@@ -129,9 +131,9 @@ export class UserPermissionsResolver extends ResolverDefault<
     }
 
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 
@@ -149,23 +151,21 @@ export class UserPermissionsResolver extends ResolverDefault<
     }
   }
 
-  @ResolveField(() => UserEntity)
-  async userCreated(
-    @Parent() userPermission: UserPermissionEntity,
-  ): Promise<any> {
+  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
+  async userCreated(@Parent() userPermission: UserPermissionEntity) {
     const id = userPermission.userCreatedId;
     if (!id) {
       return null;
     }
 
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 
-  @ResolveField(() => UserEntity)
+  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
   async userUpdated(@Parent() userPermission: UserPermissionEntity) {
     const id = userPermission.userUpdatedId;
     if (!id) {
@@ -173,10 +173,9 @@ export class UserPermissionsResolver extends ResolverDefault<
     }
 
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
-  */
 }

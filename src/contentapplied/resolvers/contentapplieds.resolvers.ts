@@ -23,8 +23,7 @@ import { CreatContentAppliedInput } from '../types/create-contentapplied.input';
 import { UpdateContentAppliedInput } from '../types/update-contentapplied.input';
 
 //importados
-import { UsersService } from '../../users/users.service';
-import { UserEntity } from '../../users/entities/user.entity';
+
 import { YearsService } from '../../years/years.service';
 import { SubjectsService } from '../../subjects/subjects.service';
 import { TeachersService } from '../../teachers/teachers.service';
@@ -35,6 +34,8 @@ import {
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
+import { UserCentersService } from '../../usercenter/usercenters.service';
+import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ContentAppliedEntity)
@@ -50,6 +51,7 @@ export class ContentAppliedsResolver extends ResolverDefault<
     private readonly subjectsService: SubjectsService,
     private readonly teachersService: TeachersService,
     private readonly classRoomsService: ClassRoomsService,
+    private readonly userCentersService: UserCentersService,
   ) {
     super('Conteúdo Vivenciado', contentAppliedsService);
   }
@@ -193,32 +195,31 @@ export class ContentAppliedsResolver extends ResolverDefault<
     }
   }
 
-  /*  @ResolveField(type => UserEntity)
-  async userCreated(
-    @Parent() contentAppliedEntity: ContentAppliedEntity,
-  ): Promise<any> {
-    const id = contentAppliedEntity.userCreatedId;
+  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
+  async userCreated(@Parent() contentApplied: ContentAppliedEntity) {
+    const id = contentApplied.userCreatedId;
     if (!id) {
       return null;
     }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 
-  @ResolveField(type => UserEntity)
-  async userUpdated(@Parent() contentAppliedEntity: ContentAppliedEntity) {
-    const id = contentAppliedEntity.userUpdatedId;
+  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
+  async userUpdated(@Parent() contentApplied: ContentAppliedEntity) {
+    const id = contentApplied.userUpdatedId;
     if (!id) {
       return null;
     }
+
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
-  */
 }
