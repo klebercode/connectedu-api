@@ -1,4 +1,4 @@
-import { MyContext } from '../types/myContext';
+import { MyContext } from '../types/mycontext';
 import { NotFoundException } from '@nestjs/common';
 import { CustomException } from '../filters/http-exception.filter';
 import { PaginationArgs } from '../../common/pages';
@@ -51,7 +51,7 @@ export class ResolverDefault<EntityDefault, CreateDefault, UpdateDefault> {
   ): Promise<EntityDefault> {
     try {
       const { user } = context.req;
-      const obj = await this.services.create(input, user['id']);
+      const obj = await this.services.create(input, user['id'], user['type']);
       return obj;
     } catch (error) {
       CustomException.catch(error, 'create', this.nameApp);
@@ -64,7 +64,11 @@ export class ResolverDefault<EntityDefault, CreateDefault, UpdateDefault> {
   ): Promise<EntityDefault[]> {
     try {
       const { user } = context.req;
-      const obj = await this.services.createMany(input, user['id']);
+      const obj = await this.services.createMany(
+        input,
+        user['id'],
+        user['type'],
+      );
       return obj;
     } catch (error) {
       CustomException.catch(error, 'createMany', this.nameApp);
@@ -94,7 +98,12 @@ export class ResolverDefault<EntityDefault, CreateDefault, UpdateDefault> {
   ): Promise<EntityDefault> {
     try {
       const { user } = context.req;
-      const obj = await this.services.update(id, { ...input }, user['id']);
+      const obj = await this.services.update(
+        id,
+        { ...input },
+        user['id'],
+        user['type'],
+      );
       return obj;
     } catch (error) {
       CustomException.catch(error, 'update', this.nameApp);
@@ -107,7 +116,11 @@ export class ResolverDefault<EntityDefault, CreateDefault, UpdateDefault> {
   ): Promise<boolean> {
     try {
       const { user } = context.req;
-      const obj = await this.services.updateMany(input, user['id']);
+      const obj = await this.services.updateMany(
+        input,
+        user['id'],
+        user['type'],
+      );
       return obj;
     } catch (error) {
       CustomException.catch(error, 'updateMany', this.nameApp);

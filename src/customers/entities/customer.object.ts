@@ -1,11 +1,11 @@
 import { Column, Entity, Unique } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { BaseEntity } from '../../base-entity';
+import { BasicFields } from '../../common/types/basicfields';
 
 @Entity()
 @ObjectType()
 @Unique(['host'])
-export class Customer extends BaseEntity {
+export class Customer extends BasicFields {
   @Field()
   @Column()
   host: string;

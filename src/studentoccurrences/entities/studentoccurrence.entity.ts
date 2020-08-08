@@ -3,7 +3,7 @@ import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { UserBaseEntity } from 'src/users/entities/user-base-entity';
+import { UserBase } from 'src/common/types/userbase';
 import { StudentEntity } from '../../students/entities/student.entity';
 import { OccurrenceEntity } from '../../occurrences/entities/occurrence.entity';
 import { TeacherEntity } from '../../teachers/entities/teacher.entity';
@@ -12,7 +12,7 @@ import { EmployeeEntity } from '../../employees/entities/employee.entity';
 
 @ObjectType()
 @Entity('studentoccurrence')
-export class StudentOccurrenceEntity extends UserBaseEntity {
+export class StudentOccurrenceEntity extends UserBase {
   @Field({ nullable: true })
   @Column({ name: 'occurrence_id', nullable: false })
   @IsOptional()

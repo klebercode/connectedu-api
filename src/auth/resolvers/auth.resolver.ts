@@ -1,16 +1,33 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
+import { UseFilters, HttpException } from '@nestjs/common';
+
 import { AuthService } from '../auth.service';
+import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
+import { CustomException } from '../../common/filters/http-exception.filter';
 
 @Resolver()
+@UseFilters(HttpExceptionFilter)
 export class LoginResolver {
   constructor(private readonly authService: AuthService) {}
 
-  @Query(() => String)
+  @Query(() => String, { name: 'userLogin' })
   userLogin(
-    @Args('email') email: string,
+    @Args('login') login: string,
     @Args('password') password: string,
   ): Promise<String> {
-    const token = this.authService.userLogin(email, password);
+    const token = this.authService.userLogin(login, password);
     return token;
+  }
+
+  @Query(() => String, { name: 'keyAccessFirst' })
+  async getKeyAccess(
+    @Args('key') key: string,
+    @Args('originApp') originApp: boolean,
+  ): Promise<string> {
+    try {
+      return await this.authService.FirstAccess(key, originApp);
+    } catch (error) {
+      throw new HttpException('Erro Rotina FirstAcess', error);
+    }
   }
 }

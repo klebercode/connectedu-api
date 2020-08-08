@@ -4,12 +4,12 @@ import { Paginated } from '../../common/pages';
 
 import { StateEntity } from '../../states/entities/state.object';
 import { IsOptional, IsEmail } from 'class-validator';
-import { UserBaseEntity } from '../../users/entities/user-base-entity';
+import { UserBase } from '../../common/types/userbase';
 import { CityEntity } from '../../cities/entities/city.object';
 
 @ObjectType()
 @Entity('teacher')
-export class TeacherEntity extends UserBaseEntity {
+export class TeacherEntity extends UserBase {
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: false })
   name: string;

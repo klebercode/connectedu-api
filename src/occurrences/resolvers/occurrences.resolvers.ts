@@ -9,7 +9,7 @@ import {
   Parent,
 } from '@nestjs/graphql';
 
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
@@ -38,10 +38,7 @@ export class OccurrencesResolver extends ResolverDefault<
   CreateOccurrenceInput,
   UpdateOccurrenceInput
 > {
-  constructor(
-    private readonly occurrencesService: OccurrencesService,
-    private readonly usersService: UsersService,
-  ) {
+  constructor(private readonly occurrencesService: OccurrencesService) {
     super('Ocorrência', occurrencesService);
   }
 
@@ -119,7 +116,7 @@ export class OccurrencesResolver extends ResolverDefault<
   }
 
   // **************************************  Resolucao de Campos
-
+  /*
   @ResolveField(() => UserEntity)
   async userCreated(@Parent() occurrence: OccurrenceEntity): Promise<any> {
     const id = occurrence.userCreatedId;
@@ -145,4 +142,5 @@ export class OccurrencesResolver extends ResolverDefault<
       CustomException.catch(error, 'get', 'Usuário');
     }
   }
+  */
 }

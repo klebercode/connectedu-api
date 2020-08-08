@@ -4,13 +4,13 @@ import { IsOptional, IsEmail } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
 import { StateEntity } from '../../states/entities/state.object';
-import { UserBaseEntity } from '../../users/entities/user-base-entity';
+import { UserBase } from '../../common/types/userbase';
 import { CityEntity } from '../../cities/entities/city.object';
 import { ResponsibleEntity } from '../../responsibles/entities/responsible.entity';
 
 @ObjectType()
 @Entity('student')
-export class StudentEntity extends UserBaseEntity {
+export class StudentEntity extends UserBase {
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: false })
   @IsOptional()

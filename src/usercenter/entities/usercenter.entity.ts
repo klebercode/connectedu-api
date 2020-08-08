@@ -2,15 +2,15 @@ import { ID, Field, ObjectType, GraphQLISODateTime } from '@nestjs/graphql';
 import { Entity, Column, Unique } from 'typeorm';
 import { IsOptional, isEmail } from 'class-validator';
 import { Paginated } from '../../common/pages';
-import { UserBaseEntity } from '../../users/entities/user-base-entity';
+import { BasicFields } from '../../common/types/basicfields';
 import { TypeUser } from '../../common/enums/enum-usertoken';
 
 @ObjectType()
 @Entity('usercenter')
 @Unique(['login'])
-@Unique(['tokenApp'])
+@Unique(['token'])
 @Unique(['keyAcessFirst'])
-export class UserCenterEntity extends UserBaseEntity {
+export class UserCenterEntity extends BasicFields {
   @Field({ nullable: false })
   @IsOptional()
   @Column({ name: 'id_user', nullable: false })
@@ -43,15 +43,20 @@ export class UserCenterEntity extends UserBaseEntity {
 
   @Field({ nullable: true })
   @IsOptional()
-  @Column({ name: 'token_App', type: 'varchar', length: 20, nullable: true })
-  tokenApp: string;
+  @Column({ name: 'token', type: 'varchar', length: 20, nullable: true })
+  token: string;
 
   @Field({ nullable: false })
   @IsOptional()
   @Column({ name: 'status_active_App', nullable: false })
   statusActiveApp: boolean;
 
-  // token usado para primeiro acesso
+  @Field({ nullable: false })
+  @IsOptional()
+  @Column({ name: 'status', nullable: false })
+  status: boolean;
+
+  // chave de acesso usada para primeiro acesso
   @Field({ nullable: false })
   @IsOptional()
   @Column({

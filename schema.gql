@@ -6,6 +6,10 @@ type Customer {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  userCreatedId: Float
+  userTypeCreated: TypeOwer
+  userUpdatedId: Float
+  userTypeUpdated: TypeOwer
   host: String!
   domain: String!
   name: String!
@@ -17,6 +21,14 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+enum TypeOwer {
+  S
+  R
+  T
+  E
+  I
+}
+
 type PageInfo {
   startCursor: String
   endCursor: String
@@ -26,6 +38,87 @@ type PageInfo {
   countTotal: Float
   hasPreviousPage: Boolean!
   hasNextPage: Boolean!
+}
+
+type UserCenterEntity {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userTypeCreated: TypeOwer
+  userUpdatedId: Float
+  userTypeUpdated: TypeOwer
+  idUser: Float!
+  userType: TypeOwer!
+  login: String
+  email: String
+  statusActiveWeb: Boolean!
+  password: String
+  token: String
+  statusActiveApp: Boolean!
+  status: Boolean!
+  keyAcessFirst: String!
+}
+
+type UserCenterPaginated {
+  edges: [UserCenterEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type UserCenterEntityEdge {
+  cursor: String!
+  node: UserCenterEntity!
+}
+
+type OrganizationEntity {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userTypeCreated: TypeOwer
+  userUpdatedId: Float
+  userTypeUpdated: TypeOwer
+  description: String
+  dateBegin: DateTime
+  dateEnd: DateTime
+}
+
+type OrganizationPaginated {
+  edges: [OrganizationEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type OrganizationEntityEdge {
+  cursor: String!
+  node: OrganizationEntity!
+}
+
+type KeyAccessEntity {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  userCreatedId: Float
+  userTypeCreated: TypeOwer
+  userUpdatedId: Float
+  userTypeUpdated: TypeOwer
+  customer: Customer
+  customerId: Float!
+  organization: OrganizationEntity
+  organizationId: Float!
+  statusActiveApp: Boolean
+  statusActiveWeb: Boolean
+  typeUser: TypeOwer
+  keyAccess: String
+}
+
+type KeyAccessPaginated {
+  edges: [KeyAccessEntityEdge!]
+  pageInfo: PageInfo
+}
+
+type KeyAccessEntityEdge {
+  cursor: String!
+  node: KeyAccessEntity!
 }
 
 type UserEntity {
@@ -59,6 +152,10 @@ type StateEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  userCreatedId: Float
+  userTypeCreated: TypeOwer
+  userUpdatedId: Float
+  userTypeUpdated: TypeOwer
   description: String!
   uf: String!
 }
@@ -77,6 +174,10 @@ type CityEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  userCreatedId: Float
+  userTypeCreated: TypeOwer
+  userUpdatedId: Float
+  userTypeUpdated: TypeOwer
   description: String
   stateId: Float
   state: StateEntity
@@ -98,10 +199,10 @@ type ResponsibleEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   name: String
   dateBirth: DateTime
   gender: String
@@ -130,14 +231,6 @@ type ResponsibleEntity {
   profile: String
 }
 
-enum TypeOwer {
-  S
-  R
-  T
-  E
-  I
-}
-
 type ResponsiblePaginated {
   edges: [ResponsibleEntityEdge!]
   pageInfo: PageInfo
@@ -154,10 +247,10 @@ type StudentEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   name: String
   useNickName: Boolean
   nickName: String
@@ -211,6 +304,10 @@ type PermissionEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  userCreatedId: Float
+  userTypeCreated: TypeOwer
+  userUpdatedId: Float
+  userTypeUpdated: TypeOwer
   code: String!
   description: String!
 }
@@ -231,10 +328,10 @@ type UserPermissionEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   userId: Float
   user: UserEntity
   codeId: Float!
@@ -262,10 +359,10 @@ type CompanyEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   socialReason: String
   nameFantasy: String
   adress: String
@@ -306,10 +403,10 @@ type YearEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   year: String
   dateBegin: DateTime
   dateEnd: DateTime
@@ -335,10 +432,10 @@ type SubjectEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   description: String
   abbreviation: String
   descriptionMinutes: String
@@ -361,10 +458,10 @@ type TeacherEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   name: String
   nickName: String
   adress: String
@@ -403,10 +500,10 @@ type ClassRoomEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   description: String
   abbreviation: String
   descriptionMinutes: String
@@ -437,10 +534,10 @@ type ClassRoomItemEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   classroomId: Float
   classroom: ClassRoomEntity
   subjectId: Float
@@ -475,10 +572,10 @@ type ClassRoomInjectEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   classroomItemId: Float
   classroomItem: ClassRoomItemEntity
   subject1Id: Float
@@ -508,10 +605,10 @@ type StudentInformationEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   studentId: Float
   student: StudentEntity
   yearId: Float
@@ -557,10 +654,10 @@ type EmployeeEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   name: String
   nickName: String
   adress: String
@@ -601,10 +698,10 @@ type OccurrenceEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   description: String
   status: Boolean
   type: Float
@@ -627,10 +724,10 @@ type StudentOccurrenceEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   occurrenceId: Float
   occurrence: OccurrenceEntity
   studentId: Float
@@ -662,10 +759,10 @@ type StudentGradeEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   studentId: Float!
   student: StudentEntity!
   yearId: Float!
@@ -695,10 +792,10 @@ type StudentCallEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   studentId: Float!
   student: StudentEntity!
   subjectId: Float!
@@ -726,10 +823,10 @@ type ContentPlannedEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   yearId: Float!
   year: YearEntity!
   subjectId: Float!
@@ -763,10 +860,10 @@ type ContentAppliedEntity {
   updatedAt: DateTime
   userCreatedId: Float
   userTypeCreated: TypeOwer
-  userCreated: UserEntity!
+  userCreated: UserEntity
   userUpdatedId: Float
   userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
+  userUpdated: UserEntity
   yearId: Float!
   year: YearEntity!
   subjectId: Float!
@@ -795,95 +892,24 @@ type ContentAppliedEntityEdge {
   node: ContentAppliedEntity!
 }
 
-type UserCenterEntity {
-  id: ID!
-  createdAt: DateTime
-  updatedAt: DateTime
-  userCreatedId: Float
-  userTypeCreated: TypeOwer
-  userCreated: UserEntity!
-  userUpdatedId: Float
-  userTypeUpdated: TypeOwer
-  userUpdated: UserEntity!
-  idUser: Float!
-  userType: TypeOwer!
-  login: String
-  email: String
-  statusActiveWeb: Boolean!
-  password: String
-  tokenApp: String
-  statusActiveApp: Boolean!
-  keyAcessFirst: String!
-}
-
-type UserCenterPaginated {
-  edges: [UserCenterEntityEdge!]
-  pageInfo: PageInfo
-}
-
-type UserCenterEntityEdge {
-  cursor: String!
-  node: UserCenterEntity!
-}
-
-type OrganizationEntity {
-  id: ID!
-  createdAt: DateTime
-  updatedAt: DateTime
-  description: String
-  dateBegin: DateTime
-  dateEnd: DateTime
-}
-
-type OrganizationPaginated {
-  edges: [OrganizationEntityEdge!]
-  pageInfo: PageInfo
-}
-
-type OrganizationEntityEdge {
-  cursor: String!
-  node: OrganizationEntity!
-}
-
-type KeyAccessEntity {
-  id: ID!
-  createdAt: DateTime
-  updatedAt: DateTime
-  customer: Customer
-  customerId: Float!
-  organization: OrganizationEntity
-  organizationId: Float!
-  statusActiveApp: Boolean
-  statusActiveWeb: Boolean
-  typeUser: TypeOwer
-  keyAccess: String
-}
-
-type KeyAccessPaginated {
-  edges: [KeyAccessEntityEdge!]
-  pageInfo: PageInfo
-}
-
-type KeyAccessEntityEdge {
-  cursor: String!
-  node: KeyAccessEntity!
-}
-
-type KeyAccessFirstObject {
-  ownerId: Float!
-  customer: String!
-  TypeUser: TypeOwer!
-}
-
 type Query {
   customer(id: Float!): Customer!
   customerMany(ids: [Float!]!): [Customer!]!
   customerAll: [Customer!]!
+  userLogin(password: String!, login: String!): String!
+  keyAccessFirst(originApp: Boolean!, key: String!): String!
+  keyAccess(id: Float!): KeyAccessEntity!
+  keyAccessAll: [KeyAccessEntity!]!
+  keyAccessPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): KeyAccessPaginated!
+  keyAccessMany(ids: [Float!]!): [KeyAccessEntity!]!
+  userCenter(id: Float!): UserCenterEntity!
+  userCenterAll: [UserCenterEntity!]!
+  userCenterPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): UserCenterPaginated!
+  userCenterMany(ids: [Float!]!): [UserCenterEntity!]!
   user(id: Float!): UserEntity!
   userAll: [UserEntity!]!
   userPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): UserPaginated!
   userMany(ids: [Float!]!): [UserEntity!]!
-  userLogin(password: String!, email: String!): String!
   student(id: Float!): StudentEntity!
   studentAll: [StudentEntity!]!
   studentPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): StudentPaginated!
@@ -968,19 +994,10 @@ type Query {
   contentAppliedAll: [ContentAppliedEntity!]!
   contentAppliedPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): ContentAppliedPaginated!
   contentAppliedMany(ids: [Float!]!): [ContentAppliedEntity!]!
-  userCenter(id: Float!): UserCenterEntity!
-  userCenterAll: [UserCenterEntity!]!
-  userCenterPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): UserCenterPaginated!
-  userCenterMany(ids: [Float!]!): [UserCenterEntity!]!
   organization(id: Float!): OrganizationEntity!
   organizationAll: [OrganizationEntity!]!
   organizationPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): OrganizationPaginated!
   organizationMany(ids: [Float!]!): [OrganizationEntity!]!
-  keyAccess(id: Float!): KeyAccessEntity!
-  keyAccessAll: [KeyAccessEntity!]!
-  keyAccessPages(first: Int, after: String, last: Int, before: String, filter: String, orderby: String, orderby_desc: Boolean): KeyAccessPaginated!
-  keyAccessMany(ids: [Float!]!): [KeyAccessEntity!]!
-  keyAccessFirst(key: String!): KeyAccessFirstObject!
 }
 
 type Mutation {
@@ -989,6 +1006,18 @@ type Mutation {
   customerDelete(id: Float!): Boolean!
   customerDeleteMany(ids: [Float!]!): Boolean!
   customerUpdate(input: CreateCustomerInput!, id: Float!): Customer!
+  keyAccessCreate(input: CreateKeyAccessInput!): KeyAccessEntity!
+  keyAccessCreateMany(input: [CreateKeyAccessInput!]!): [KeyAccessEntity!]!
+  keyAccessDelete(id: Float!): Boolean!
+  keyAccessDeleteMany(ids: [Float!]!): Boolean!
+  keyAccessUpdate(input: UpdateKeyAccessInput!, id: Float!): KeyAccessEntity!
+  keyAccessUpdateMany(input: [UpdateKeyAccessInput!]!): Boolean!
+  userCenterCreate(input: CreateUserCenterInput!): UserCenterEntity!
+  userCenterCreateMany(input: [CreateUserCenterInput!]!): [UserCenterEntity!]!
+  userCenterDelete(id: Float!): Boolean!
+  userCenterDeleteMany(ids: [Float!]!): Boolean!
+  userCenterUpdate(input: UpdateUserCenterInput!, id: Float!): UserCenterEntity!
+  userCenterUpdateMany(input: [UpdateUserCenterInput!]!): Boolean!
   userCreate(input: CreateUsersInput!): UserEntity!
   userCreateMany(input: [CreateUsersInput!]!): [UserEntity!]!
   userDelete(id: Float!): Boolean!
@@ -1121,24 +1150,12 @@ type Mutation {
   contentAppliedDeleteMany(ids: [Float!]!): Boolean!
   contentAppliedUpdate(input: UpdateContentAppliedInput!, id: Float!): ContentAppliedEntity!
   contentAppliedUpdateMany(input: [UpdateContentAppliedInput!]!): Boolean!
-  userCenterCreate(input: CreateUserCenterInput!): UserCenterEntity!
-  userCenterCreateMany(input: [CreateUserCenterInput!]!): [UserCenterEntity!]!
-  userCenterDelete(id: Float!): Boolean!
-  userCenterDeleteMany(ids: [Float!]!): Boolean!
-  userCenterUpdate(input: UpdateUserCenterInput!, id: Float!): UserCenterEntity!
-  userCenterUpdateMany(input: [UpdateUserCenterInput!]!): Boolean!
   organizationCreate(input: CreateOrganizationInput!): OrganizationEntity!
   organizationCreateMany(input: [CreateOrganizationInput!]!): [OrganizationEntity!]!
   organizationDelete(id: Float!): Boolean!
   organizationDeleteMany(ids: [Float!]!): Boolean!
   organizationUpdate(input: UpdateOrganizationInput!, id: Float!): OrganizationEntity!
   organizationUpdateMany(input: [UpdateOrganizationInput!]!): Boolean!
-  keyAccessCreate(input: CreateKeyAccessInput!): KeyAccessEntity!
-  keyAccessCreateMany(input: [CreateKeyAccessInput!]!): [KeyAccessEntity!]!
-  keyAccessDelete(id: Float!): Boolean!
-  keyAccessDeleteMany(ids: [Float!]!): Boolean!
-  keyAccessUpdate(input: UpdateKeyAccessInput!, id: Float!): KeyAccessEntity!
-  keyAccessUpdateMany(input: [UpdateKeyAccessInput!]!): Boolean!
 }
 
 input CreateCustomerInput {
@@ -1146,6 +1163,43 @@ input CreateCustomerInput {
   domain: String!
   name: String!
   organizationId: Float
+}
+
+input CreateKeyAccessInput {
+  ownerId: Float!
+  typeUser: TypeOwer!
+}
+
+input UpdateKeyAccessInput {
+  ownerId: Float!
+  TypeUser: TypeOwer!
+}
+
+input CreateUserCenterInput {
+  idUser: Float!
+  userType: TypeOwer!
+  login: String
+  email: String
+  password: String
+  statusActiveWeb: Boolean!
+  token: String
+  statusActiveApp: Boolean!
+  status: Boolean!
+  keyAcessFirst: String!
+}
+
+input UpdateUserCenterInput {
+  id: Float
+  idUser: Float
+  userType: TypeOwer
+  login: String
+  email: String
+  password: String
+  statusActiveWeb: Boolean
+  token: String
+  statusActiveApp: Boolean
+  status: Boolean
+  keyAcessFirst: String
 }
 
 input CreateUsersInput {
@@ -1779,31 +1833,6 @@ input UpdateContentAppliedInput {
   justify: String
 }
 
-input CreateUserCenterInput {
-  idUser: Float!
-  userType: TypeOwer!
-  login: String
-  email: String
-  password: String
-  statusActiveWeb: Boolean!
-  tokenApp: String
-  statusActiveApp: Boolean!
-  keyAcessFirst: String!
-}
-
-input UpdateUserCenterInput {
-  id: Float
-  idUser: Float
-  userType: TypeOwer
-  login: String
-  email: String
-  password: String
-  statusActiveWeb: Boolean
-  tokenApp: String
-  statusActiveApp: Boolean
-  keyAcessFirst: String
-}
-
 input CreateOrganizationInput {
   description: String
   dateBegin: DateTime
@@ -1815,14 +1844,4 @@ input UpdateOrganizationInput {
   description: String
   dateBegin: DateTime
   dateEnd: DateTime
-}
-
-input CreateKeyAccessInput {
-  ownerId: Float!
-  typeUser: TypeOwer!
-}
-
-input UpdateKeyAccessInput {
-  ownerId: Float!
-  TypeUser: TypeOwer!
 }

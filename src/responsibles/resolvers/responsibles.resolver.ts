@@ -19,7 +19,7 @@ import { ResponsiblesService } from '../responsibles.service';
 import { CreateResponsibleInput } from '../types/create-responsible.input';
 import { UpdateResponsibleInput } from '../types/update-responsible.input';
 
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 import { StatesService } from '../../states/states.service';
 import { UsersService } from '../../users/users.service';
 import { CitiesService } from '../../cities/cities.service';
@@ -41,7 +41,6 @@ export class ResponsiblesResolver extends ResolverDefault<
 > {
   constructor(
     private readonly responsiblesService: ResponsiblesService,
-    private readonly usersService: UsersService,
     private readonly statesService: StatesService,
     private readonly citiesService: CitiesService,
   ) {
@@ -149,6 +148,7 @@ export class ResponsiblesResolver extends ResolverDefault<
     }
   }
 
+  /*
   @ResolveField(() => UserEntity)
   async userCreated(@Parent() responsible: ResponsibleEntity): Promise<any> {
     const id = responsible.userCreatedId;
@@ -168,4 +168,5 @@ export class ResponsiblesResolver extends ResolverDefault<
       CustomException.catch(error, 'get', 'Usuário');
     }
   }
+  */
 }

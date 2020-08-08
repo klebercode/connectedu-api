@@ -44,8 +44,8 @@ import { StateEntity } from './states/entities/state.object';
 import { CitiesModule } from './cities/cities.module';
 import { CityEntity } from './cities/entities/city.object';
 
-import { KeyAccessEntity } from './keyaccess/entities/keyaccess.object';
 import { KeyAccessModule } from './keyaccess/keyaccess.module';
+import { KeyAccessEntity } from './keyaccess/entities/keyaccess.object';
 
 // Schema do postgres
 import { CustomersModule } from './customers/customers.module';

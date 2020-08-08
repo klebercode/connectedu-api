@@ -4,12 +4,12 @@ import { Paginated } from '../../common/pages';
 
 import { StateEntity } from '../../states/entities/state.object';
 import { IsOptional, IsEmail } from 'class-validator';
-import { UserBaseEntity } from '../../users/entities/user-base-entity';
+import { UserBase } from '../../common/types/userbase';
 import { CityEntity } from '../../cities/entities/city.object';
 
 @ObjectType()
 @Entity('company')
-export class CompanyEntity extends UserBaseEntity {
+export class CompanyEntity extends UserBase {
   @Field({ nullable: true })
   @Column({
     name: 'social_reason',

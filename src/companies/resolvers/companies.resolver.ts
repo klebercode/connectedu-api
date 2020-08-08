@@ -22,7 +22,7 @@ import { CompaniesService } from '../companies.service';
 import { CreateCompanyInput } from '../types/create-company.input';
 import { UpdateCompanyInput } from '../types/update-company.input';
 
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 import { StatesService } from '../../states/states.service';
 import { UsersService } from '../../users/users.service';
 import { CitiesService } from '../../cities/cities.service';
@@ -44,7 +44,6 @@ export class CompaniesResolver extends ResolverDefault<
 > {
   constructor(
     private readonly companiesService: CompaniesService,
-    private readonly usersService: UsersService,
     private readonly statesService: StatesService,
     private readonly citiesService: CitiesService,
   ) {
@@ -152,7 +151,7 @@ export class CompaniesResolver extends ResolverDefault<
     }
   }
 
-  @ResolveField(type => UserEntity)
+  /*  @ResolveField(type => UserEntity)
   async userCreated(@Parent() company: CompanyEntity): Promise<any> {
     const id = company.userCreatedId;
     if (!id) {
@@ -177,4 +176,5 @@ export class CompaniesResolver extends ResolverDefault<
       CustomException.catch(error, 'get', 'Usuario');
     }
   }
+  */
 }

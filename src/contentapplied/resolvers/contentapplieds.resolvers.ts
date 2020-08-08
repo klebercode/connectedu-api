@@ -12,7 +12,7 @@ import {
 
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 
 import {
   ContentAppliedEntity,
@@ -46,7 +46,6 @@ export class ContentAppliedsResolver extends ResolverDefault<
 > {
   constructor(
     private readonly contentAppliedsService: ContentAppliedsService,
-    private readonly usersService: UsersService,
     private readonly yearsService: YearsService,
     private readonly subjectsService: SubjectsService,
     private readonly teachersService: TeachersService,
@@ -194,7 +193,7 @@ export class ContentAppliedsResolver extends ResolverDefault<
     }
   }
 
-  @ResolveField(type => UserEntity)
+  /*  @ResolveField(type => UserEntity)
   async userCreated(
     @Parent() contentAppliedEntity: ContentAppliedEntity,
   ): Promise<any> {
@@ -221,4 +220,5 @@ export class ContentAppliedsResolver extends ResolverDefault<
       CustomException.catch(error, 'get', 'Usuário');
     }
   }
+  */
 }

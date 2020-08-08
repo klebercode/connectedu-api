@@ -37,9 +37,19 @@ export class UserCentersService extends ServiceDefault<
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
-      throw new HttpException(error, error);
+      throw new HttpException(
+        'Erro na rotina de criação da Chave de Acesso !',
+        error,
+      );
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async getByEmailLogin(login: string): Promise<UserCenterEntity> {
+    const obj = await this.repository.findOne({
+      where: [{ login: login }, { email: login }],
+    });
+    return obj;
   }
 }

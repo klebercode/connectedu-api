@@ -9,7 +9,7 @@ import {
   Parent,
 } from '@nestjs/graphql';
 
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 

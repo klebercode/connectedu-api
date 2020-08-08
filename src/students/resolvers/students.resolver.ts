@@ -17,7 +17,7 @@ import { StudentsService } from '../students.service';
 import { CreateStudentInput } from '../types/create-student.input';
 import { UpdateStudentInput } from '../types/update-student.input';
 
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 import { StatesService } from '../../states/states.service';
 import { UsersService } from '../../users/users.service';
 import { CitiesService } from '../../cities/cities.service';
@@ -40,7 +40,6 @@ export class studentsResolver extends ResolverDefault<
 > {
   constructor(
     private readonly studentsblesService: StudentsService,
-    private readonly usersService: UsersService,
     private readonly statesService: StatesService,
     private readonly citiesService: CitiesService,
     private readonly responsiblesService: ResponsiblesService,
@@ -221,6 +220,7 @@ export class studentsResolver extends ResolverDefault<
     }
   }
 
+  /*
   @ResolveField(type => UserEntity)
   async userCreated(@Parent() student: StudentEntity): Promise<any> {
     const id = student.userCreatedId;
@@ -248,4 +248,5 @@ export class studentsResolver extends ResolverDefault<
       CustomException.catch(error, 'get', 'Usuário');
     }
   }
+  */
 }

@@ -4,13 +4,13 @@ import { DateScalar } from '../common/scalars/date.scalar';
 import { ClassRoomsService } from './classrooms.service';
 import { ClassRoomsResolver } from './resolvers/classrooms.resolvers';
 
-import { UsersModule } from '../users/users.module';
 import { CustomersModule } from '../customers/customers.module';
 import { CompaniesModule } from '../companies/companies.module';
 import { YearsModule } from '../years/years.module';
+import { UserCentesModule } from './../usercenter/usercenters.module';
 
 @Module({
-  imports: [UsersModule, CustomersModule, CompaniesModule, YearsModule],
+  imports: [UserCentesModule, CustomersModule, CompaniesModule, YearsModule],
   providers: [ClassRoomsService, DateScalar, ClassRoomsResolver],
   exports: [ClassRoomsService],
 })

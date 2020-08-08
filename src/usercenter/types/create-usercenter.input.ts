@@ -34,11 +34,15 @@ export class CreateUserCenterInput {
   @Field({ nullable: true })
   @IsOptional()
   @MaxLength(20)
-  tokenApp: string;
+  token: string;
 
   @Field({ nullable: false })
   @IsOptional()
   statusActiveApp: boolean;
+
+  @Field({ nullable: false })
+  @IsOptional()
+  status: boolean;
 
   // token usado para primeiro acesso
   @Field({ nullable: false })

@@ -9,7 +9,7 @@ import {
   Parent,
 } from '@nestjs/graphql';
 
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
@@ -38,10 +38,7 @@ export class userCentersResolver extends ResolverDefault<
   CreateUserCenterInput,
   UpdateUserCenterInput
 > {
-  constructor(
-    private readonly userCentersService: UserCentersService,
-    private readonly usersService: UsersService,
-  ) {
+  constructor(private readonly userCentersService: UserCentersService) {
     super('Central de Usuários', userCentersService);
   }
 
@@ -118,6 +115,7 @@ export class userCentersResolver extends ResolverDefault<
     return super.updateMany(context, input);
   }
 
+  /*
   // **************************************  Resolucao de Campos
 
   @ResolveField(() => UserEntity)
@@ -134,7 +132,7 @@ export class userCentersResolver extends ResolverDefault<
     } catch (error) {
       CustomException.catch(error, 'get', 'Usuário');
     }
-  }
+  }        
 
   @ResolveField(() => UserEntity)
   async userUpdated(
@@ -151,4 +149,5 @@ export class userCentersResolver extends ResolverDefault<
       CustomException.catch(error, 'get', 'Usuário');
     }
   }
+  */
 }

@@ -44,8 +44,12 @@ export class UsersService extends ServiceDefault<
     return this.updateCodeToken(id, 0);
   }
 
-  async create(user: CreateUsersInput, idUser: any): Promise<UserEntity> {
-    user.password = await bcryptjs.hash(user.password, 10);
-    return await super.create(user, idUser);
+  async create(
+    input: CreateUsersInput,
+    idUser: number,
+    typeUser: string,
+  ): Promise<UserEntity> {
+    input.password = await bcryptjs.hash(input.password, 10);
+    return await super.create(input, idUser, typeUser);
   }
 }

@@ -3,11 +3,11 @@ import { Entity, Column } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { UserBaseEntity } from 'src/users/entities/user-base-entity';
+import { UserBase } from 'src/common/types/userbase';
 
 @ObjectType()
 @Entity('subject')
-export class SubjectEntity extends UserBaseEntity {
+export class SubjectEntity extends UserBase {
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 50, nullable: false })
   @IsOptional()

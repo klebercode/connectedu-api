@@ -9,7 +9,7 @@ import {
   Parent,
 } from '@nestjs/graphql';
 
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
@@ -41,7 +41,6 @@ export class UserPermissionsResolver extends ResolverDefault<
 > {
   constructor(
     private readonly userPermissionsService: UserPermissionsService,
-    private readonly usersService: UsersService,
     private readonly permissionsService: PermissionsService,
   ) {
     super('Permissões Usuário', userPermissionsService);
@@ -121,7 +120,7 @@ export class UserPermissionsResolver extends ResolverDefault<
   }
 
   // **************************************  Resolucao de Campos
-
+  /*
   @ResolveField('user')
   async user(@Parent() userPermission: UserPermissionEntity): Promise<any> {
     const id = userPermission.userId;
@@ -179,4 +178,5 @@ export class UserPermissionsResolver extends ResolverDefault<
       CustomException.catch(error, 'get', 'Usuário');
     }
   }
+  */
 }

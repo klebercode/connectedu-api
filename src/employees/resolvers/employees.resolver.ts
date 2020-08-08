@@ -16,7 +16,7 @@ import { EmployeesService } from '../employees.service';
 import { CreateEmploeeInput } from '../types/create-employee.input';
 import { UpdateEmploeeInput } from '../types/update-employee.input';
 
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 import { StatesService } from '../../states/states.service';
 import { UsersService } from '../../users/users.service';
 import { CitiesService } from '../../cities/cities.service';
@@ -38,7 +38,6 @@ export class EmployeesResolver extends ResolverDefault<
 > {
   constructor(
     private readonly employeesService: EmployeesService,
-    private readonly usersService: UsersService,
     private readonly statesService: StatesService,
     private readonly citiesService: CitiesService,
   ) {
@@ -146,6 +145,7 @@ export class EmployeesResolver extends ResolverDefault<
     }
   }
 
+  /*
   @ResolveField(() => UserEntity)
   async userCreated(@Parent() employee: EmployeeEntity): Promise<any> {
     const id = employee.userCreatedId;
@@ -171,4 +171,5 @@ export class EmployeesResolver extends ResolverDefault<
       CustomException.catch(error, 'get', 'Usuário');
     }
   }
+  */
 }

@@ -9,12 +9,12 @@ import {
   Entity,
 } from 'typeorm';
 import { IsOptional } from 'class-validator';
-import { UserEntity } from './user.entity';
-import { TypeUser } from '../../common/enums/enum-usertoken';
+import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
+import { TypeUser } from '../enums/enum-usertoken';
 
 @ObjectType()
 @Entity()
-export class UserBaseEntity {
+export class UserBase {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
   @IsOptional()
@@ -41,11 +41,11 @@ export class UserBaseEntity {
   @IsOptional()
   userTypeCreated?: TypeUser;
 
-  @Field(type => UserEntity, { nullable: true })
+  @Field(type => UserCenterEntity, { nullable: true })
   @JoinColumn({ name: 'user_created_id' })
-  @ManyToOne(type => UserEntity, { nullable: true })
+  @ManyToOne(type => UserCenterEntity, { nullable: true })
   @IsOptional()
-  userCreated?: UserEntity;
+  userCreated?: UserCenterEntity;
 
   @Field({ nullable: true })
   @Column({ name: 'user_updated_id', nullable: true })
@@ -57,9 +57,9 @@ export class UserBaseEntity {
   @IsOptional()
   userTypeUpdated?: TypeUser;
 
-  @Field(type => UserEntity, { nullable: true })
+  @Field(type => UserCenterEntity, { nullable: true })
   @JoinColumn({ name: 'user_updated_id' })
-  @ManyToOne(type => UserEntity, { nullable: true })
+  @ManyToOne(type => UserCenterEntity, { nullable: true })
   @IsOptional()
-  userUpdated?: UserEntity;
+  userUpdated?: UserCenterEntity;
 }

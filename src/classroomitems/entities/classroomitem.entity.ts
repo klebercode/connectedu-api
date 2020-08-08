@@ -3,7 +3,7 @@ import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { UserBaseEntity } from 'src/users/entities/user-base-entity';
+import { UserBase } from 'src/common/types/userbase';
 import { ClassRoomEntity } from '../../classrooms/entities/classroom.entity';
 import { SubjectEntity } from '../../subjects/entities/subject.entity';
 import { TeacherEntity } from '../../teachers/entities/teacher.entity';
@@ -11,7 +11,7 @@ import { TeacherEntity } from '../../teachers/entities/teacher.entity';
 @ObjectType()
 @Entity('classroomitem')
 @Unique(['classroomId', 'subjectId'])
-export class ClassRoomItemEntity extends UserBaseEntity {
+export class ClassRoomItemEntity extends UserBase {
   @Field({ nullable: true })
   @Column({ name: 'classroom_id', nullable: false })
   @IsOptional()

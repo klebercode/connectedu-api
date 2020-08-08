@@ -4,7 +4,7 @@ import { DateScalar } from '../common/scalars/date.scalar';
 import { ContentAppliedsService } from './contentapplieds.service';
 import { ContentAppliedsResolver } from './resolvers/contentapplieds.resolvers';
 
-import { UsersModule } from '../users/users.module';
+import { UserCentesModule } from './../usercenter/usercenters.module';
 import { CustomersModule } from '../customers/customers.module';
 
 import { YearsModule } from '../years/years.module';
@@ -14,7 +14,7 @@ import { TeachersModule } from '../teachers/teachers.module';
 
 @Module({
   imports: [
-    UsersModule,
+    UserCentesModule,
     CustomersModule,
     SubjectsModule,
     YearsModule,

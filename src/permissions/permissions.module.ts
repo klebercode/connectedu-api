@@ -6,13 +6,13 @@ import { PermissionsService } from './permissions.service';
 import { PermissionsResolver } from './resolvers/permissions.resolver';
 import { PermissionEntity } from './entities/permission.object';
 import { AuthModule } from '../auth/auth.module';
-import { UsersModule } from '../users/users.module';
 import { CustomersModule } from '../customers/customers.module';
+import { UserCentesModule } from './../usercenter/usercenters.module';
 
 @Module({
   imports: [
     AuthModule,
-    UsersModule,
+    UserCentesModule,
     CustomersModule,
     TypeOrmModule.forFeature([PermissionEntity]),
   ],

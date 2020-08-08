@@ -40,18 +40,25 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     return obj;
   }
 
-  async create(input: CreateDefault, idUser: any): Promise<EntityDefault> {
+  async create(
+    input: CreateDefault,
+    idUser: number,
+    typeUser: string,
+  ): Promise<EntityDefault> {
     const obj = await this.repository.save({
       ...input,
       userCreatedId: idUser,
+      userTypeCreated: typeUser,
       userUpdatedId: idUser,
+      userTypeUpdated: typeUser,
     });
     return obj;
   }
 
   async createMany(
     input: [CreateDefault],
-    idUser: any,
+    idUser: number,
+    typeUser: string,
   ): Promise<EntityDefault[]> {
     const objcts = [];
 
@@ -59,7 +66,9 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
       objcts.push({
         ...item,
         userCreatedId: idUser,
+        userTypeCreated: typeUser,
         userUpdatedId: idUser,
+        userTypeUpdated: typeUser,
       });
     });
 
@@ -75,7 +84,7 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
-      throw new HttpException(error, error);
+      throw new HttpException('Erro ao tentar criar novos registros !', error);
     } finally {
       await queryRunner.release();
     }
@@ -85,19 +94,25 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     id: number,
     input: UpdateDefault,
     idUser: number,
+    typeUser: string,
   ): Promise<EntityDefault> {
     await this.repository.update(id, {
       ...input,
       userUpdatedId: idUser,
+      userTypeUpdated: typeUser,
     });
     const obj = await this.findOneById(id);
     if (!obj) {
-      throw new NotFoundException();
+      throw new NotFoundException('Erro ao tentar atualizar registro');
     }
     return obj;
   }
 
-  async updateMany(input: [UpdateDefault], idUser: any): Promise<boolean> {
+  async updateMany(
+    input: [UpdateDefault],
+    idUser: number,
+    typeUser: string,
+  ): Promise<boolean> {
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -107,6 +122,7 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
         return queryRunner.manager.update(this.entity, item['id'], {
           ...item,
           userUpdatedId: idUser,
+          userTypeUpdated: typeUser,
         });
       });
 
@@ -117,7 +133,7 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
-      throw new HttpException(error, error);
+      throw new HttpException('Erro ao tentar atualizar os registros', error);
     } finally {
       await queryRunner.release();
     }
@@ -146,7 +162,7 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
-      throw new HttpException(error, error);
+      throw new HttpException('Erro ao tentar deletar os registros', error);
     } finally {
       await queryRunner.release();
     }

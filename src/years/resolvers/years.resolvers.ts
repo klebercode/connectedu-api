@@ -9,7 +9,7 @@ import {
   Parent,
 } from '@nestjs/graphql';
 
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
@@ -35,10 +35,7 @@ export class YearsResolver extends ResolverDefault<
   CreateYearInput,
   UpdateYearInput
 > {
-  constructor(
-    private readonly yearsService: YearsService,
-    private readonly usersService: UsersService,
-  ) {
+  constructor(private readonly yearsService: YearsService) {
     super('Exercício', yearsService);
   }
 
@@ -116,7 +113,7 @@ export class YearsResolver extends ResolverDefault<
   }
 
   // **************************************  Resolucao de Campos
-
+  /*
   @ResolveField(() => UserEntity)
   async userCreated(@Parent() yearEntity: YearEntity): Promise<any> {
     const id = yearEntity.userCreatedId;
@@ -144,4 +141,5 @@ export class YearsResolver extends ResolverDefault<
       CustomException.catch(error, 'get', 'Usuário');
     }
   }
+  */
 }

@@ -8,11 +8,14 @@ import { OrganizationEntity } from './entities/organization.object';
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
 import { CustomersModule } from '../customers/customers.module';
+import { UserCentesModule } from '../usercenter/usercenters.module';
+import { KeyAccessModule } from '../keyaccess/keyaccess.module';
 
 @Module({
   imports: [
     AuthModule,
-    UsersModule,
+    KeyAccessModule,
+    UserCentesModule,
     CustomersModule,
     TypeOrmModule.forFeature([OrganizationEntity]),
   ],

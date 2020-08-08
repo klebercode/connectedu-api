@@ -4,7 +4,7 @@ import { DateScalar } from '../common/scalars/date.scalar';
 import { StudentOccurrencesService } from './studentinformations.service';
 import { StudentOccurrencesResolver } from './resolvers/studentoccurrences.resolvers';
 
-import { UsersModule } from '../users/users.module';
+import { UserCentesModule } from './../usercenter/usercenters.module';
 import { CustomersModule } from '../customers/customers.module';
 
 import { StudentsModule } from '../students/students.module';
@@ -15,7 +15,7 @@ import { EmployeesModule } from '../employees/employees.module';
 
 @Module({
   imports: [
-    UsersModule,
+    UserCentesModule,
     CustomersModule,
     StudentsModule,
     OccurrencesModule,

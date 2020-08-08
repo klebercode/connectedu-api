@@ -5,12 +5,12 @@ import { TypeUser } from '../../common/enums/enum-usertoken';
 
 import { OrganizationEntity } from '../../organizations/entities/organization.object';
 import { Customer } from '../../customers/entities/customer.object';
-import { BaseEntity } from '../../base-entity';
+import { BasicFields } from '../../common/types/basicfields';
 
 @ObjectType()
 @Entity('keyaccess')
 @Unique(['keyAccess'])
-export class KeyAccessEntity extends BaseEntity {
+export class KeyAccessEntity extends BasicFields {
   @Field(type => Customer, { nullable: true })
   customer?: Customer;
 

@@ -11,7 +11,7 @@ import {
 
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 
 import { UsersService } from '../../users/users.service';
 import { UserEntity } from '../../users/entities/user.entity';
@@ -43,7 +43,6 @@ export class ClassRoomInjectsResolver extends ResolverDefault<
 > {
   constructor(
     private readonly classRoomInjectsService: ClassRoomInjectsService,
-    private readonly usersService: UsersService,
     private readonly classRoomItemsService: ClassRoomItemsService,
     private readonly subjectsService: SubjectsService,
   ) {
@@ -202,6 +201,7 @@ export class ClassRoomInjectsResolver extends ResolverDefault<
     }
   }
 
+  /*
   @ResolveField(type => UserEntity)
   async userCreated(
     @Parent() classRoomInjectEntity: ClassRoomInjectEntity,
@@ -229,4 +229,5 @@ export class ClassRoomInjectsResolver extends ResolverDefault<
       CustomException.catch(error, 'get', 'Usuario');
     }
   }
+  */
 }

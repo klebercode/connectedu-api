@@ -3,6 +3,7 @@ import {
   Inject,
   NotFoundException,
   HttpException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Connection } from 'typeorm';
 import { InjectConnection } from '@nestjs/typeorm';
@@ -13,18 +14,13 @@ import { ServicePublic } from '../common/services/public.service';
 import { KeyAccessEntity } from './entities/keyaccess.object';
 import { CreateKeyAccessInput } from './types/create-keyaccess.input';
 import { UpdateKeyAccessInput } from './types/update-keyaccess.input';
-import { MyContext } from '../common/types/myContext';
+import { MyContext } from '../common/types/mycontext';
 import { CUSTOMER_CONNECTION } from '../customers/customers.module';
 
-// imports services
-import { StudentsService } from '../students/students.service';
-import { TeachersService } from '../teachers/teachers.service';
-import { EmployeesService } from '../employees/employees.service';
-import { ResponsiblesService } from '../responsibles/responsibles.service';
 import { CustomersService } from '../customers/customers.service';
-import { TypeUser } from '../common/enums/enum-usertoken';
 import { UserCentersService } from '../usercenter/usercenters.service';
-import { UsersService } from '../users/users.service';
+import { UserCenterEntity } from '../usercenter/entities/usercenter.entity';
+import { modulo11 } from '../common/libs/libs';
 
 @Injectable()
 export class KeyAccessService extends ServicePublic<
@@ -35,14 +31,8 @@ export class KeyAccessService extends ServicePublic<
   constructor(
     @InjectConnection() connectionPublic: Connection,
     @Inject(CUSTOMER_CONNECTION) connection: Connection,
-
-    private readonly studentsService: StudentsService,
-    private readonly teachersService: TeachersService,
-    private readonly employeesService: EmployeesService,
-    private readonly responsiblesService: ResponsiblesService,
     private readonly customersService: CustomersService,
     private readonly userCentersService: UserCentersService,
-    private readonly usersService: UsersService,
   ) {
     super(connectionPublic, KeyAccessEntity);
   }
@@ -63,7 +53,7 @@ export class KeyAccessService extends ServicePublic<
       throw new NotFoundException();
     }
 
-    await this.findIdOwer(ownerId, typeUser);
+    //await this.findIdOwer(ownerId, typeUser);
 
     // gerar chave primeiro acesso
     const hexRandom = crypto
@@ -73,34 +63,33 @@ export class KeyAccessService extends ServicePublic<
 
     const numRandom = parseInt(hexRandom, 16).toString();
 
-    const digit = (await this.mod11(numRandom, false)).toString();
+    const digit = (await modulo11(numRandom, false)).toString();
 
-    const keyAcess = hexRandom + digit;
+    const keyAccess = hexRandom + digit;
 
-    const objKeyAcess = {
-      organizationId: customer.organizationId,
-      customerId: customer.id,
-      statusActiveApp: false,
-      statusActiveWeb: false,
-      typeUser: typeUser,
-      keyAcess: keyAcess,
-    };
+    const objKeyAcess = new KeyAccessEntity();
+    objKeyAcess.customerId = customer.id;
+    objKeyAcess.organizationId = customer.organizationId;
+    objKeyAcess.statusActiveApp = false;
+    objKeyAcess.statusActiveWeb = false;
+    objKeyAcess.typeUser = typeUser;
+    objKeyAcess.keyAccess = keyAccess;
 
     const hexRandomApp = crypto
       .randomBytes(8)
       .toString('hex')
       .toUpperCase();
 
-    const objUserCenter = {
-      idUser: ownerId,
-      userType: typeUser,
-      statusActiveWeb: false,
-      statusActiveApp: false,
-      keyAcessFirst: keyAcess,
-      tokenApp: hexRandomApp,
-      userCreatedId: user['id'],
-      userUpdatedId: user['id'],
-    };
+    const objUserCenter = new UserCenterEntity();
+    objUserCenter.idUser = ownerId;
+    objUserCenter.userType = typeUser;
+    objUserCenter.statusActiveWeb = false;
+    objUserCenter.statusActiveApp = false;
+    objUserCenter.keyAcessFirst = keyAccess;
+    objUserCenter.token = hexRandomApp;
+    //objUserCenter.userCreatedId = 1; //user['id'];
+    //objUserCenter.userUpdatedId = 1; //user['id'];
+    objUserCenter.status = false;
 
     try {
       const keyAccess = await this.repository.save(objKeyAcess);
@@ -113,9 +102,10 @@ export class KeyAccessService extends ServicePublic<
     }
   }
 
+  /*
   async findIdOwer(id: number, typeUser: string): Promise<Boolean> {
-    let ower;
-    let msg;
+    let ower: any;
+    let msg: string;
     if (typeUser === TypeUser.S) {
       ower = await this.studentsService.findOneById(id);
       msg = 'Estudante Não Localizado';
@@ -142,32 +132,51 @@ export class KeyAccessService extends ServicePublic<
     return true;
   }
 
-  async mod11(valor, retornarResto) {
-    if (typeof retornarResto === 'undefined') retornarResto = false;
-    const multiplicadores = [2, 3, 4, 5, 6, 7, 8, 9];
+  */
 
-    var i = 0;
-    var resto =
-      valor.split('').reduceRight(function(anterior, atual) {
-        if (i > multiplicadores.length - 1) i = 0;
-        return multiplicadores[i++] * parseInt(atual, 10) + anterior;
-      }, 0) % 11;
-
-    return retornarResto ? resto : 11 - resto >= 10 ? 0 : 11 - resto;
-  }
-
-  async FindKeyAccess(key: string): Promise<any> {
-    const obj = await this.repository.findOne({ keyAccess: key });
-    let ower: any;
-
-    if (!obj) {
-      throw new NotFoundException('Chave de Acesso Não Localizada !');
+  // Metodo de primeiro acesso via Chave de Acesso
+  async FindKeyAccess(key: string, originApp: boolean): Promise<any> {
+    // pesquisa keyacess
+    const keyAccess = await this.repository.findOne({ keyAccess: key });
+    if (!keyAccess) {
+      throw new NotFoundException('Chave de Acesso não localizada !');
     }
 
-    const customer = await this.customersService.findOneById(obj.customerId);
+    if (originApp) {
+      if (keyAccess.statusActiveApp == true) {
+        throw new UnauthorizedException(
+          'Chave de Acesso já utilizada em dipositivo movel (Celular ou Tablet)!',
+        );
+      }
+    } else {
+      if (keyAccess.statusActiveWeb == true) {
+        throw new UnauthorizedException(
+          'Chave de Acesso já utilizada para gerar login e senha no Portal Web!',
+        );
+      }
+    }
+
+    if (originApp) {
+      keyAccess.statusActiveApp = true;
+    } else {
+      keyAccess.statusActiveWeb = true;
+    }
+
+    try {
+      await this.repository.update(keyAccess.id, keyAccess);
+    } catch (error) {
+      throw new HttpException(
+        'Erro ao atualizar registro de Chave de Acesso !',
+        error,
+      );
+    }
+
+    const customer = await this.customersService.findOneById(
+      keyAccess.customerId,
+    );
 
     if (!customer) {
-      throw new NotFoundException('Customer Não Localizado');
+      throw new NotFoundException('Endereço do Host Não Localizado !');
     }
 
     return customer;

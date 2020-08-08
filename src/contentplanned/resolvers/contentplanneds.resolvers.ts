@@ -11,7 +11,7 @@ import {
 
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 
 import {
   ContentPlannedEntity,
@@ -45,7 +45,6 @@ export class ContentPlannedsResolver extends ResolverDefault<
 > {
   constructor(
     private readonly contentPlannedsService: ContentPlannedsService,
-    private readonly usersService: UsersService,
     private readonly yearsService: YearsService,
     private readonly subjectsService: SubjectsService,
     private readonly teachersService: TeachersService,
@@ -193,6 +192,7 @@ export class ContentPlannedsResolver extends ResolverDefault<
     }
   }
 
+  /*
   @ResolveField(type => UserEntity)
   async userCreated(
     @Parent() contentPlannedEntity: ContentPlannedEntity,
@@ -220,4 +220,5 @@ export class ContentPlannedsResolver extends ResolverDefault<
       CustomException.catch(error, 'get', 'Usuário');
     }
   }
+  */
 }
