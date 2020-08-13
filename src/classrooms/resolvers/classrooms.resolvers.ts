@@ -30,8 +30,6 @@ import {
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
-import { UserCentersService } from '../../usercenter/usercenters.service';
-import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ClassRoomEntity)
@@ -45,7 +43,6 @@ export class ClassRoomsResolver extends ResolverDefault<
     private readonly classRoomsService: ClassRoomsService,
     private readonly yearsService: YearsService,
     private readonly companiesService: CompaniesService,
-    private readonly userCentersService: UserCentersService,
   ) {
     super('Série', classRoomsService);
   }
@@ -148,34 +145,6 @@ export class ClassRoomsResolver extends ResolverDefault<
       return this.companiesService.findOneById(id);
     } catch (error) {
       CustomException.catch(error, 'get', 'Empresa');
-    }
-  }
-
-  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
-  async userCreated(@Parent() classRoom: ClassRoomEntity) {
-    const id = classRoom.userCreatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.userCentersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Central de Usuários');
-    }
-  }
-
-  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
-  async userUpdated(@Parent() classRoom: ClassRoomEntity) {
-    const id = classRoom.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.userCentersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 }

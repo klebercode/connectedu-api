@@ -3,7 +3,7 @@ import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { UserBase } from 'src/common/types/userbase';
+import { BasicFields } from 'src/common/types/basicfields';
 import { YearEntity } from '../../years/entities/year.entity';
 import { SubjectEntity } from '../../subjects/entities/subject.entity';
 import { ClassRoomEntity } from '../../classrooms/entities/classroom.entity';
@@ -11,7 +11,7 @@ import { TeacherEntity } from '../../teachers/entities/teacher.entity';
 
 @ObjectType()
 @Entity('contentplanned')
-export class ContentPlannedEntity extends UserBase {
+export class ContentPlannedEntity extends BasicFields {
   @Field({ nullable: false })
   @Column({ name: 'year_id', nullable: false })
   @IsOptional()

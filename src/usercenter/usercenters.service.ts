@@ -1,5 +1,6 @@
 import { Inject, NotFoundException, HttpException } from '@nestjs/common';
 import { Connection } from 'typeorm';
+import * as bcryptjs from 'bcryptjs';
 
 import { CustomersServiceDecorator } from '../customers/customers-service.decorator';
 import { CUSTOMER_CONNECTION } from '../customers/customers.module';
@@ -51,5 +52,17 @@ export class UserCentersService extends ServiceDefault<
       where: [{ login: login }, { email: login }],
     });
     return obj;
+  }
+
+  async updateLoginPassword(
+    id: number,
+    login: string,
+    password: string,
+    idUser: any,
+  ): Promise<boolean> {
+    const password_hash = await bcryptjs.hash(password, 10);
+
+    await this.repository.update(id, { login: login, password: password_hash });
+    return true;
   }
 }

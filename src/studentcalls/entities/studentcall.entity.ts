@@ -3,13 +3,13 @@ import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { UserBase } from 'src/common/types/userbase';
+import { BasicFields } from 'src/common/types/basicfields';
 import { StudentEntity } from '../../students/entities/student.entity';
 import { SubjectEntity } from '../../subjects/entities/subject.entity';
 
 @ObjectType()
 @Entity('studentcall')
-export class StudentCallEntity extends UserBase {
+export class StudentCallEntity extends BasicFields {
   @Field({ nullable: false })
   @Column({ name: 'student_id', nullable: false })
   @IsOptional()

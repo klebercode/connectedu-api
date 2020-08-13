@@ -34,8 +34,6 @@ import {
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
-import { UserCentersService } from '../../usercenter/usercenters.service';
-import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => ContentAppliedEntity)
@@ -51,7 +49,6 @@ export class ContentAppliedsResolver extends ResolverDefault<
     private readonly subjectsService: SubjectsService,
     private readonly teachersService: TeachersService,
     private readonly classRoomsService: ClassRoomsService,
-    private readonly userCentersService: UserCentersService,
   ) {
     super('Conteúdo Vivenciado', contentAppliedsService);
   }
@@ -192,34 +189,6 @@ export class ContentAppliedsResolver extends ResolverDefault<
       return this.subjectsService.findOneById(id);
     } catch (error) {
       CustomException.catch(error, 'get', 'Matéria');
-    }
-  }
-
-  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
-  async userCreated(@Parent() contentApplied: ContentAppliedEntity) {
-    const id = contentApplied.userCreatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.userCentersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Central de Usuários');
-    }
-  }
-
-  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
-  async userUpdated(@Parent() contentApplied: ContentAppliedEntity) {
-    const id = contentApplied.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.userCentersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 }

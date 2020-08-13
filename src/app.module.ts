@@ -30,6 +30,7 @@ import { StudentCallsModule } from './studentcalls/studentcalls.module';
 import { ContentPlannedsModule } from './contentplanned/contentplanneds.module';
 import { ContentAppliedsModule } from './contentapplied/contentapplieds.module';
 import { UserCentesModule } from './usercenter/usercenters.module';
+import { UserTypesModule } from './usertypes/usertypes.module';
 
 // Modulos Publicos
 import { PermisisonsModule } from './permissions/permissions.module';
@@ -110,6 +111,7 @@ import { Customer } from './customers/entities/customer.object';
     ContentAppliedsModule,
     KeyAccessModule,
     UserCentesModule,
+    UserTypesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

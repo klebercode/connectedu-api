@@ -3,11 +3,11 @@ import { Entity, Column } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { UserBase } from 'src/common/types/userbase';
+import { BasicFields } from 'src/common/types/basicfields';
 
 @ObjectType()
 @Entity('occurrence')
-export class OccurrenceEntity extends UserBase {
+export class OccurrenceEntity extends BasicFields {
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 60, nullable: false })
   @IsOptional()

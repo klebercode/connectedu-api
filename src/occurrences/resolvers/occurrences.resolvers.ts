@@ -27,8 +27,6 @@ import {
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
-import { UserCentersService } from '../../usercenter/usercenters.service';
-import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => OccurrenceEntity)
@@ -38,10 +36,7 @@ export class OccurrencesResolver extends ResolverDefault<
   CreateOccurrenceInput,
   UpdateOccurrenceInput
 > {
-  constructor(
-    private readonly occurrencesService: OccurrencesService,
-    private readonly userCentersService: UserCentersService,
-  ) {
+  constructor(private readonly occurrencesService: OccurrencesService) {
     super('Ocorrência', occurrencesService);
   }
 
@@ -119,32 +114,4 @@ export class OccurrencesResolver extends ResolverDefault<
   }
 
   // **************************************  Resolucao de Campos
-
-  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
-  async userCreated(@Parent() occurrence: OccurrenceEntity) {
-    const id = occurrence.userCreatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.userCentersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Central de Usuários');
-    }
-  }
-
-  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
-  async userUpdated(@Parent() occurrence: OccurrenceEntity) {
-    const id = occurrence.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.userCentersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Central de Usuários');
-    }
-  }
 }

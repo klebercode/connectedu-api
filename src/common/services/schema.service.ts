@@ -1,4 +1,4 @@
-import { HttpException, NotFoundException, All } from '@nestjs/common';
+import { HttpException, NotFoundException } from '@nestjs/common';
 import { Repository, Connection } from 'typeorm';
 import { PaginationArgs, paginate } from '../../common/pages';
 
@@ -47,10 +47,6 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
   ): Promise<EntityDefault> {
     const obj = await this.repository.save({
       ...input,
-      userCreatedId: idUser,
-      userTypeCreated: typeUser,
-      userUpdatedId: idUser,
-      userTypeUpdated: typeUser,
     });
     return obj;
   }
@@ -65,10 +61,6 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     input.forEach(item => {
       objcts.push({
         ...item,
-        userCreatedId: idUser,
-        userTypeCreated: typeUser,
-        userUpdatedId: idUser,
-        userTypeUpdated: typeUser,
       });
     });
 
@@ -98,8 +90,6 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
   ): Promise<EntityDefault> {
     await this.repository.update(id, {
       ...input,
-      userUpdatedId: idUser,
-      userTypeUpdated: typeUser,
     });
     const obj = await this.findOneById(id);
     if (!obj) {
@@ -121,8 +111,6 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
       const promises = input.map(item => {
         return queryRunner.manager.update(this.entity, item['id'], {
           ...item,
-          userUpdatedId: idUser,
-          userTypeUpdated: typeUser,
         });
       });
 

@@ -10,14 +10,14 @@ import {
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { UserBase } from 'src/common/types/userbase';
+import { BasicFields } from 'src/common/types/basicfields';
 import { SubjectEntity } from '../../subjects/entities/subject.entity';
 import { ClassRoomItemEntity } from '../../classroomitems/entities/classroomitem.entity';
 
 @ObjectType()
 @Entity('classroominject')
 @Unique(['classroomItemId'])
-export class ClassRoomInjectEntity extends UserBase {
+export class ClassRoomInjectEntity extends BasicFields {
   @Field({ nullable: true })
   @Column({ name: 'classroom_item_id', nullable: false })
   @IsOptional()

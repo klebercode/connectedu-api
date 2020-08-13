@@ -31,8 +31,6 @@ import {
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
-import { UserCentersService } from '../../usercenter/usercenters.service';
-import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => StudentGradeEntity)
@@ -47,7 +45,6 @@ export class StudentGradesResolver extends ResolverDefault<
     private readonly studentsService: StudentsService,
     private readonly yearsService: YearsService,
     private readonly subjectsService: SubjectsService,
-    private readonly userCentersService: UserCentersService,
   ) {
     super('Notas Estudante', studentGradesService);
   }
@@ -171,34 +168,6 @@ export class StudentGradesResolver extends ResolverDefault<
       return this.subjectsService.findOneById(id);
     } catch (error) {
       CustomException.catch(error, 'get', 'Matéria');
-    }
-  }
-
-  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
-  async userCreated(@Parent() studentGrade: StudentGradeEntity) {
-    const id = studentGrade.userCreatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.userCentersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Central de Usuários');
-    }
-  }
-
-  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
-  async userUpdated(@Parent() studentGrade: StudentGradeEntity) {
-    const id = studentGrade.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.userCentersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 }

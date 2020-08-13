@@ -3,13 +3,13 @@ import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { UserBase } from 'src/common/types/userbase';
+import { BasicFields } from 'src/common/types/basicfields';
 import { CompanyEntity } from '../../companies/entities/company.entity';
 import { YearEntity } from '../../years/entities/year.entity';
 
 @ObjectType()
 @Entity('classroom')
-export class ClassRoomEntity extends UserBase {
+export class ClassRoomEntity extends BasicFields {
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 50, nullable: false })
   @IsOptional()

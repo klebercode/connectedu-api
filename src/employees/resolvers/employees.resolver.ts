@@ -25,8 +25,6 @@ import {
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
-import { UserCentersService } from '../../usercenter/usercenters.service';
-import { UserCenterEntity } from '../../usercenter/entities/usercenter.entity';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => EmployeeEntity)
@@ -40,7 +38,6 @@ export class EmployeesResolver extends ResolverDefault<
     private readonly employeesService: EmployeesService,
     private readonly statesService: StatesService,
     private readonly citiesService: CitiesService,
-    private readonly userCentersService: UserCentersService,
   ) {
     super('Funcionário', employeesService);
   }
@@ -143,34 +140,6 @@ export class EmployeesResolver extends ResolverDefault<
       return this.citiesService.findOneById(id);
     } catch (error) {
       CustomException.catch(error, 'get', 'Cidade');
-    }
-  }
-
-  @ResolveField(() => UserCenterEntity, { name: 'userCreated' })
-  async userCreated(@Parent() employee: EmployeeEntity) {
-    const id = employee.userCreatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.userCentersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Central de Usuários');
-    }
-  }
-
-  @ResolveField(() => UserCenterEntity, { name: 'userUpdated' })
-  async userUpdated(@Parent() employee: EmployeeEntity) {
-    const id = employee.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.userCentersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 }

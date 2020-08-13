@@ -3,14 +3,14 @@ import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { UserBase } from 'src/common/types/userbase';
+import { BasicFields } from 'src/common/types/basicfields';
 import { PermissionEntity } from '../../permissions/entities/permission.object';
 import { UserEntity } from '../../users/entities/user.entity';
 
 @ObjectType()
 @Entity('userpermission')
 @Unique(['userId', 'codeId'])
-export class UserPermissionEntity extends UserBase {
+export class UserPermissionEntity extends BasicFields {
   @Field({ nullable: true })
   @Column({ name: 'user_id', nullable: false })
   @IsOptional()

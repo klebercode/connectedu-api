@@ -4,6 +4,7 @@ import { IsOptional, isEmail } from 'class-validator';
 import { Paginated } from '../../common/pages';
 import { BasicFields } from '../../common/types/basicfields';
 import { TypeUser } from '../../common/enums/enum-usertoken';
+import { UserTypeEntity } from '../../usertypes/types/usertypes.object';
 
 @ObjectType()
 @Entity('usercenter')
@@ -66,6 +67,10 @@ export class UserCenterEntity extends BasicFields {
     nullable: false,
   })
   keyAcessFirst: string;
+
+  @Field(type => UserTypeEntity, { nullable: false })
+  @IsOptional()
+  temp?: UserTypeEntity;
 }
 
 @ObjectType()

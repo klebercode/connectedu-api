@@ -4,9 +4,9 @@ import {
   Mutation,
   Query,
   Resolver,
-  ResolveField,
   Context,
   Parent,
+  ResolveField,
 } from '@nestjs/graphql';
 
 import { MyContext } from '../../common/types/mycontext';
@@ -20,15 +20,14 @@ import {
 import { UserCentersService } from '../usercenters.service';
 import { CreateUserCenterInput } from '../types/create-usercenter.input';
 import { UpdateUserCenterInput } from '../types/update-usercenter.input';
-
-import { UsersService } from '../../users/users.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
+import { UserTypessService } from '../../usertypes/usertypes.service';
+import { UserTypeEntity } from '../../usertypes/types/usertypes.object';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => UserCenterEntity)
@@ -38,7 +37,10 @@ export class userCentersResolver extends ResolverDefault<
   CreateUserCenterInput,
   UpdateUserCenterInput
 > {
-  constructor(private readonly userCentersService: UserCentersService) {
+  constructor(
+    private readonly userCentersService: UserCentersService,
+    private readonly userTypessService: UserTypessService,
+  ) {
     super('Central de Usuários', userCentersService);
   }
 
@@ -115,39 +117,40 @@ export class userCentersResolver extends ResolverDefault<
     return super.updateMany(context, input);
   }
 
-  /*
-  // **************************************  Resolucao de Campos
-
-  @ResolveField(() => UserEntity)
-  async userCreated(
-    @Parent() userCenterEntity: UserCenterEntity,
-  ): Promise<any> {
-    const id = userCenterEntity.userCreatedId;
-    if (!id) {
-      return null;
-    }
-
+  @Mutation(() => Boolean, { name: 'userUpdatePassword' })
+  async updatePasswordUser(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+    @Args('login') login: string,
+    @Args('password') password: string,
+  ): Promise<boolean> {
     try {
-      return this.usersService.findOneById(id);
+      const { user } = context.req;
+      const ret = await this.userCentersService.updateLoginPassword(
+        id,
+        login,
+        password,
+        user['id'],
+      );
+      return ret;
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
-    }
-  }        
-
-  @ResolveField(() => UserEntity)
-  async userUpdated(
-    @Parent() userCenterEntity: UserCenterEntity,
-  ): Promise<any> {
-    const id = userCenterEntity.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'update', 'Password Usuário');
     }
   }
-  */
+
+  // **************************************  Resolucao de Campos
+
+  @ResolveField(() => UserTypeEntity)
+  async temp(@Parent() userCenterEntity: UserCenterEntity): Promise<any> {
+    const id = userCenterEntity.idUser;
+    if (!id) {
+      return null;
+    }
+
+    try {
+      return this.userTypessService.findOneById(id, userCenterEntity.userType);
+    } catch (error) {
+      CustomException.catch(error, 'get', 'Tipo de Usuário');
+    }
+  }
 }

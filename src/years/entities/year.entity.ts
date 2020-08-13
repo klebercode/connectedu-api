@@ -3,12 +3,12 @@ import { Entity, Column, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { UserBase } from 'src/common/types/userbase';
+import { BasicFields } from 'src/common/types/basicfields';
 
 @ObjectType()
 @Entity('year')
 @Unique(['year'])
-export class YearEntity extends UserBase {
+export class YearEntity extends BasicFields {
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 4, nullable: false })
   @IsOptional()

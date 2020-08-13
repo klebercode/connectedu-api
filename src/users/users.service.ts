@@ -20,38 +20,4 @@ export class UsersService extends ServiceDefault<
   constructor(@Inject(CUSTOMER_CONNECTION) connection: Connection) {
     super(connection, UserEntity);
   }
-
-  async getByEmailLogin(login: string): Promise<UserEntity> {
-    const obj = await this.repository.findOne({
-      where: [{ login: login }, { email: login }],
-    });
-    return obj;
-  }
-
-  /*
-  async updateCodeToken(id: number, codeToken: number): Promise<boolean> {
-    await this.repository.update(id, { codeToken });
-    return true;
-  }
-
-  async updatePassword(
-    id: number,
-    password: string,
-    idUser: any,
-  ): Promise<boolean> {
-    const password_hash = await bcryptjs.hash(password, 10);
-
-    await this.repository.update(id, { password: password_hash });
-    return this.updateCodeToken(id, 0);
-  }
-*/
-
-  async create(
-    input: CreateUsersInput,
-    idUser: number,
-    typeUser: string,
-  ): Promise<UserEntity> {
-    input.password = await bcryptjs.hash(input.password, 10);
-    return await super.create(input, idUser, typeUser);
-  }
 }

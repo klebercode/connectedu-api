@@ -33,6 +33,7 @@ export class UserAuthGuard implements CanActivate {
     if (user) {
       return true;
     }
+
     throw new UnauthorizedException(
       'Usuário não localizado na Central de Usuários',
     );
