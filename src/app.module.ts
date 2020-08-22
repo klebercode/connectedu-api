@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
+import { MongooseModule } from '@nestjs/mongoose';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { config } from './orm.config';
+import { config, configMongo } from './orm.config';
 
 // Import moulos
 import { AuthModule } from './auth/auth.module';
@@ -31,6 +32,8 @@ import { ContentPlannedsModule } from './contentplanned/contentplanneds.module';
 import { ContentAppliedsModule } from './contentapplied/contentapplieds.module';
 import { UserCentesModule } from './usercenter/usercenters.module';
 import { UserTypesModule } from './usertypes/usertypes.module';
+import { UserLogsModule } from './userlogs/userlogs.module';
+import { TenantsModule } from './tenants/tenants.module';
 
 // Modulos Publicos
 import { PermisisonsModule } from './permissions/permissions.module';
@@ -57,6 +60,25 @@ import { Customer } from './customers/entities/customer.object';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+
+    /*
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        ...configMongo,
+        name: 'conectMongo',
+        username: configService.get<string>('DB_USER_MG'),
+        password: configService.get<string>('DB_PASS_MG'),
+        port: configService.get<number>('DB_PORT_MG'),
+        host: configService.get<string>('DB_HOST_MG'),
+        database: configService.get<any>('DB_NAME_MG'),
+        useUnifiedTopology: true,
+        entities: [Customer],
+      }),
+      inject: [ConfigService],
+    }),
+    */
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -78,14 +100,17 @@ import { Customer } from './customers/entities/customer.object';
       }),
       inject: [ConfigService],
     }),
+
     GraphQLModule.forRoot({
       installSubscriptionHandlers: true,
       autoSchemaFile: 'schema.gql',
       context: ({ req, res }) => ({ req, res }),
     }),
+
     AuthModule,
     StatesModule,
     CustomersModule,
+    TenantsModule,
     UsersModule,
     StudentsModule,
     FileUploadModule,
@@ -112,6 +137,8 @@ import { Customer } from './customers/entities/customer.object';
     KeyAccessModule,
     UserCentesModule,
     UserTypesModule,
+    // module mongodb
+    UserLogsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

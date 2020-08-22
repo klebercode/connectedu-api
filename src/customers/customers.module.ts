@@ -25,6 +25,9 @@ export const CUSTOMER_CONNECTION = 'CUSTOMER_CONNECTION';
         const customer: Customer = await connection
           .getRepository(Customer)
           .findOne({ where: { host: request.req.headers.host } });
+
+        console.log('pegou a conection postgres - ', customer.domain);
+
         return getConnection(customer.domain);
       },
     },
@@ -51,9 +54,12 @@ export class CustomersModule {
         }
 
         try {
+          console.log('passe 1');
           getConnection(customer.domain);
           next();
         } catch (e) {
+          console.log('passe 2');
+
           const createdConnection: Connection = await createConnection({
             name: customer.domain,
             type: 'postgres',
@@ -68,9 +74,9 @@ export class CustomersModule {
             // logging: true,
           });
 
-          //console.log(__dirname + '/**/*.entity{.ts,.js}');
-
+          console.log('passe 3');
           if (createdConnection) {
+            console.log('passe 4');
             next();
           } else {
             throw new BadRequestException(

@@ -7,8 +7,10 @@ import { SubjectsResolver } from './resolvers/subjects.resolvers';
 import { UserCentesModule } from './../usercenter/usercenters.module';
 import { CustomersModule } from '../customers/customers.module';
 
+import { UserLogsModule } from '../userlogs/userlogs.module';
+
 @Module({
-  imports: [UserCentesModule, CustomersModule],
+  imports: [UserCentesModule, CustomersModule, UserLogsModule],
   providers: [SubjectsService, DateScalar, SubjectsResolver],
   exports: [SubjectsService],
 })
