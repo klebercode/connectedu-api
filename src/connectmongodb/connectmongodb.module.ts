@@ -6,11 +6,10 @@ import {
 } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { getRepository, Connection } from 'typeorm';
-import { Model, models, Schema } from 'mongoose';
+import { Connection } from 'typeorm';
 import { Customer } from '../customers/entities/customer.object';
 import * as mongoose from 'mongoose';
-import { UserLog, UserLogSchema } from '../userlogs/entities/userlog.schema';
+import { UserLogSchema } from '../userlogs/entities/userlog.schema';
 
 export const CUSTOMER_CONNECTION_MONGO = 'CUSTOMER_CONNECTION_MONGO';
 
@@ -41,7 +40,7 @@ export const CUSTOMER_CONNECTION_MONGO = 'CUSTOMER_CONNECTION_MONGO';
   ],
   exports: [CUSTOMER_CONNECTION_MONGO],
 })
-export class TenantsModule {
+export class ConnectMongodbModule {
   constructor(private readonly connection: Connection) {}
 
   configure(consumer: MiddlewareConsumer): void {
@@ -100,7 +99,7 @@ export class TenantsModule {
 
           try {
             const model = await createdConnection
-              .model(UserLog.name, UserLogSchema)
+              .model('userlog', UserLogSchema)
               .createCollection();
           } catch (e) {
             console.log(e);

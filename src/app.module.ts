@@ -33,7 +33,7 @@ import { ContentAppliedsModule } from './contentapplied/contentapplieds.module';
 import { UserCentesModule } from './usercenter/usercenters.module';
 import { UserTypesModule } from './usertypes/usertypes.module';
 import { UserLogsModule } from './userlogs/userlogs.module';
-import { TenantsModule } from './tenants/tenants.module';
+import { ConnectMongodbModule } from './connectmongodb/connectmongodb.module';
 
 // Modulos Publicos
 import { PermisisonsModule } from './permissions/permissions.module';
@@ -60,24 +60,6 @@ import { Customer } from './customers/entities/customer.object';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-
-    /*
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        ...configMongo,
-        name: 'conectMongo',
-        username: configService.get<string>('DB_USER_MG'),
-        password: configService.get<string>('DB_PASS_MG'),
-        port: configService.get<number>('DB_PORT_MG'),
-        host: configService.get<string>('DB_HOST_MG'),
-        database: configService.get<any>('DB_NAME_MG'),
-        useUnifiedTopology: true,
-        entities: [Customer],
-      }),
-      inject: [ConfigService],
-    }),
-    */
 
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -106,37 +88,41 @@ import { Customer } from './customers/entities/customer.object';
       autoSchemaFile: 'schema.gql',
       context: ({ req, res }) => ({ req, res }),
     }),
-
     AuthModule,
-    StatesModule,
     CustomersModule,
-    TenantsModule,
-    UsersModule,
-    StudentsModule,
-    FileUploadModule,
+    ConnectMongodbModule,
+
+    // publicos
     OrganizationsModule,
     PermisisonsModule,
+    StatesModule,
     CitiesModule,
-    UserPermissionsModule,
-    CompaniesModule,
+    FileUploadModule,
+    KeyAccessModule,
+
+    // schemas
     YearsModule,
+    CompaniesModule,
+    UsersModule,
+    UserPermissionsModule,
     SubjectsModule,
     TeachersModule,
     ClassRoomsModule,
     ClassRoomItemsModule,
     ClassRoomInjectsModule,
-    ResponsiblesModule,
-    StudentInformationsModule,
     EmployeesModule,
     OccurrencesModule,
+    ResponsiblesModule,
+    StudentsModule,
+    StudentInformationsModule,
     StudentOccurrencesModule,
     StudentGradesModule,
     StudentCallsModule,
     ContentPlannedsModule,
     ContentAppliedsModule,
-    KeyAccessModule,
     UserCentesModule,
     UserTypesModule,
+
     // module mongodb
     UserLogsModule,
   ],

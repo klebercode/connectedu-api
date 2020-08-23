@@ -1,15 +1,28 @@
 import { HttpException, NotFoundException } from '@nestjs/common';
 import { Repository, Connection } from 'typeorm';
 import { PaginationArgs, paginate } from '../../common/pages';
+import { UserLogsService } from '../../userlogs/userlogs.service';
+import { CreateUserLogDTO } from '../../userlogs/entities/create.userlog.dto';
 
 export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
   repository: Repository<EntityDefault>;
+  private readonly userLogsService: UserLogsService;
 
   constructor(private connection: Connection, private entity: any) {
     this.repository = connection.getRepository<EntityDefault>(entity);
   }
 
   async findAll(): Promise<EntityDefault[]> {
+    let obj = {
+      table: 'teste1',
+      idregister: 1,
+      iduser: 2,
+      usertype: 'R',
+      operation: 'E',
+      description: 'teste',
+    };
+
+    this.userLogsService.create(obj);
     return await this.repository.find();
   }
 

@@ -16,14 +16,7 @@ export class SubjectsService extends ServiceDefault<
   CreateSubjectInput,
   UpdateSubjectInput
 > {
-  constructor(
-    @Inject(CUSTOMER_CONNECTION) connection: Connection,
-    private readonly userLogsService: UserLogsService,
-  ) {
+  constructor(@Inject(CUSTOMER_CONNECTION) connection: Connection) {
     super(connection, SubjectEntity);
-  }
-
-  async getTeste() {
-    this.userLogsService.create();
   }
 }

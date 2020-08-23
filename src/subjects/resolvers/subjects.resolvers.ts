@@ -44,7 +44,6 @@ export class SubjectsResolver extends ResolverDefault<
 
   @Query(() => [SubjectEntity], { name: 'subjectAll' })
   async getAll(): Promise<SubjectEntity[]> {
-    this.subjectsService.getTeste();
     return super.getAll();
   }
 
