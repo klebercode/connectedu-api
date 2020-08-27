@@ -4,13 +4,13 @@ import { PaginationArgs, paginate } from '../../common/pages';
 
 export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
   repository: Repository<EntityPublic>;
-  connectionPublic: Connection;
-  entity: EntitySchema<EntityPublic>;
 
-  constructor(connectionPublic: Connection, entity: any) {
+  constructor(
+    private readonly connectionPublic: Connection,
+    private readonly entity: any,
+    private readonly userLogs: any,
+  ) {
     this.repository = connectionPublic.getRepository<EntityPublic>(entity);
-    this.connectionPublic = connectionPublic;
-    this.entity = entity;
   }
 
   async findAll(): Promise<EntityPublic[]> {
@@ -32,16 +32,48 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
     return obj;
   }
 
-  async create(input: CreatePublic): Promise<EntityPublic> {
-    const obj = await this.repository.save({ ...input });
+  async findOne(input: any): Promise<EntityPublic> {
+    if (!input) {
+      return null;
+    }
+
+    const obj = await this.repository.findOne(input);
+    if (!obj) {
+      return null;
+    }
     return obj;
   }
 
-  async createMany(input: [CreatePublic]): Promise<EntityPublic[]> {
-    const objcts = [];
+  async create(
+    input: CreatePublic,
+    idUser: number,
+    typeUser: string,
+  ): Promise<EntityPublic> {
+    const obj = await this.repository.save({ ...input });
+
+    // resgistro de log da operação
+    await this.saveLogs(
+      this.entity.name,
+      obj['id'],
+      idUser,
+      typeUser,
+      'C',
+      obj,
+    );
+    // fim de log
+
+    return obj;
+  }
+
+  async createMany(
+    input: [CreatePublic],
+    idUser: number,
+    typeUser: string,
+  ): Promise<EntityPublic[]> {
+    const objects = [];
 
     input.forEach(item => {
-      objcts.push({
+      objects.push({
         ...item,
       });
     });
@@ -51,31 +83,66 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
     await queryRunner.startTransaction();
 
     try {
-      const objs = await queryRunner.manager.save(this.entity, objcts);
+      const objectsSave = await queryRunner.manager.save(this.entity, objects);
       await queryRunner.commitTransaction();
 
-      return objs;
+      // resgistro de log da operação
+      const promisesLog = objectsSave.map(item => {
+        return this.saveLogs(
+          this.entity.name,
+          item['id'],
+          idUser,
+          typeUser,
+          'C',
+          item,
+        );
+      });
+      await Promise.all(promisesLog);
+      // fim de log
+
+      return objectsSave;
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
-      throw new HttpException(error, error);
+      throw new HttpException('Erro ao tentar criar novos registros !', error);
     } finally {
       await queryRunner.release();
     }
   }
 
-  async update(id: number, input: UpdatePublic): Promise<EntityPublic> {
+  async update(
+    id: number,
+    input: UpdatePublic,
+    idUser: number,
+    typeUser: string,
+  ): Promise<EntityPublic> {
     await this.repository.update(id, {
       ...input,
     });
     const obj = await this.findOneById(id);
     if (!obj) {
-      throw new NotFoundException();
+      throw new NotFoundException('Erro ao tentar atualizar registro');
     }
+
+    // resgistro de log da operação
+    await this.saveLogs(
+      this.entity.name,
+      obj['id'],
+      idUser,
+      typeUser,
+      'U',
+      obj,
+    );
+    // fim de log
+
     return obj;
   }
 
-  async updateMany(input: [UpdatePublic], idUser: any): Promise<boolean> {
+  async updateMany(
+    input: [UpdatePublic],
+    idUser: number,
+    typeUser: string,
+  ): Promise<boolean> {
     const queryRunner = this.connectionPublic.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -90,47 +157,97 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
       await Promise.all(promises);
 
       await queryRunner.commitTransaction();
+
+      // resgistro de log da operação
+      const promisesLog = input.map(item => {
+        return this.saveLogs(
+          this.entity.name,
+          item['id'],
+          idUser,
+          typeUser,
+          'U',
+          item,
+        );
+      });
+      await Promise.all(promisesLog);
+      // fim de log
+
       return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
-      throw new HttpException(error, error);
+      throw new HttpException('Erro ao tentar atualizar os registros', error);
     } finally {
       await queryRunner.release();
     }
   }
 
-  async remove(id: number): Promise<Boolean> {
-    await this.repository.delete(id);
+  async remove(id: number, idUser: number, typeUser: string): Promise<Boolean> {
     const obj = await this.findOneById(id);
-    if (!obj) {
+    if (obj) {
+      await this.repository.delete(id);
+
+      // resgistro de log da operação
+      await this.saveLogs(
+        this.entity.name,
+        obj['id'],
+        idUser,
+        typeUser,
+        'D',
+        obj,
+      );
+      // fim de log
+    }
+
+    const objRet = await this.findOneById(id);
+    if (!objRet) {
       return true;
     }
     return false;
   }
 
-  async removeMany(ids: number[]): Promise<boolean> {
+  async removeMany(
+    ids: number[],
+    idUser: number,
+    typeUser: string,
+  ): Promise<boolean> {
     const queryRunner = this.connectionPublic.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
+      const objects = await this.findByIds(ids);
+
       await queryRunner.manager.delete(this.entity, ids);
 
       await queryRunner.commitTransaction();
+
+      // resgistro de log da operação
+      const promisesLog = objects.map(item => {
+        return this.saveLogs(
+          this.entity.name,
+          item['id'],
+          idUser,
+          typeUser,
+          'D',
+          item,
+        );
+      });
+      await Promise.all(promisesLog);
+      // fim de log
 
       return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
-      throw new HttpException(error, error);
+      throw new HttpException('Erro ao tentar deletar os registros', error);
     } finally {
       await queryRunner.release();
     }
   }
 
   async getPageServ(paginationArgs: PaginationArgs): Promise<any> {
-    const query = await this.repository.createQueryBuilder().select();
+    const query = this.repository.createQueryBuilder().select();
 
     if (paginationArgs.filter) {
       query.where(paginationArgs.filter);
@@ -145,5 +262,24 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
       query.orderBy({ ['id']: 'ASC' });
     }
     return paginate(query, paginationArgs);
+  }
+
+  async saveLogs(
+    table: string,
+    idRegister: number,
+    idUser: number,
+    typeUser: string,
+    tipo: string,
+    description: any,
+  ) {
+    let log = {
+      table: table,
+      idregister: idRegister,
+      iduser: idUser,
+      usertype: typeUser,
+      operation: tipo,
+      description: description,
+    };
+    return this.userLogs.create(log);
   }
 }

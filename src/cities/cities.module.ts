@@ -9,6 +9,7 @@ import { CityEntity } from './entities/city.object';
 import { StatesModule } from '../states/states.module';
 import { CustomersModule } from '../customers/customers.module';
 import { UserCentesModule } from './../usercenter/usercenters.module';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserCentesModule } from './../usercenter/usercenters.module';
     UserCentesModule,
     TypeOrmModule.forFeature([CityEntity]),
     CustomersModule,
+    UserLogsModule,
   ],
   providers: [CitiesResolver, CitiesService, DateScalar],
   exports: [CitiesService],

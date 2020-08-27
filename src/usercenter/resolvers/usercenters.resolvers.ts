@@ -26,8 +26,6 @@ import {
 } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
-import { UserTypessService } from '../../usertypes/usertypes.service';
-import { UserTypeEntity } from '../../usertypes/types/usertypes.object';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => UserCenterEntity)
@@ -37,10 +35,7 @@ export class userCentersResolver extends ResolverDefault<
   CreateUserCenterInput,
   UpdateUserCenterInput
 > {
-  constructor(
-    private readonly userCentersService: UserCentersService,
-    private readonly userTypessService: UserTypessService,
-  ) {
+  constructor(private readonly userCentersService: UserCentersService) {
     super('Central de Usuários', userCentersService);
   }
 
@@ -87,16 +82,20 @@ export class userCentersResolver extends ResolverDefault<
   }
 
   @Mutation(() => Boolean, { name: 'userCenterDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'userCenterDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => UserCenterEntity, { name: 'userCenterUpdate' })
@@ -135,22 +134,6 @@ export class userCentersResolver extends ResolverDefault<
       return ret;
     } catch (error) {
       CustomException.catch(error, 'update', 'Password Usuário');
-    }
-  }
-
-  // **************************************  Resolucao de Campos
-
-  @ResolveField(() => UserTypeEntity)
-  async temp(@Parent() userCenterEntity: UserCenterEntity): Promise<any> {
-    const id = userCenterEntity.idUser;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.userTypessService.findOneById(id, userCenterEntity.userType);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Tipo de Usuário');
     }
   }
 }

@@ -78,7 +78,7 @@ export class ResponsiblesResolver extends ResolverDefault<
     return super.create(context, input);
   }
 
-  @Mutation(() => [ResponsibleEntity], { name: 'subjectCreateMany' })
+  @Mutation(() => [ResponsibleEntity], { name: 'responsibleCreateMany' })
   async createMany(
     @Context() context: MyContext,
     @Args({ name: 'input', type: () => [CreateResponsibleInput] })
@@ -88,16 +88,20 @@ export class ResponsiblesResolver extends ResolverDefault<
   }
 
   @Mutation(() => Boolean, { name: 'responsibleDelete' })
-  async detele(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'responsibleDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => ResponsibleEntity, { name: 'responsibleUpdate' })

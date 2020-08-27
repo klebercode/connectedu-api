@@ -10,6 +10,7 @@ import { CustomersModule } from '../customers/customers.module';
 import { TeachersModule } from '../teachers/teachers.module';
 import { ClassRoomsModule } from '../classrooms/classrooms.module';
 import { SubjectsModule } from '../subjects/subjects.module';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { SubjectsModule } from '../subjects/subjects.module';
     TeachersModule,
     ClassRoomsModule,
     SubjectsModule,
+    UserLogsModule,
   ],
   providers: [ClassRoomItemsService, DateScalar, ClassRoomItemsResolver],
   exports: [ClassRoomItemsService],

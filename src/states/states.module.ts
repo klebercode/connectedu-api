@@ -8,12 +8,14 @@ import { StateEntity } from './entities/state.object';
 import { AuthModule } from '../auth/auth.module';
 import { CustomersModule } from '../customers/customers.module';
 import { UserCentesModule } from './../usercenter/usercenters.module';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({
   imports: [
     UserCentesModule,
     CustomersModule,
     TypeOrmModule.forFeature([StateEntity]),
+    UserLogsModule,
   ],
   providers: [StatesResolver, StatesService, DateScalar],
   exports: [StatesService],

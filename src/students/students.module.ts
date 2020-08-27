@@ -9,6 +9,7 @@ import { CitiesModule } from '../cities/cities.module';
 import { CustomersModule } from '../customers/customers.module';
 import { ResponsiblesModule } from '../responsibles/responsibles.module';
 import { UserCentesModule } from './../usercenter/usercenters.module';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UserCentesModule } from './../usercenter/usercenters.module';
     StatesModule,
     CitiesModule,
     ResponsiblesModule,
+    UserLogsModule,
   ],
   providers: [studentsResolver, StudentsService, DateScalar],
   exports: [StudentsService],

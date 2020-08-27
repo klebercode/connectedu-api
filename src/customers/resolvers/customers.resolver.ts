@@ -1,7 +1,8 @@
 import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
-
+import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver, Context } from '@nestjs/graphql';
+import { MyContext } from '../../common/types/mycontext';
 
 import { CreateCustomerInput } from '../types/create-customer.input';
 import { Customer } from '../entities/customer.object';
@@ -57,9 +58,17 @@ export class CustomersResolver {
   }
 
   @Mutation(() => Customer, { name: 'customerCreate' })
-  async create(@Args('input') input: CreateCustomerInput): Promise<Customer> {
+  async create(
+    @Context() context: MyContext,
+    @Args('input') input: CreateCustomerInput,
+  ): Promise<Customer> {
     try {
-      const obj = await this.customersService.create({ ...input });
+      const { user } = context.req;
+      const obj = await this.customersService.create(
+        { ...input },
+        user['id'],
+        user['type'],
+      );
       return obj;
     } catch (error) {
       CustomException.catch(error, 'create', this.nameApp);
@@ -68,20 +77,34 @@ export class CustomersResolver {
 
   @Mutation(() => [Customer], { name: 'customerCreateMany' })
   async createMany(
+    @Context() context: MyContext,
     @Args({ name: 'input', type: () => [CreateCustomerInput] })
     input: [CreateCustomerInput],
   ): Promise<Customer[]> {
     try {
-      return await this.customersService.createMany(input);
+      const { user } = context.req;
+      return await this.customersService.createMany(
+        input,
+        user['id'],
+        user['type'],
+      );
     } catch (error) {
       CustomException.catch(error, 'createMany', this.nameApp);
     }
   }
 
   @Mutation(() => Boolean, { name: 'customerDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
     try {
-      const obj = await this.customersService.remove(id);
+      const { user } = context.req;
+      const obj = await this.customersService.remove(
+        id,
+        user['id'],
+        user['type'],
+      );
       if (!obj) {
         return true;
       }
@@ -93,11 +116,17 @@ export class CustomersResolver {
 
   @Mutation(() => Boolean, { name: 'customerDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
     try {
-      const obj = await this.customersService.removeMany(ids);
+      const { user } = context.req;
+      const obj = await this.customersService.removeMany(
+        ids,
+        user['id'],
+        user['type'],
+      );
       if (!obj) {
         return true;
       }
@@ -109,11 +138,18 @@ export class CustomersResolver {
 
   @Mutation(() => Customer, { name: 'customerUpdate' })
   async update(
+    @Context() context: MyContext,
     @Args('id') id: number,
     @Args('input') input: CreateCustomerInput,
   ): Promise<Customer> {
     try {
-      const obj = await this.customersService.update(id, { ...input });
+      const { user } = context.req;
+      const obj = await this.customersService.update(
+        id,
+        { ...input },
+        user['id'],
+        user['type'],
+      );
       return obj;
     } catch (error) {
       CustomException.catch(error, 'update', this.nameApp);

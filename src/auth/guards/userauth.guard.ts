@@ -11,6 +11,7 @@ import { UserCentersService } from '../../usercenter/usercenters.service';
 @Injectable()
 export class UserAuthGuard implements CanActivate {
   constructor(private readonly userCentersService: UserCentersService) {}
+
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {

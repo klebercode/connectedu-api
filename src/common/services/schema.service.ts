@@ -1,28 +1,19 @@
 import { HttpException, NotFoundException } from '@nestjs/common';
 import { Repository, Connection } from 'typeorm';
 import { PaginationArgs, paginate } from '../../common/pages';
-import { UserLogsService } from '../../userlogs/userlogs.service';
-import { CreateUserLogDTO } from '../../userlogs/entities/create.userlog.dto';
 
 export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
   repository: Repository<EntityDefault>;
-  private readonly userLogsService: UserLogsService;
 
-  constructor(private connection: Connection, private entity: any) {
+  constructor(
+    private readonly connection: Connection,
+    private readonly entity: any,
+    private readonly userLogs: any,
+  ) {
     this.repository = connection.getRepository<EntityDefault>(entity);
   }
 
   async findAll(): Promise<EntityDefault[]> {
-    let obj = {
-      table: 'teste1',
-      idregister: 1,
-      iduser: 2,
-      usertype: 'R',
-      operation: 'E',
-      description: 'teste',
-    };
-
-    this.userLogsService.create(obj);
     return await this.repository.find();
   }
 
@@ -61,6 +52,18 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     const obj = await this.repository.save({
       ...input,
     });
+
+    // resgistro de log da operação
+    await this.saveLogs(
+      this.entity.name,
+      obj['id'],
+      idUser,
+      typeUser,
+      'C',
+      obj,
+    );
+    // fim de log
+
     return obj;
   }
 
@@ -69,10 +72,10 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     idUser: number,
     typeUser: string,
   ): Promise<EntityDefault[]> {
-    const objcts = [];
+    const objects = [];
 
-    input.forEach(item => {
-      objcts.push({
+    input.map(item => {
+      objects.push({
         ...item,
       });
     });
@@ -82,10 +85,24 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     await queryRunner.startTransaction();
 
     try {
-      const objs = await queryRunner.manager.save(this.entity, objcts);
+      const objectsSave = await queryRunner.manager.save(this.entity, objects);
       await queryRunner.commitTransaction();
 
-      return objs;
+      // resgistro de log da operação
+      const promisesLog = objectsSave.map(item => {
+        return this.saveLogs(
+          this.entity.name,
+          item['id'],
+          idUser,
+          typeUser,
+          'C',
+          item,
+        );
+      });
+      await Promise.all(promisesLog);
+      // fim de log
+
+      return objectsSave;
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
@@ -108,6 +125,18 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     if (!obj) {
       throw new NotFoundException('Erro ao tentar atualizar registro');
     }
+
+    // resgistro de log da operação
+    await this.saveLogs(
+      this.entity.name,
+      obj['id'],
+      idUser,
+      typeUser,
+      'U',
+      obj,
+    );
+    // fim de log
+
     return obj;
   }
 
@@ -130,6 +159,21 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
       await Promise.all(promises);
 
       await queryRunner.commitTransaction();
+
+      // resgistro de log da operação
+      const promisesLog = input.map(item => {
+        return this.saveLogs(
+          this.entity.name,
+          item['id'],
+          idUser,
+          typeUser,
+          'U',
+          item,
+        );
+      });
+      await Promise.all(promisesLog);
+      // fim de log
+
       return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -140,24 +184,59 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     }
   }
 
-  async remove(id: number): Promise<boolean> {
-    await this.repository.delete(id);
+  async remove(id: number, idUser: number, typeUser: string): Promise<boolean> {
     const obj = await this.findOneById(id);
-    if (!obj) {
+    if (obj) {
+      await this.repository.delete(id);
+
+      // resgistro de log da operação
+      await this.saveLogs(
+        this.entity.name,
+        obj['id'],
+        idUser,
+        typeUser,
+        'D',
+        obj,
+      );
+      // fim de log
+    }
+
+    const objRet = await this.findOneById(id);
+    if (!objRet) {
       return true;
     }
     return false;
   }
 
-  async removeMany(ids: number[]): Promise<boolean> {
+  async removeMany(
+    ids: number[],
+    idUser: number,
+    typeUser: string,
+  ): Promise<boolean> {
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
+      const objects = await this.findByIds(ids);
+
       await queryRunner.manager.delete(this.entity, ids);
 
       await queryRunner.commitTransaction();
+
+      // resgistro de log da operação
+      const promisesLog = objects.map(item => {
+        return this.saveLogs(
+          this.entity.name,
+          item['id'],
+          idUser,
+          typeUser,
+          'D',
+          item,
+        );
+      });
+      await Promise.all(promisesLog);
+      // fim de log
 
       return true;
     } catch (error) {
@@ -170,7 +249,7 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
   }
 
   async getPageServ(paginationArgs: PaginationArgs): Promise<any> {
-    const query = await this.repository.createQueryBuilder().select();
+    const query = this.repository.createQueryBuilder().select();
 
     if (paginationArgs.filter) {
       query.where(paginationArgs.filter);
@@ -185,5 +264,24 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
       query.orderBy({ ['id']: 'ASC' });
     }
     return paginate(query, paginationArgs);
+  }
+
+  async saveLogs(
+    table: string,
+    idRegister: number,
+    idUser: number,
+    typeUser: string,
+    tipo: string,
+    description: any,
+  ) {
+    let log = {
+      table: table,
+      idregister: idRegister,
+      iduser: idUser,
+      usertype: typeUser,
+      operation: tipo,
+      description: description,
+    };
+    return this.userLogs.create(log);
   }
 }

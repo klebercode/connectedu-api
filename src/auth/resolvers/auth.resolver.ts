@@ -3,7 +3,6 @@ import { UseFilters, HttpException } from '@nestjs/common';
 
 import { AuthService } from '../auth.service';
 import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
-import { CustomException } from '../../common/filters/http-exception.filter';
 
 @Resolver()
 @UseFilters(HttpExceptionFilter)

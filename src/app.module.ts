@@ -31,7 +31,6 @@ import { StudentCallsModule } from './studentcalls/studentcalls.module';
 import { ContentPlannedsModule } from './contentplanned/contentplanneds.module';
 import { ContentAppliedsModule } from './contentapplied/contentapplieds.module';
 import { UserCentesModule } from './usercenter/usercenters.module';
-import { UserTypesModule } from './usertypes/usertypes.module';
 import { UserLogsModule } from './userlogs/userlogs.module';
 import { ConnectMongodbModule } from './connectmongodb/connectmongodb.module';
 
@@ -121,7 +120,6 @@ import { Customer } from './customers/entities/customer.object';
     ContentPlannedsModule,
     ContentAppliedsModule,
     UserCentesModule,
-    UserTypesModule,
 
     // module mongodb
     UserLogsModule,

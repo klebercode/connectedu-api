@@ -1,10 +1,10 @@
-import { MyContext } from '../types/mycontext';
 import { NotFoundException } from '@nestjs/common';
 import { CustomException } from '../filters/http-exception.filter';
 import { PaginationArgs } from '../../common/pages';
+import { MyContext } from '../types/mycontext';
 
 export class ResolverDefault<EntityDefault, CreateDefault, UpdateDefault> {
-  constructor(private nameApp: any, private services) {}
+  constructor(private nameApp: any, private services: any) {}
 
   // metodos de queries
   async get(id: number): Promise<EntityDefault> {
@@ -75,17 +75,21 @@ export class ResolverDefault<EntityDefault, CreateDefault, UpdateDefault> {
     }
   }
 
-  async delete(id: number): Promise<boolean> {
+  async delete(context: MyContext, id: number): Promise<boolean> {
     try {
-      return await this.services.remove(id);
+      const { user } = context.req;
+
+      return await this.services.remove(id, user['id'], user['type']);
     } catch (error) {
       CustomException.catch(error, 'delete', this.nameApp);
     }
   }
 
-  async deleteMany(ids: [number]): Promise<boolean> {
+  async deleteMany(context: MyContext, ids: [number]): Promise<boolean> {
     try {
-      return await this.services.removeMany(ids);
+      const { user } = context.req;
+
+      return await this.services.removeMany(ids, user['id'], user['type']);
     } catch (error) {
       CustomException.catch(error, 'deleteMany', this.nameApp);
     }

@@ -7,6 +7,7 @@ import { StateEntity } from './entities/state.object';
 import { CreateStateInput } from './types/create-state.input';
 import { UpdateStateInput } from './types/update-state.input';
 import { CUSTOMER_CONNECTION } from '../customers/customers.module';
+import { UserLogsService } from '../userlogs/userlogs.service';
 
 @Injectable()
 export class StatesService extends ServicePublic<
@@ -17,7 +18,8 @@ export class StatesService extends ServicePublic<
   constructor(
     @InjectConnection() connectionPublic: Connection,
     @Inject(CUSTOMER_CONNECTION) connection: Connection,
+    private readonly userLogsService: UserLogsService,
   ) {
-    super(connectionPublic, StateEntity);
+    super(connectionPublic, StateEntity, userLogsService);
   }
 }

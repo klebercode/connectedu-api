@@ -10,6 +10,7 @@ import { StudentsModule } from '../students/students.module';
 import { YearsModule } from '../years/years.module';
 import { SubjectsModule } from '../subjects/subjects.module';
 import { UserCentesModule } from './../usercenter/usercenters.module';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UserCentesModule } from './../usercenter/usercenters.module';
     StudentsModule,
     SubjectsModule,
     YearsModule,
+    UserLogsModule,
   ],
   providers: [StudentGradesService, DateScalar, StudentGradesResolver],
   exports: [StudentGradesService],

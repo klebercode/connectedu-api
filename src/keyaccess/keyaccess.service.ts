@@ -21,6 +21,7 @@ import { CustomersService } from '../customers/customers.service';
 import { UserCentersService } from '../usercenter/usercenters.service';
 import { UserCenterEntity } from '../usercenter/entities/usercenter.entity';
 import { modulo11 } from '../common/libs/libs';
+import { UserLogsService } from '../userlogs/userlogs.service';
 
 @Injectable()
 export class KeyAccessService extends ServicePublic<
@@ -33,8 +34,9 @@ export class KeyAccessService extends ServicePublic<
     @Inject(CUSTOMER_CONNECTION) connection: Connection,
     private readonly customersService: CustomersService,
     private readonly userCentersService: UserCentersService,
+    private readonly userLogsService: UserLogsService,
   ) {
-    super(connectionPublic, KeyAccessEntity);
+    super(connectionPublic, KeyAccessEntity, userLogsService);
   }
 
   async createToken(
@@ -87,8 +89,6 @@ export class KeyAccessService extends ServicePublic<
     objUserCenter.statusActiveApp = false;
     objUserCenter.keyAcessFirst = keyAccess;
     objUserCenter.token = hexRandomApp;
-    //objUserCenter.userCreatedId = 1; //user['id'];
-    //objUserCenter.userUpdatedId = 1; //user['id'];
     objUserCenter.status = false;
 
     try {

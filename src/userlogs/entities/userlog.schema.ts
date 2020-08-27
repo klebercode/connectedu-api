@@ -6,6 +6,6 @@ export const UserLogSchema = new mongoose.Schema({
   iduser: Number,
   usertype: String,
   operation: String,
-  description: String,
+  description: Array,
   created_at: { type: Date, default: Date.now },
 });

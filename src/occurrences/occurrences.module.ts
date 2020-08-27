@@ -6,9 +6,10 @@ import { OccurrencesResolver } from './resolvers/occurrences.resolvers';
 
 import { UserCentesModule } from './../usercenter/usercenters.module';
 import { CustomersModule } from '../customers/customers.module';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({
-  imports: [UserCentesModule, CustomersModule],
+  imports: [UserCentesModule, CustomersModule, UserLogsModule],
   providers: [OccurrencesService, DateScalar, OccurrencesResolver],
   exports: [OccurrencesService],
 })

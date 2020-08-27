@@ -4,10 +4,10 @@ import { DateScalar } from '../common/scalars/date.scalar';
 import { UserCentersService } from './usercenters.service';
 import { userCentersResolver } from './resolvers/usercenters.resolvers';
 import { CustomersModule } from '../customers/customers.module';
-import { UserTypesModule } from '../usertypes/usertypes.module';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({
-  imports: [CustomersModule, UserTypesModule],
+  imports: [CustomersModule, UserLogsModule],
   providers: [UserCentersService, DateScalar, userCentersResolver],
   exports: [UserCentersService],
 })

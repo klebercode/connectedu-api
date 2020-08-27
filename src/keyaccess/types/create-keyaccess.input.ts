@@ -1,6 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { MaxLength } from 'class-validator';
-import { TypeUser } from '../../common/enums/enum-usertoken';
+import { TypeUser } from '../../common/enums/enum-typeuser';
 
 @InputType()
 export class CreateKeyAccessInput {

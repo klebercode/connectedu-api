@@ -6,9 +6,10 @@ import { YearsResolver } from './resolvers/years.resolvers';
 
 import { CustomersModule } from '../customers/customers.module';
 import { UserCentesModule } from './../usercenter/usercenters.module';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({
-  imports: [UserCentesModule, CustomersModule],
+  imports: [UserCentesModule, CustomersModule, UserLogsModule],
   providers: [YearsService, DateScalar, YearsResolver],
   exports: [YearsService],
 })

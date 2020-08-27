@@ -1,9 +1,10 @@
 import { NotFoundException } from '@nestjs/common';
 import { CustomException } from '../../common/filters/http-exception.filter';
 import { PaginationArgs } from '../../common/pages';
+import { MyContext } from '../types/mycontext';
 
 export class ResolverPublic<EntityPublic, CreatePublic, UpdatePublic> {
-  constructor(private nameApp: any, private services) {}
+  constructor(private nameApp: any, private services: any) {}
 
   // metodos de queries
   async get(id: number): Promise<EntityPublic> {
@@ -44,52 +45,83 @@ export class ResolverPublic<EntityPublic, CreatePublic, UpdatePublic> {
   }
 
   // metodos de mutations
-  async create(input: CreatePublic): Promise<EntityPublic> {
+  async create(context: MyContext, input: CreatePublic): Promise<EntityPublic> {
     try {
-      const obj = await this.services.create(input);
+      const { user } = context.req;
+      const obj = await this.services.create(input, user['id'], user['type']);
       return obj;
     } catch (error) {
       CustomException.catch(error, 'create', this.nameApp);
     }
   }
 
-  async createMany(input: [CreatePublic]): Promise<EntityPublic[]> {
+  async createMany(
+    context: MyContext,
+    input: [CreatePublic],
+  ): Promise<EntityPublic[]> {
     try {
-      const obj = await this.services.createMany(input);
+      const { user } = context.req;
+      const obj = await this.services.createMany(
+        input,
+        user['id'],
+        user['type'],
+      );
       return obj;
     } catch (error) {
       CustomException.catch(error, 'createMany', this.nameApp);
     }
   }
 
-  async delete(id: number): Promise<boolean> {
+  async delete(context: MyContext, id: number): Promise<boolean> {
     try {
-      return await this.services.remove(id);
+      const { user } = context.req;
+
+      return await this.services.remove(id, user['id'], user['type']);
     } catch (error) {
       CustomException.catch(error, 'delete', this.nameApp);
     }
   }
 
-  async deleteMany(ids: [number]): Promise<boolean> {
+  async deleteMany(context: MyContext, ids: [number]): Promise<boolean> {
     try {
-      return await this.services.removeMany(ids);
+      const { user } = context.req;
+
+      return await this.services.removeMany(ids, user['id'], user['type']);
     } catch (error) {
       CustomException.catch(error, 'deleteMany', this.nameApp);
     }
   }
 
-  async update(id: number, input: UpdatePublic): Promise<EntityPublic> {
+  async update(
+    context: MyContext,
+    id: number,
+    input: UpdatePublic,
+  ): Promise<EntityPublic> {
     try {
-      const obj = await this.services.update(id, { ...input });
+      const { user } = context.req;
+      const obj = await this.services.update(
+        id,
+        { ...input },
+        user['id'],
+        user['type'],
+      );
       return obj;
     } catch (error) {
       CustomException.catch(error, 'update', this.nameApp);
     }
   }
 
-  async updateMany(input: [UpdatePublic]): Promise<boolean> {
+  async updateMany(
+    context: MyContext,
+    input: [UpdatePublic],
+  ): Promise<boolean> {
     try {
-      const obj = await this.services.updateMany(input);
+      const { user } = context.req;
+      const obj = await this.services.updateMany(
+        input,
+        user['id'],
+        user['type'],
+      );
       return obj;
     } catch (error) {
       CustomException.catch(error, 'updateMany', this.nameApp);

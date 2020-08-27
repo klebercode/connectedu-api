@@ -9,9 +9,16 @@ import { CustomersModule } from '../customers/customers.module';
 import { StudentsModule } from '../students/students.module';
 import { SubjectsModule } from '../subjects/subjects.module';
 import { UserCentesModule } from './../usercenter/usercenters.module';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({
-  imports: [UserCentesModule, CustomersModule, StudentsModule, SubjectsModule],
+  imports: [
+    UserCentesModule,
+    CustomersModule,
+    StudentsModule,
+    SubjectsModule,
+    UserLogsModule,
+  ],
   providers: [StudentCallsService, DateScalar, StudentCallsResolver],
   exports: [StudentCallsService],
 })

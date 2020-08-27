@@ -3,8 +3,7 @@ import { Entity, Column, Unique } from 'typeorm';
 import { IsOptional, isEmail } from 'class-validator';
 import { Paginated } from '../../common/pages';
 import { BasicFields } from '../../common/types/basicfields';
-import { TypeUser } from '../../common/enums/enum-usertoken';
-import { UserTypeEntity } from '../../usertypes/types/usertypes.object';
+import { TypeUser } from '../../common/enums/enum-typeuser';
 
 @ObjectType()
 @Entity('usercenter')
@@ -39,7 +38,7 @@ export class UserCenterEntity extends BasicFields {
 
   @Field({ nullable: true })
   @IsOptional()
-  @Column({ type: 'varchar', length: 40, nullable: true })
+  @Column({ type: 'varchar', length: 80, nullable: true })
   password: string;
 
   @Field({ nullable: true })
@@ -67,10 +66,6 @@ export class UserCenterEntity extends BasicFields {
     nullable: false,
   })
   keyAcessFirst: string;
-
-  @Field(type => UserTypeEntity, { nullable: false })
-  @IsOptional()
-  temp?: UserTypeEntity;
 }
 
 @ObjectType()

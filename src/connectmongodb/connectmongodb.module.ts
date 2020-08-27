@@ -3,6 +3,8 @@ import {
   MiddlewareConsumer,
   Module,
   Scope,
+  HttpException,
+  NotFoundException,
 } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -30,7 +32,6 @@ export const CUSTOMER_CONNECTION_MONGO = 'CUSTOMER_CONNECTION_MONGO';
         const connects = mongoose.connections;
         connects.map(conn => {
           if (conn.name == customer.domain) {
-            console.log('pegou a conection mongo - ', customer.domain);
             connAtual = conn;
           }
         });
@@ -58,14 +59,20 @@ export class ConnectMongodbModule {
         }
 
         try {
-          const getconn = mongoose.connections;
-          console.log('passeMG 1');
-          if (getconn[1].name == customer.domain) {
+          // pegando as conecções e retornando a do host
+          let connAtual: any;
+          const connects = mongoose.connections;
+          connects.map(conn => {
+            if (conn.name == customer.domain) {
+              connAtual = true;
+            }
+          });
+          if (connAtual) {
             next();
+          } else {
+            throw new NotFoundException();
           }
         } catch (e) {
-          console.log('passeMG 2');
-
           const opt = {
             useNewUrlParser: true,
             useUnifiedTopology: true,
@@ -90,12 +97,7 @@ export class ConnectMongodbModule {
             '/' +
             customer.domain;
 
-          console.log('passeMG 2.1');
-
           const createdConnection = await mongoose.createConnection(url, opt);
-          console.log('passeMG 2.2');
-
-          console.log('passeMG 2.3');
 
           try {
             const model = await createdConnection
@@ -105,9 +107,7 @@ export class ConnectMongodbModule {
             console.log(e);
           }
 
-          console.log('passeMG 3');
           if (createdConnection) {
-            console.log('passeMG 4');
             next();
           } else {
             throw new BadRequestException(

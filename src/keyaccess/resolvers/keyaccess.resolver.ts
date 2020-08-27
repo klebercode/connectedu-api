@@ -78,39 +78,46 @@ export class KeyAccessResolver extends ResolverPublic<
 
   @Mutation(() => [KeyAccessEntity], { name: 'keyAccessCreateMany' })
   async createMany(
+    @Context() context: MyContext,
     @Args({ name: 'input', type: () => [CreateKeyAccessInput] })
     input: [CreateKeyAccessInput],
   ): Promise<KeyAccessEntity[]> {
-    return super.createMany(input);
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'keyAccessDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'keyAccessDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => KeyAccessEntity, { name: 'keyAccessUpdate' })
   async update(
+    @Context() context: MyContext,
     @Args('id') id: number,
     @Args('input') input: UpdateKeyAccessInput,
   ): Promise<KeyAccessEntity> {
-    return super.update(id, input);
+    return super.update(context, id, input);
   }
 
   @Mutation(() => Boolean, { name: 'keyAccessUpdateMany' })
   async updateMany(
+    @Context() context: MyContext,
     @Args({ name: 'input', type: () => [UpdateKeyAccessInput] })
     input: [UpdateKeyAccessInput],
   ): Promise<boolean> {
-    return super.updateMany(input);
+    return super.updateMany(context, input);
   }
 
   // **************************************  Resolucao de Campos

@@ -8,6 +8,7 @@ import { ServiceDefault } from '../common/services/schema.service';
 import { StudentInformationEntity } from './entities/studentinformation.entity';
 import { CreatStudentInformationInput } from './types/create-studentinformation.input';
 import { UpdateStudentInformationInput } from './types/update-studentinformation.input';
+import { UserLogsService } from '../userlogs/userlogs.service';
 
 @CustomersServiceDecorator()
 export class StudentInformationsService extends ServiceDefault<
@@ -15,7 +16,10 @@ export class StudentInformationsService extends ServiceDefault<
   CreatStudentInformationInput,
   UpdateStudentInformationInput
 > {
-  constructor(@Inject(CUSTOMER_CONNECTION) connection: Connection) {
-    super(connection, StudentInformationEntity);
+  constructor(
+    @Inject(CUSTOMER_CONNECTION) connection: Connection,
+    private readonly userLogsService: UserLogsService,
+  ) {
+    super(connection, StudentInformationEntity, userLogsService);
   }
 }

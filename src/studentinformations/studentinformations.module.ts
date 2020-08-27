@@ -11,6 +11,7 @@ import { ClassRoomsModule } from '../classrooms/classrooms.module';
 import { StudentsModule } from '../students/students.module';
 import { ResponsiblesModule } from '../responsibles/responsibles.module';
 import { YearsModule } from '../years/years.module';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { YearsModule } from '../years/years.module';
     StudentsModule,
     ResponsiblesModule,
     YearsModule,
+    UserLogsModule,
   ],
   providers: [
     StudentInformationsService,

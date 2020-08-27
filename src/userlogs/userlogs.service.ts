@@ -7,7 +7,6 @@ import { UserLog } from './entities/userlog.interface';
 import { CreateUserLogDTO } from './entities/create.userlog.dto';
 import { UserLogSchema } from './entities/userlog.schema';
 
-@Injectable()
 @CustomersServiceDecorator()
 export class UserLogsService {
   private readonly model: Model<UserLog>;

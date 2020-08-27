@@ -9,6 +9,7 @@ import { ServiceDefault } from '../common/services/schema.service';
 import { UserCenterEntity } from './entities/usercenter.entity';
 import { CreateUserCenterInput } from './types/create-usercenter.input';
 import { UpdateUserCenterInput } from './types/update-usercenter.input';
+import { UserLogsService } from '../userlogs/userlogs.service';
 
 @CustomersServiceDecorator()
 export class UserCentersService extends ServiceDefault<
@@ -18,8 +19,11 @@ export class UserCentersService extends ServiceDefault<
 > {
   private connectionLocal: Connection;
 
-  constructor(@Inject(CUSTOMER_CONNECTION) connection: Connection) {
-    super(connection, UserCenterEntity);
+  constructor(
+    @Inject(CUSTOMER_CONNECTION) connection: Connection,
+    private readonly userLogsService: UserLogsService,
+  ) {
+    super(connection, UserCenterEntity, userLogsService);
     this.connectionLocal = connection;
   }
 

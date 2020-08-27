@@ -6,6 +6,7 @@ import { ServicePublic } from '../common/services/public.service';
 import { Customer } from './entities/customer.object';
 import { CreateCustomerInput } from './types/create-customer.input';
 import { UpdateCustomerInput } from './types/update-customer.input';
+import { UserLogsService } from '../userlogs/userlogs.service';
 
 @Injectable()
 export class CustomersService extends ServicePublic<
@@ -13,8 +14,11 @@ export class CustomersService extends ServicePublic<
   CreateCustomerInput,
   UpdateCustomerInput
 > {
-  constructor(@InjectConnection() connectionPublic: Connection) {
-    super(connectionPublic, Customer);
+  constructor(
+    @InjectConnection() connectionPublic: Connection,
+    private readonly userLogsService: UserLogsService,
+  ) {
+    super(connectionPublic, Customer, userLogsService);
   }
 
   async findHost(host: string): Promise<Customer> {

@@ -8,6 +8,7 @@ import { ServiceDefault } from '../common/services/schema.service';
 import { ContentAppliedEntity } from './entities/contentapplied.entity';
 import { CreatContentAppliedInput } from './types/create-contentapplied.input';
 import { UpdateContentAppliedInput } from './types/update-contentapplied.input';
+import { UserLogsService } from '../userlogs/userlogs.service';
 
 @CustomersServiceDecorator()
 export class ContentAppliedsService extends ServiceDefault<
@@ -15,7 +16,10 @@ export class ContentAppliedsService extends ServiceDefault<
   CreatContentAppliedInput,
   UpdateContentAppliedInput
 > {
-  constructor(@Inject(CUSTOMER_CONNECTION) connection: Connection) {
-    super(connection, ContentAppliedEntity);
+  constructor(
+    @Inject(CUSTOMER_CONNECTION) connection: Connection,
+    private readonly userLogsService: UserLogsService,
+  ) {
+    super(connection, ContentAppliedEntity, userLogsService);
   }
 }

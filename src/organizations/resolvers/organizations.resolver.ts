@@ -1,8 +1,9 @@
 import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
+import { MyContext } from '../../common/types/mycontext';
 
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver, Context } from '@nestjs/graphql';
 
 import {
   OrganizationEntity,
@@ -55,45 +56,53 @@ export class OrganizationsResolver extends ResolverPublic<
 
   @Mutation(() => OrganizationEntity, { name: 'organizationCreate' })
   async create(
+    @Context() context: MyContext,
     @Args('input') input: CreateOrganizationInput,
   ): Promise<OrganizationEntity> {
-    return super.create(input);
+    return super.create(context, input);
   }
 
   @Mutation(() => [OrganizationEntity], { name: 'organizationCreateMany' })
   async createMany(
+    @Context() context: MyContext,
     @Args({ name: 'input', type: () => [CreateOrganizationInput] })
     input: [CreateOrganizationInput],
   ): Promise<OrganizationEntity[]> {
-    return super.createMany(input);
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'organizationDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'organizationDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => OrganizationEntity, { name: 'organizationUpdate' })
   async update(
+    @Context() context: MyContext,
     @Args('id') id: number,
     @Args('input') input: UpdateOrganizationInput,
   ): Promise<OrganizationEntity> {
-    return super.update(id, input);
+    return super.update(context, id, input);
   }
 
   @Mutation(() => Boolean, { name: 'organizationUpdateMany' })
   async updateMany(
+    @Context() context: MyContext,
     @Args({ name: 'input', type: () => [UpdateOrganizationInput] })
     input: [UpdateOrganizationInput],
   ): Promise<boolean> {
-    return super.updateMany(input);
+    return super.updateMany(context, input);
   }
 }

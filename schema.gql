@@ -28,21 +28,6 @@ type PageInfo {
   hasNextPage: Boolean!
 }
 
-type UserTypeEntity {
-  idUser: Float!
-  userType: TypeOwer!
-  name: String
-  email: String
-}
-
-enum TypeOwer {
-  S
-  R
-  T
-  E
-  I
-}
-
 type UserCenterEntity {
   id: ID!
   createdAt: DateTime
@@ -57,7 +42,14 @@ type UserCenterEntity {
   statusActiveApp: Boolean!
   status: Boolean!
   keyAcessFirst: String!
-  temp: UserTypeEntity!
+}
+
+enum TypeOwer {
+  S
+  R
+  T
+  E
+  I
 }
 
 type UserCenterPaginated {
@@ -909,7 +901,7 @@ type Mutation {
   cityUpdate(input: UpdateCityInput!, id: Float!): CityEntity!
   cityUpdateMany(input: [UpdateCityInput!]!): Boolean!
   responsibleCreate(input: CreateResponsibleInput!): ResponsibleEntity!
-  subjectCreateMany(input: [CreateSubjectInput!]!): [SubjectEntity!]!
+  responsibleCreateMany(input: [CreateResponsibleInput!]!): [ResponsibleEntity!]!
   responsibleDelete(id: Float!): Boolean!
   responsibleDeleteMany(ids: [Float!]!): Boolean!
   responsibleUpdate(input: UpdateResponsibleInput!, id: Float!): ResponsibleEntity!
@@ -939,6 +931,7 @@ type Mutation {
   yearUpdate(input: UpdateYearInput!, id: Float!): YearEntity!
   yearUpdateMany(input: [UpdateYearInput!]!): Boolean!
   subjectCreate(input: CreateSubjectInput!): SubjectEntity!
+  subjectCreateMany(input: [CreateSubjectInput!]!): [SubjectEntity!]!
   subjectDelete(id: Float!): Boolean!
   subjectDeleteMany(ids: [Float!]!): Boolean!
   subjectUpdate(input: UpdateSubjectInput!, id: Float!): SubjectEntity!
@@ -959,7 +952,6 @@ type Mutation {
   classRoomItemMany(input: [CreateClassRoomItemInput!]!): [ClassRoomItemEntity!]!
   classRoomItemDelete(id: Float!): Boolean!
   classRoomItemDeleteMany(ids: [Float!]!): Boolean!
-  classRoomItemUpdate(input: UpdateClassRoomItemInput!, id: Float!): ClassRoomItemEntity!
   classRoomItemUpdateMany(input: [UpdateClassRoomItemInput!]!): Boolean!
   classRoomInjectCreate(input: CreateClassRoomInjectInput!): ClassRoomInjectEntity!
   classRoomInjectCreateMany(input: [CreateClassRoomInjectInput!]!): [ClassRoomInjectEntity!]!
@@ -1197,13 +1189,6 @@ input CreateResponsibleInput {
   profile: String
 }
 
-input CreateSubjectInput {
-  description: String
-  abbreviation: String
-  descriptionMinutes: String
-  status: Boolean
-}
-
 input UpdateResponsibleInput {
   id: Float
   name: String
@@ -1330,6 +1315,13 @@ input UpdateYearInput {
   dateModule2: DateTime
   dateModule3: DateTime
   dateModule4: DateTime
+}
+
+input CreateSubjectInput {
+  description: String
+  abbreviation: String
+  descriptionMinutes: String
+  status: Boolean
 }
 
 input UpdateSubjectInput {

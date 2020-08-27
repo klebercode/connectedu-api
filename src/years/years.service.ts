@@ -8,6 +8,7 @@ import { ServiceDefault } from '../common/services/schema.service';
 import { YearEntity } from './entities/year.entity';
 import { CreateYearInput } from './types/create-year.input';
 import { UpdateYearInput } from './types/update-year.input';
+import { UserLogsService } from '../userlogs/userlogs.service';
 
 @CustomersServiceDecorator()
 export class YearsService extends ServiceDefault<
@@ -15,7 +16,10 @@ export class YearsService extends ServiceDefault<
   CreateYearInput,
   UpdateYearInput
 > {
-  constructor(@Inject(CUSTOMER_CONNECTION) connection: Connection) {
-    super(connection, YearEntity);
+  constructor(
+    @Inject(CUSTOMER_CONNECTION) connection: Connection,
+    private readonly userLogsService: UserLogsService,
+  ) {
+    super(connection, YearEntity, userLogsService);
   }
 }

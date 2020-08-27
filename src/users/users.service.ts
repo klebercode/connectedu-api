@@ -10,6 +10,7 @@ import * as bcryptjs from 'bcryptjs';
 import { UserEntity } from './entities/user.entity';
 import { CreateUsersInput } from './types/create-user.input';
 import { UpdateUsersInput } from './types/update-user.input';
+import { UserLogsService } from '../userlogs/userlogs.service';
 
 @CustomersServiceDecorator()
 export class UsersService extends ServiceDefault<
@@ -17,7 +18,10 @@ export class UsersService extends ServiceDefault<
   CreateUsersInput,
   UpdateUsersInput
 > {
-  constructor(@Inject(CUSTOMER_CONNECTION) connection: Connection) {
-    super(connection, UserEntity);
+  constructor(
+    @Inject(CUSTOMER_CONNECTION) connection: Connection,
+    private readonly userLogsService: UserLogsService,
+  ) {
+    super(connection, UserEntity, userLogsService);
   }
 }

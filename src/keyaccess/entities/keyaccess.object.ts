@@ -1,7 +1,7 @@
 import { Field, ObjectType, GraphQLISODateTime } from '@nestjs/graphql';
 import { Entity, Column, Unique } from 'typeorm';
 import { Paginated } from '../../common/pages';
-import { TypeUser } from '../../common/enums/enum-usertoken';
+import { TypeUser } from '../../common/enums/enum-typeuser';
 
 import { OrganizationEntity } from '../../organizations/entities/organization.object';
 import { Customer } from '../../customers/entities/customer.object';

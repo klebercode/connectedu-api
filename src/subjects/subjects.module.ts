@@ -6,7 +6,6 @@ import { SubjectsResolver } from './resolvers/subjects.resolvers';
 
 import { UserCentesModule } from './../usercenter/usercenters.module';
 import { CustomersModule } from '../customers/customers.module';
-
 import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({

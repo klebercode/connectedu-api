@@ -11,6 +11,7 @@ import { YearsModule } from '../years/years.module';
 import { SubjectsModule } from '../subjects/subjects.module';
 import { ClassRoomsModule } from '../classrooms/classrooms.module';
 import { TeachersModule } from '../teachers/teachers.module';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { TeachersModule } from '../teachers/teachers.module';
     YearsModule,
     ClassRoomsModule,
     TeachersModule,
+    UserLogsModule,
   ],
   providers: [ContentAppliedsService, DateScalar, ContentAppliedsResolver],
   exports: [ContentAppliedsService],

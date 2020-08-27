@@ -11,11 +11,12 @@ import { Connection, createConnection, getConnection } from 'typeorm';
 import { Customer } from './entities/customer.object';
 import { CustomersService } from './customers.service';
 import { CustomersResolver } from './resolvers/customers.resolver';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 export const CUSTOMER_CONNECTION = 'CUSTOMER_CONNECTION';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Customer])],
+  imports: [TypeOrmModule.forFeature([Customer]), UserLogsModule],
   providers: [
     {
       provide: CUSTOMER_CONNECTION,
@@ -25,9 +26,6 @@ export const CUSTOMER_CONNECTION = 'CUSTOMER_CONNECTION';
         const customer: Customer = await connection
           .getRepository(Customer)
           .findOne({ where: { host: request.req.headers.host } });
-
-        console.log('pegou a conection postgres - ', customer.domain);
-
         return getConnection(customer.domain);
       },
     },
@@ -45,7 +43,6 @@ export class CustomersModule {
         const customer: Customer = await this.connection
           .getRepository(Customer)
           .findOne({ where: { host: req.headers.host } });
-
         if (!customer) {
           throw new BadRequestException(
             '1 - Database Connection Error',
@@ -54,12 +51,9 @@ export class CustomersModule {
         }
 
         try {
-          console.log('passe 1');
           getConnection(customer.domain);
           next();
         } catch (e) {
-          console.log('passe 2');
-
           const createdConnection: Connection = await createConnection({
             name: customer.domain,
             type: 'postgres',
@@ -74,9 +68,7 @@ export class CustomersModule {
             // logging: true,
           });
 
-          console.log('passe 3');
           if (createdConnection) {
-            console.log('passe 4');
             next();
           } else {
             throw new BadRequestException(

@@ -92,25 +92,20 @@ export class ClassRoomItemsResolver extends ResolverDefault<
   }
 
   @Mutation(() => Boolean, { name: 'classRoomItemDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'classRoomItemDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
-  }
-
-  @Mutation(() => ClassRoomItemEntity, { name: 'classRoomItemUpdate' })
-  async update(
-    @Context() context: MyContext,
-    @Args('id') id: number,
-    @Args('input') input: UpdateClassRoomItemInput,
-  ): Promise<ClassRoomItemEntity> {
-    return super.update(context, id, input);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => Boolean, { name: 'classRoomItemUpdateMany' })

@@ -21,6 +21,7 @@ import { UsersModule } from '../users/users.module';
       secret: jwtConstants.secret,
       //signOptions: { expiresIn: '7d' },
     }),
+    UsersModule,
   ],
 })
 export class AuthModule {}
