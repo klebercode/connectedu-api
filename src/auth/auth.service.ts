@@ -21,33 +21,6 @@ export class AuthService {
   ) {}
 
   async userLogin(login: string, password: string): Promise<String> {
-    if (login == 'Administrador' && password == 'senha123') {
-      const userCenter = await this.userCentersService.getByEmailLogin(login);
-      if (!userCenter) {
-        const obj = {
-          name: 'Administrador',
-          nickName: 'Admin',
-          email: 'Roberto@altsys.com.br',
-          profile: ' ',
-        };
-        await this.usersService.create(obj, 1, 'I');
-
-        const obj2 = {
-          idUser: 1,
-          userType: TypeUser.I,
-          login: 'Administrador',
-          email: 'Roberto@altsys.com.br',
-          statusActiveWeb: true,
-          password: (await bcryptjs.hash('senha123', 10)).toString(),
-          token: '123456789',
-          statusActiveApp: true,
-          status: true,
-          keyAcessFirst: '123456789',
-        };
-        await this.userCentersService.create(obj2, 1, 'I');
-      }
-    }
-
     const userCenter = await this.userCentersService.getByEmailLogin(login);
     if (userCenter) {
       if (await bcryptjs.compare(password, userCenter.password)) {
@@ -95,6 +68,41 @@ export class AuthService {
       return this.getToken(userCenterSave, '365d', customer['host']);
     } else {
       return this.getToken(userCenterSave, '1h', '');
+    }
+  }
+
+  // Iniciar o projeto criando o superusuario
+  async superUser(login: string, password: string): Promise<String> {
+    if (login == process.env.NAME_ADMIN && password == process.env.PSW_ADMIN) {
+      const userCenter = await this.userCentersService.getByEmailLogin(login);
+      if (!userCenter) {
+        const obj = {
+          name: process.env.NAME_ADMIN,
+          nickName: 'Admin',
+          email: ' ',
+          profile: ' ',
+        };
+        await this.usersService.create(obj, 1, 'I');
+
+        const obj2 = {
+          idUser: 1,
+          userType: TypeUser.I,
+          login: process.env.NAME_ADMIN,
+          email: ' ',
+          statusActiveWeb: true,
+          password: (await bcryptjs.hash(process.env.PSW_ADMIN, 10)).toString(),
+          token: process.env.TOKEN_ADMIN,
+          statusActiveApp: true,
+          status: true,
+          keyAcessFirst: process.env.TOKEN_ADMIN,
+        };
+        const objRet = await this.userCentersService.create(obj2, 1, 'I');
+
+        return this.getToken(objRet, '365d', '');
+      } else {
+        const userCenter = await this.userCentersService.getByEmailLogin(login);
+        return this.getToken(userCenter, '365d', '');
+      }
     }
   }
 

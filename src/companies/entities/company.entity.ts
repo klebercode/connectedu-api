@@ -96,6 +96,16 @@ export class CompanyEntity extends BasicFields {
   cnpj?: string;
 
   @Field({ nullable: true })
+  @Column({
+    name: 'state_registration',
+    type: 'varchar',
+    length: 18,
+    nullable: true,
+  })
+  @IsOptional()
+  stateRegistration?: string;
+
+  @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: true })
   @IsOptional()
   recognition?: string;
@@ -104,6 +114,16 @@ export class CompanyEntity extends BasicFields {
   @Column({ type: 'varchar', length: 100, nullable: true })
   @IsOptional()
   publication?: string;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'register_school',
+    type: 'varchar',
+    length: 40,
+    nullable: true,
+  })
+  @IsOptional()
+  registerSchool?: string;
 
   @Field({ nullable: true })
   @Column({ name: 'number_inep', type: 'varchar', length: 40, nullable: true })

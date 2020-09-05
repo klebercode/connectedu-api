@@ -61,7 +61,7 @@ export class StudentGradeEntity extends BasicFields {
   typeGrade?: number;
 
   @Field({ nullable: true })
-  @Column({ nullable: true })
+  @Column({ type: 'float', nullable: true })
   @IsOptional()
   grade?: number;
 

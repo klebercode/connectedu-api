@@ -10,4 +10,8 @@ export class CreatePermissionInput {
   @Field({ nullable: false })
   @MaxLength(100)
   description: string;
+
+  @Field({ nullable: false })
+  @MaxLength(3)
+  type: string;
 }

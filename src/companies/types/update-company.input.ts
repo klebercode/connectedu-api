@@ -73,6 +73,11 @@ export class UpdateCompanyInput {
   cnpj?: string;
 
   @Field({ nullable: true })
+  @MaxLength(18)
+  @IsOptional()
+  stateRegistration?: string;
+
+  @Field({ nullable: true })
   @MaxLength(100)
   @IsOptional()
   recognition?: string;
@@ -81,6 +86,11 @@ export class UpdateCompanyInput {
   @MaxLength(100)
   @IsOptional()
   publication?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(40)
+  @IsOptional()
+  registerSchool?: string;
 
   @Field({ nullable: true })
   @MaxLength(40)

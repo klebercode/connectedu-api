@@ -94,6 +94,11 @@ export class ClassRoomItemEntity extends BasicFields {
   @Column({ name: 'garde_max', nullable: true })
   @IsOptional()
   gradeMax?: number;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  @IsOptional()
+  order?: number;
 }
 
 @ObjectType()

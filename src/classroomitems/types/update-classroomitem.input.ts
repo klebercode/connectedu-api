@@ -59,4 +59,8 @@ export class UpdateClassRoomItemInput {
   @Field({ nullable: true })
   @IsOptional()
   gradeMax?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  order?: number;
 }

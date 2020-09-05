@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, GraphQLISODateTime } from '@nestjs/graphql';
 import { IsOptional, IsEmail, MaxLength } from 'class-validator';
 
 @InputType()
@@ -16,6 +16,15 @@ export class UpdateTeacherInput {
   @MaxLength(40)
   @IsOptional()
   nickName: string;
+
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  @IsOptional()
+  dateBirth: Date;
+
+  @Field({ nullable: true })
+  @MaxLength(1)
+  @IsOptional()
+  gender?: string;
 
   @Field({ nullable: true })
   @IsOptional()

@@ -9,7 +9,7 @@ type Customer {
   host: String!
   domain: String!
   name: String!
-  organizationId: Float
+  organizationId: Float!
 }
 
 """
@@ -148,6 +148,7 @@ type CityEntity {
   createdAt: DateTime
   updatedAt: DateTime
   description: String
+  codeCity: String
   stateId: Float
   state: StateEntity
 }
@@ -222,6 +223,7 @@ type StudentEntity {
   naturalnessForeign: String
   nationalityForeign: String
   reside: String
+  separatedParents: Boolean
   resideResponsableId: Float
   resideResponsable: ResponsibleEntity
   fatherId: Float
@@ -236,6 +238,7 @@ type StudentEntity {
   cityId: Float
   city: CityEntity
   zipCode: String
+  schoolLast: String
   email: String
   phone: String
   cellphone: String
@@ -243,6 +246,10 @@ type StudentEntity {
   cpf: String
   identity: String
   OrgIdentity: String
+  registryName: String
+  certificateNumber: String
+  bookNumber: String
+  bookSheet: String
   note: String
   profile: String
 }
@@ -263,6 +270,7 @@ type PermissionEntity {
   updatedAt: DateTime
   code: String!
   description: String!
+  type: String!
 }
 
 type PermissionPaginated {
@@ -319,8 +327,10 @@ type CompanyEntity {
   cellphone: String
   whatsapp: String
   cnpj: String
+  stateRegistration: String
   recognition: String
   publication: String
+  registerSchool: String
   numberInep: String
   principal: String
   secretary: String
@@ -387,6 +397,8 @@ type TeacherEntity {
   updatedAt: DateTime
   name: String
   nickName: String
+  dateBirth: DateTime
+  gender: String
   adress: String
   district: String
   complement: String
@@ -753,6 +765,7 @@ type Query {
   customer(id: Float!): Customer!
   customerMany(ids: [Float!]!): [Customer!]!
   customerAll: [Customer!]!
+  superUser(password: String!, login: String!): String!
   userLogin(password: String!, login: String!): String!
   keyAccessFirst(originApp: Boolean!, key: String!): String!
   keyAccess(id: Float!): KeyAccessEntity!
@@ -1086,6 +1099,7 @@ input CreateStudentInput {
   naturalnessForeign: String
   nationalityForeign: String
   reside: String
+  separatedParents: Boolean
   resideResponsableId: Float
   fatherId: Float
   motherId: Float
@@ -1095,6 +1109,7 @@ input CreateStudentInput {
   stateId: Float
   cityId: Float
   zipCode: String
+  schoolLast: String
   email: String
   phone: String
   cellphone: String
@@ -1102,6 +1117,10 @@ input CreateStudentInput {
   cpf: String
   identity: String
   OrgIdentity: String
+  registryName: String
+  certificateNumber: String
+  bookNumber: String
+  bookSheet: String
   note: String
   profile: String
 }
@@ -1120,6 +1139,7 @@ input UpdateStudentInput {
   naturalnessForeign: String
   nationalityForeign: String
   reside: String
+  separatedParents: Boolean
   resideResponsableId: Float
   fatherId: Float
   motherId: Float
@@ -1129,6 +1149,7 @@ input UpdateStudentInput {
   stateId: Float
   cityId: Float
   zipCode: String
+  schoolLast: String
   email: String
   phone: String
   cellphone: String
@@ -1136,6 +1157,10 @@ input UpdateStudentInput {
   cpf: String
   identity: String
   OrgIdentity: String
+  registryName: String
+  certificateNumber: String
+  bookNumber: String
+  bookSheet: String
   note: String
   profile: String
 }
@@ -1152,13 +1177,15 @@ input UpdateStateInput {
 }
 
 input CreateCityInput {
-  description: String
-  stateId: Float
+  description: String!
+  codeCity: String!
+  stateId: Float!
 }
 
 input UpdateCityInput {
   id: Float
   description: String
+  codeCity: String
   stateId: Float
 }
 
@@ -1241,12 +1268,14 @@ input UpdateUserPermissionInput {
 input CreatePermissionInput {
   code: String!
   description: String!
+  type: String!
 }
 
 input UpdatePermissionInput {
   id: Float
   code: String!
   description: String!
+  type: String!
 }
 
 input CreateCompanyInput {
@@ -1263,8 +1292,10 @@ input CreateCompanyInput {
   cellphone: String
   whatsapp: String
   cnpj: String
+  stateRegistration: String
   recognition: String
   publication: String
+  registerSchool: String
   numberInep: String
   principal: String
   secretary: String
@@ -1287,8 +1318,10 @@ input UpdateCompanyInput {
   cellphone: String
   whatsapp: String
   cnpj: String
+  stateRegistration: String
   recognition: String
   publication: String
+  registerSchool: String
   numberInep: String
   principal: String
   secretary: String
@@ -1335,6 +1368,8 @@ input UpdateSubjectInput {
 input CreateTeacherInput {
   name: String
   nickName: String
+  dateBirth: DateTime
+  gender: String
   adress: String
   district: String
   complement: String
@@ -1357,6 +1392,8 @@ input UpdateTeacherInput {
   id: Float
   name: String
   nickName: String
+  dateBirth: DateTime
+  gender: String
   adress: String
   district: String
   complement: String
@@ -1403,19 +1440,20 @@ input UpdateClassRoomInput {
 }
 
 input CreateClassRoomItemInput {
-  classroomId: Float
-  subjectId: Float
-  teacherId: Float
+  classroomId: Float!
+  subjectId: Float!
+  teacherId: Float!
   workHours: Float
   visibleReport: Boolean
   visibleMinute: Boolean
   registerCall: Boolean
   registerContent: Boolean
   registerOccurrence: Boolean
-  type: String
+  type: String!
   numberGrades: Float
   gradeMin: Float
   gradeMax: Float
+  order: Float
 }
 
 input UpdateClassRoomItemInput {
@@ -1433,6 +1471,7 @@ input UpdateClassRoomItemInput {
   numberGrades: Float
   gradeMin: Float
   gradeMax: Float
+  order: Float
 }
 
 input CreateClassRoomInjectInput {

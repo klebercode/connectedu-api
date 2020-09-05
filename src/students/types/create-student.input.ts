@@ -61,6 +61,10 @@ export class CreateStudentInput {
 
   @Field({ nullable: true })
   @IsOptional()
+  separatedParents?: boolean;
+
+  @Field({ nullable: true })
+  @IsOptional()
   resideResponsableId?: number;
 
   @Field({ nullable: true })
@@ -101,6 +105,11 @@ export class CreateStudentInput {
   zipCode?: string;
 
   @Field({ nullable: true })
+  @MaxLength(60)
+  @IsOptional()
+  schoolLast?: string;
+
+  @Field({ nullable: true })
   @MaxLength(100)
   @IsOptional()
   @IsEmail()
@@ -135,6 +144,26 @@ export class CreateStudentInput {
   @MaxLength(15)
   @IsOptional()
   OrgIdentity?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(100)
+  @IsOptional()
+  registryName?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(100)
+  @IsOptional()
+  certificateNumber?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(15)
+  @IsOptional()
+  bookNumber?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(15)
+  @IsOptional()
+  bookSheet?: string;
 
   @Field({ nullable: true })
   @IsOptional()

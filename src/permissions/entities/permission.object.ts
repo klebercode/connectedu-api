@@ -15,6 +15,10 @@ export class PermissionEntity extends BasicFields {
   @Field()
   @Column({ length: 100, nullable: false })
   description: string;
+
+  @Field()
+  @Column({ length: 3, nullable: false })
+  type: string;
 }
 
 @ObjectType()

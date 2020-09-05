@@ -9,6 +9,15 @@ import { HttpExceptionFilter } from '../../common/filters/http-exception.filter'
 export class LoginResolver {
   constructor(private readonly authService: AuthService) {}
 
+  @Query(() => String, { name: 'superUser' })
+  superUser(
+    @Args('login') login: string,
+    @Args('password') password: string,
+  ): Promise<String> {
+    const token = this.authService.superUser(login, password);
+    return token;
+  }
+
   @Query(() => String, { name: 'userLogin' })
   userLogin(
     @Args('login') login: string,

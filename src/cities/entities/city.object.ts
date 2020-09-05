@@ -14,6 +14,10 @@ export class CityEntity extends BasicFields {
   description: string;
 
   @Field({ nullable: true })
+  @Column({ name: 'code_city', length: 7, nullable: false })
+  codeCity: string;
+
+  @Field({ nullable: true })
   @Column({ name: 'state_id', nullable: true })
   @IsOptional()
   stateId?: number;

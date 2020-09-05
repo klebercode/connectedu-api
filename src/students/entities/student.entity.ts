@@ -36,6 +36,7 @@ export class StudentEntity extends BasicFields {
   @IsOptional()
   gender?: string;
 
+  // estado
   @Field({ nullable: true })
   @Column({
     name: 'code_nationality',
@@ -51,7 +52,7 @@ export class StudentEntity extends BasicFields {
   @IsOptional()
   stateNaturalnessId?: number;
 
-  // usando com tabale  publica
+  // usando com tabale publica cidade
   @Field(type => StateEntity, { nullable: true })
   @IsOptional()
   stateNaturalness?: StateEntity;
@@ -61,7 +62,7 @@ export class StudentEntity extends BasicFields {
   @IsOptional()
   cityNaturalnessId?: number;
 
-  // usando com tabale  publica
+  // usando com tabale publica estado
   @Field(type => CityEntity, { nullable: true })
   @IsOptional()
   cityNaturalness?: CityEntity;
@@ -100,6 +101,11 @@ export class StudentEntity extends BasicFields {
   @Column({ type: 'varchar', length: 1, nullable: true })
   @IsOptional()
   reside?: string;
+
+  @Field({ nullable: true })
+  @Column({ name: 'separated_parents', nullable: true })
+  @IsOptional()
+  separatedParents?: boolean;
 
   @Field({ nullable: true })
   @Column({ name: 'reside_responsable_id', nullable: true })
@@ -176,6 +182,11 @@ export class StudentEntity extends BasicFields {
   zipCode?: string;
 
   @Field({ nullable: true })
+  @Column({ name: 'school_last', type: 'varchar', length: 60, nullable: true })
+  @IsOptional()
+  schoolLast?: string;
+
+  @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: true })
   @IsOptional()
   @IsEmail()
@@ -210,6 +221,36 @@ export class StudentEntity extends BasicFields {
   @Column({ name: 'org_identity', type: 'varchar', length: 15, nullable: true })
   @IsOptional()
   OrgIdentity?: string;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'registry_name',
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+  })
+  @IsOptional()
+  registryName?: string;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'certificate_number',
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+  })
+  @IsOptional()
+  certificateNumber?: string;
+
+  @Field({ nullable: true })
+  @Column({ name: 'book_number', type: 'varchar', length: 15, nullable: true })
+  @IsOptional()
+  bookNumber?: string;
+
+  @Field({ nullable: true })
+  @Column({ name: 'book_sheet', type: 'varchar', length: 15, nullable: true })
+  @IsOptional()
+  bookSheet?: string;
 
   @Field({ nullable: true })
   @Column({ type: 'text', nullable: true })
