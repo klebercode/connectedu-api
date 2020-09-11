@@ -63,4 +63,9 @@ export class UpdateClassRoomItemInput {
   @Field({ nullable: true })
   @IsOptional()
   order?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

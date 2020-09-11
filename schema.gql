@@ -6,6 +6,8 @@ type Customer {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   host: String!
   domain: String!
   name: String!
@@ -32,6 +34,8 @@ type UserCenterEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   idUser: Float!
   userType: TypeOwer!
   login: String
@@ -66,6 +70,8 @@ type OrganizationEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   description: String
   dateBegin: DateTime
   dateEnd: DateTime
@@ -85,6 +91,8 @@ type KeyAccessEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   customer: Customer
   customerId: Float!
   organization: OrganizationEntity
@@ -109,6 +117,8 @@ type UserEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   name: String!
   nickName: String
   email: String
@@ -129,6 +139,8 @@ type StateEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   description: String!
   uf: String!
 }
@@ -147,6 +159,8 @@ type CityEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   description: String
   codeCity: String
   stateId: Float
@@ -167,6 +181,8 @@ type ResponsibleEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   name: String
   dateBirth: DateTime
   gender: String
@@ -209,6 +225,8 @@ type StudentEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   name: String
   useNickName: Boolean
   nickName: String
@@ -268,6 +286,8 @@ type PermissionEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   code: String!
   description: String!
   type: String!
@@ -287,6 +307,8 @@ type UserPermissionEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   userId: Float
   user: UserEntity
   codeId: Float!
@@ -312,6 +334,8 @@ type CompanyEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   socialReason: String
   nameFantasy: String
   adress: String
@@ -352,6 +376,8 @@ type YearEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   year: String
   dateBegin: DateTime
   dateEnd: DateTime
@@ -375,6 +401,8 @@ type SubjectEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   description: String
   abbreviation: String
   descriptionMinutes: String
@@ -395,6 +423,8 @@ type TeacherEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   name: String
   nickName: String
   dateBirth: DateTime
@@ -433,6 +463,8 @@ type ClassRoomEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   description: String
   abbreviation: String
   descriptionMinutes: String
@@ -461,6 +493,8 @@ type ClassRoomItemEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   classroomId: Float
   classroom: ClassRoomEntity
   subjectId: Float
@@ -477,6 +511,7 @@ type ClassRoomItemEntity {
   numberGrades: Float
   gradeMin: Float
   gradeMax: Float
+  order: Float
 }
 
 type ClassRoomItemPaginated {
@@ -493,6 +528,8 @@ type ClassRoomInjectEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   classroomItemId: Float
   classroomItem: ClassRoomItemEntity
   subject1Id: Float
@@ -520,6 +557,8 @@ type StudentInformationEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   studentId: Float
   student: StudentEntity
   yearId: Float
@@ -544,6 +583,7 @@ type StudentInformationEntity {
   responsiblePedagId: Float
   responsiblePedag: ResponsibleEntity
   relationshipPedag: Float
+  newStudent: Boolean
 }
 
 """Date custom scalar type"""
@@ -563,6 +603,8 @@ type EmployeeEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   name: String
   nickName: String
   adress: String
@@ -601,6 +643,8 @@ type OccurrenceEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   description: String
   status: Boolean
   type: Float
@@ -621,18 +665,15 @@ type StudentOccurrenceEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   occurrenceId: Float
   occurrence: OccurrenceEntity
   studentId: Float
   student: StudentEntity
   date: DateTime
-  typeOrigin: Float
-  teacherId: Float
-  teacher: TeacherEntity
   subjectId: Float
   subject: SubjectEntity
-  employeeId: Float
-  employee: EmployeeEntity
   note: String
 }
 
@@ -650,6 +691,8 @@ type StudentGradeEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   studentId: Float!
   student: StudentEntity!
   yearId: Float!
@@ -677,6 +720,8 @@ type StudentCallEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   studentId: Float!
   student: StudentEntity!
   subjectId: Float!
@@ -702,6 +747,8 @@ type ContentPlannedEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   yearId: Float!
   year: YearEntity!
   subjectId: Float!
@@ -733,6 +780,8 @@ type ContentAppliedEntity {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  deleted: Boolean
+  legacyCode: String
   yearId: Float!
   year: YearEntity!
   subjectId: Float!
@@ -1123,6 +1172,7 @@ input CreateStudentInput {
   bookSheet: String
   note: String
   profile: String
+  legacyCode: String
 }
 
 input UpdateStudentInput {
@@ -1163,6 +1213,7 @@ input UpdateStudentInput {
   bookSheet: String
   note: String
   profile: String
+  legacyCode: String
 }
 
 input CreateStateInput {
@@ -1214,6 +1265,7 @@ input CreateResponsibleInput {
   workCompany: String
   workPhone: String
   profile: String
+  legacyCode: String
 }
 
 input UpdateResponsibleInput {
@@ -1242,6 +1294,7 @@ input UpdateResponsibleInput {
   workCompany: String
   workPhone: String
   profile: String
+  legacyCode: String
 }
 
 input CreateUserPermissionInput {
@@ -1252,6 +1305,7 @@ input CreateUserPermissionInput {
   delete: Boolean
   list: Boolean
   visible: Boolean
+  legacyCode: String
 }
 
 input UpdateUserPermissionInput {
@@ -1263,12 +1317,14 @@ input UpdateUserPermissionInput {
   delete: Boolean
   list: Boolean
   visible: Boolean
+  legacyCode: String
 }
 
 input CreatePermissionInput {
   code: String!
   description: String!
   type: String!
+  legacyCode: String
 }
 
 input UpdatePermissionInput {
@@ -1276,6 +1332,7 @@ input UpdatePermissionInput {
   code: String!
   description: String!
   type: String!
+  legacyCode: String
 }
 
 input CreateCompanyInput {
@@ -1301,6 +1358,7 @@ input CreateCompanyInput {
   secretary: String
   note: String
   image: String
+  legacyCode: String
 }
 
 input UpdateCompanyInput {
@@ -1327,6 +1385,7 @@ input UpdateCompanyInput {
   secretary: String
   note: String
   image: String
+  legacyCode: String
 }
 
 input CreateYearInput {
@@ -1337,6 +1396,7 @@ input CreateYearInput {
   dateModule2: DateTime
   dateModule3: DateTime
   dateModule4: DateTime
+  legacyCode: String
 }
 
 input UpdateYearInput {
@@ -1348,6 +1408,7 @@ input UpdateYearInput {
   dateModule2: DateTime
   dateModule3: DateTime
   dateModule4: DateTime
+  legacyCode: String
 }
 
 input CreateSubjectInput {
@@ -1355,6 +1416,7 @@ input CreateSubjectInput {
   abbreviation: String
   descriptionMinutes: String
   status: Boolean
+  legacyCode: String
 }
 
 input UpdateSubjectInput {
@@ -1363,6 +1425,7 @@ input UpdateSubjectInput {
   abbreviation: String
   descriptionMinutes: String
   status: Boolean
+  legacyCode: String
 }
 
 input CreateTeacherInput {
@@ -1386,6 +1449,7 @@ input CreateTeacherInput {
   status: Boolean
   note: String
   profile: String
+  legacyCode: String
 }
 
 input UpdateTeacherInput {
@@ -1410,6 +1474,7 @@ input UpdateTeacherInput {
   status: Boolean
   note: String
   profile: String
+  legacyCode: String
 }
 
 input CreateClassRoomInput {
@@ -1423,6 +1488,7 @@ input CreateClassRoomInput {
   status: Boolean
   companyId: Float
   yearId: Float
+  legacyCode: String
 }
 
 input UpdateClassRoomInput {
@@ -1437,6 +1503,7 @@ input UpdateClassRoomInput {
   status: Boolean
   companyId: Float
   yearId: Float
+  legacyCode: String
 }
 
 input CreateClassRoomItemInput {
@@ -1454,6 +1521,7 @@ input CreateClassRoomItemInput {
   gradeMin: Float
   gradeMax: Float
   order: Float
+  legacyCode: String
 }
 
 input UpdateClassRoomItemInput {
@@ -1472,6 +1540,7 @@ input UpdateClassRoomItemInput {
   gradeMin: Float
   gradeMax: Float
   order: Float
+  legacyCode: String
 }
 
 input CreateClassRoomInjectInput {
@@ -1481,6 +1550,7 @@ input CreateClassRoomInjectInput {
   subject3Id: Float
   subject4Id: Float
   average: Float
+  legacyCode: String
 }
 
 input UpdateClassRoomInjectInput {
@@ -1491,6 +1561,7 @@ input UpdateClassRoomInjectInput {
   subject3Id: Float
   subject4Id: Float
   average: Float
+  legacyCode: String
 }
 
 input CreatStudentInformationInput {
@@ -1512,6 +1583,8 @@ input CreatStudentInformationInput {
   relationship2: Float
   responsiblePedagId: Float
   relationshipPedag: Float
+  newStudent: Boolean
+  legacyCode: String
 }
 
 input UpdateStudentInformationInput {
@@ -1534,6 +1607,8 @@ input UpdateStudentInformationInput {
   relationship2: Float
   responsiblePedagId: Float
   relationshipPedag: Float
+  newStudent: Boolean
+  legacyCode: String
 }
 
 input CreateEmploeeInput {
@@ -1557,6 +1632,7 @@ input CreateEmploeeInput {
   function: Float
   note: String
   profile: String
+  legacyCode: String
 }
 
 input UpdateEmploeeInput {
@@ -1581,6 +1657,7 @@ input UpdateEmploeeInput {
   function: Float
   note: String
   profile: String
+  legacyCode: String
 }
 
 input CreateOccurrenceInput {
@@ -1588,6 +1665,7 @@ input CreateOccurrenceInput {
   status: Boolean
   type: Float
   points: Float
+  legacyCode: String
 }
 
 input UpdateOccurrenceInput {
@@ -1596,17 +1674,16 @@ input UpdateOccurrenceInput {
   status: Boolean
   type: Float
   points: Float
+  legacyCode: String
 }
 
 input CreatStudentOccurrenceInput {
   occurrenceId: Float
   studentId: Float
   date: DateTime
-  typeOrigin: Float
-  teacherId: Float
   subjectId: Float
-  employeeId: Float
   note: String
+  legacyCode: String
 }
 
 input UpdateStudentOccurrenceInput {
@@ -1614,11 +1691,9 @@ input UpdateStudentOccurrenceInput {
   occurrenceId: Float
   studentId: Float
   date: DateTime
-  typeOrigin: Float
-  teacherId: Float
   subjectId: Float
-  employeeId: Float
   note: String
+  legacyCode: String
 }
 
 input CreatStudentGradeInput {
@@ -1630,6 +1705,7 @@ input CreatStudentGradeInput {
   typeGrade: Float!
   grade: Float
   concept: String
+  legacyCode: String
 }
 
 input UpdateStudentGradeInput {
@@ -1642,6 +1718,7 @@ input UpdateStudentGradeInput {
   typeGrade: Float!
   grade: Float
   concept: String
+  legacyCode: String
 }
 
 input CreatStudentCallInput {
@@ -1652,6 +1729,7 @@ input CreatStudentCallInput {
   state: String
   justify: Boolean
   reason: String
+  legacyCode: String
 }
 
 input UpdateStudentCallInput {
@@ -1663,6 +1741,7 @@ input UpdateStudentCallInput {
   state: String
   justify: Boolean
   reason: String
+  legacyCode: String
 }
 
 input CreatContentPlannedInput {
@@ -1677,6 +1756,7 @@ input CreatContentPlannedInput {
   ability: String
   classWork: String
   classHome: String
+  legacyCode: String
 }
 
 input UpdateContentPlannedInput {
@@ -1692,6 +1772,7 @@ input UpdateContentPlannedInput {
   ability: String
   classWork: String
   classHome: String
+  legacyCode: String
 }
 
 input CreatContentAppliedInput {
@@ -1707,6 +1788,7 @@ input CreatContentAppliedInput {
   classWork: String
   classHome: String
   justify: String
+  legacyCode: String
 }
 
 input UpdateContentAppliedInput {
@@ -1723,12 +1805,14 @@ input UpdateContentAppliedInput {
   classWork: String
   classHome: String
   justify: String
+  legacyCode: String
 }
 
 input CreateOrganizationInput {
   description: String
   dateBegin: DateTime
   dateEnd: DateTime
+  legacyCode: String
 }
 
 input UpdateOrganizationInput {
@@ -1736,4 +1820,5 @@ input UpdateOrganizationInput {
   description: String
   dateBegin: DateTime
   dateEnd: DateTime
+  legacyCode: String
 }

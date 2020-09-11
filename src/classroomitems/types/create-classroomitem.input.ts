@@ -59,4 +59,9 @@ export class CreateClassRoomItemInput {
   @Field({ nullable: true })
   @IsOptional()
   order?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

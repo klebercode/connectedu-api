@@ -2,11 +2,7 @@ import { Field, InputType, GraphQLISODateTime } from '@nestjs/graphql';
 import { IsOptional, IsEmail, MaxLength } from 'class-validator';
 
 @InputType()
-export class UpdateResponsibleInput {
-  @Field({ nullable: true })
-  @IsOptional()
-  id?: number;
-
+export class CreateMigrationsInput {
   @Field({ nullable: true })
   @MaxLength(100)
   @IsOptional()
@@ -123,9 +119,4 @@ export class UpdateResponsibleInput {
   @MaxLength(100)
   @IsOptional()
   profile?: string;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  @MaxLength(20)
-  legacyCode: string;
 }

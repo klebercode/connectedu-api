@@ -31,4 +31,9 @@ export class CreateYearInput {
   @Field(() => GraphQLISODateTime, { nullable: true })
   @IsOptional()
   dateModule4?: Date;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

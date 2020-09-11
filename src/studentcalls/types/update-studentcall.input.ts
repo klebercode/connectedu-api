@@ -36,4 +36,9 @@ export class UpdateStudentCallInput {
   @MaxLength(100)
   @IsOptional()
   reason?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

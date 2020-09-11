@@ -34,4 +34,9 @@ export class UpdateUserPermissionInput {
   @Field({ nullable: true })
   @IsOptional()
   visible?: boolean;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

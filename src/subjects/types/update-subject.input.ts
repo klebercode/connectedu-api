@@ -25,4 +25,9 @@ export class UpdateSubjectInput {
   @Field({ nullable: true })
   @IsOptional()
   status?: boolean;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

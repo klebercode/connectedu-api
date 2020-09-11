@@ -3,6 +3,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  Column,
 } from 'typeorm';
 import { IsOptional } from 'class-validator';
 
@@ -22,4 +23,13 @@ export class BasicFields {
   @UpdateDateColumn({ name: 'updated_at', nullable: true })
   @IsOptional()
   updatedAt?: Date;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true, default: false })
+  @IsOptional()
+  deleted?: boolean;
+
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', name: 'lagacy_code', length: 20, nullable: true })
+  legacyCode: string;
 }

@@ -30,4 +30,9 @@ export class CreateUserPermissionInput {
   @Field({ nullable: true })
   @IsOptional()
   visible?: boolean;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

@@ -25,9 +25,7 @@ import { UpdateStudentOccurrenceInput } from '../types/update-studentoccurrences
 
 import { StudentsService } from '../../students/students.service';
 import { OccurrencesService } from '../../occurrences/occurrences.service';
-import { TeachersService } from '../../teachers/teachers.service';
 import { SubjectsService } from '../../subjects/subjects.service';
-import { EmployeesService } from '../../employees/employees.service';
 import {
   HttpExceptionFilter,
   CustomException,
@@ -47,9 +45,7 @@ export class StudentOccurrencesResolver extends ResolverDefault<
     private readonly studentOccurrencesService: StudentOccurrencesService,
     private readonly studentsService: StudentsService,
     private readonly occurrencesService: OccurrencesService,
-    private readonly teachersService: TeachersService,
     private readonly subjectsService: SubjectsService,
-    private readonly employeesService: EmployeesService,
   ) {
     super('Ocorrência Estudante', studentOccurrencesService);
   }
@@ -171,22 +167,6 @@ export class StudentOccurrencesResolver extends ResolverDefault<
     }
   }
 
-  @ResolveField('teacher')
-  async teacher(
-    @Parent() studentOccurrenceEntity: StudentOccurrenceEntity,
-  ): Promise<any> {
-    const id = studentOccurrenceEntity.teacherId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.teachersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Professor');
-    }
-  }
-
   @ResolveField('subject')
   async subject(
     @Parent() studentOccurrenceEntity: StudentOccurrenceEntity,
@@ -200,22 +180,6 @@ export class StudentOccurrencesResolver extends ResolverDefault<
       return this.subjectsService.findOneById(id);
     } catch (error) {
       CustomException.catch(error, 'get', 'Matéria');
-    }
-  }
-
-  @ResolveField('employee')
-  async employee(
-    @Parent() studentOccurrenceEntity: StudentOccurrenceEntity,
-  ): Promise<any> {
-    const id = studentOccurrenceEntity.employeeId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.employeesService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Funcionário');
     }
   }
 }

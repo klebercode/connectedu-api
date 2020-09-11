@@ -81,4 +81,13 @@ export class UpdateStudentInformationInput {
   @Field({ nullable: true })
   @IsOptional()
   relationshipPedag?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  newStudent?: boolean;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

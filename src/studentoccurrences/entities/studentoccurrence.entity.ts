@@ -41,22 +41,6 @@ export class StudentOccurrenceEntity extends BasicFields {
   date?: Date;
 
   @Field({ nullable: true })
-  @Column({ name: 'type_origin', nullable: false })
-  @IsOptional()
-  typeOrigin?: number;
-
-  @Field({ nullable: true })
-  @Column({ name: 'teacher_id', nullable: true })
-  @IsOptional()
-  teacherId?: number;
-
-  @Field(type => TeacherEntity, { nullable: true })
-  @ManyToOne(type => TeacherEntity)
-  @JoinColumn({ name: 'teacher_id' })
-  @IsOptional()
-  teacher?: TeacherEntity;
-
-  @Field({ nullable: true })
   @Column({ name: 'subject_id', nullable: true })
   @IsOptional()
   subjectId?: number;
@@ -66,17 +50,6 @@ export class StudentOccurrenceEntity extends BasicFields {
   @JoinColumn({ name: 'subject_id' })
   @IsOptional()
   subject?: SubjectEntity;
-
-  @Field({ nullable: true })
-  @Column({ name: 'employee_id', nullable: true })
-  @IsOptional()
-  employeeId?: number;
-
-  @Field(type => EmployeeEntity, { nullable: true })
-  @ManyToOne(type => EmployeeEntity)
-  @JoinColumn({ name: 'employee_id' })
-  @IsOptional()
-  employee?: EmployeeEntity;
 
   @Field({ nullable: true })
   @Column({ type: 'text', nullable: true })

@@ -14,18 +14,25 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
   }
 
   async findAll(): Promise<EntityDefault[]> {
-    return await this.repository.find();
+    const option = {
+      where: { deleted: false },
+    };
+    return await this.repository.find(option);
   }
 
   async findByIds(ids: number[]): Promise<EntityDefault[]> {
-    return await this.repository.findByIds(ids);
+    return await this.repository.findByIds(ids, {
+      where: { deleted: false },
+    });
   }
 
   async findOneById(id: number): Promise<EntityDefault> {
     if (!id) {
       return null;
     }
-    const obj = await this.repository.findOne(id);
+    const obj = await this.repository.findOne(id, {
+      where: { deleted: false },
+    });
     if (!obj) {
       return null;
     }
@@ -40,6 +47,10 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     const obj = await this.repository.findOne(input);
     if (!obj) {
       return null;
+    } else {
+      if (obj['deleted']) {
+        return null;
+      }
     }
     return obj;
   }
@@ -118,12 +129,14 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     idUser: number,
     typeUser: string,
   ): Promise<EntityDefault> {
-    await this.repository.update(id, {
-      ...input,
-    });
     const obj = await this.findOneById(id);
+
     if (!obj) {
       throw new NotFoundException('Erro ao tentar atualizar registro');
+    } else {
+      await this.repository.update(id, {
+        ...input,
+      });
     }
 
     // resgistro de log da operação
@@ -151,9 +164,13 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
 
     try {
       const promises = input.map(item => {
-        return queryRunner.manager.update(this.entity, item['id'], {
-          ...item,
-        });
+        return queryRunner.manager.update(
+          this.entity,
+          { id: item['id'], deleted: false },
+          {
+            ...item,
+          },
+        );
       });
 
       await Promise.all(promises);
@@ -161,7 +178,12 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
       await queryRunner.commitTransaction();
 
       // resgistro de log da operação
-      const promisesLog = input.map(item => {
+      const ids = input.map(item => {
+        return item['id'];
+      });
+      const objects = await this.findByIds(ids);
+
+      const promisesLog = objects.map(item => {
         return this.saveLogs(
           this.entity.name,
           item['id'],
@@ -173,6 +195,10 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
       });
       await Promise.all(promisesLog);
       // fim de log
+
+      if (objects.length == 0) {
+        return false;
+      }
 
       return true;
     } catch (error) {
@@ -187,7 +213,8 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
   async remove(id: number, idUser: number, typeUser: string): Promise<boolean> {
     const obj = await this.findOneById(id);
     if (obj) {
-      await this.repository.delete(id);
+      obj['deleted'] = true;
+      await this.repository.update(id, obj);
 
       // resgistro de log da operação
       await this.saveLogs(
@@ -220,8 +247,14 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     try {
       const objects = await this.findByIds(ids);
 
-      await queryRunner.manager.delete(this.entity, ids);
+      const promises = objects.map(item => {
+        item['deleted'] = true;
+        return queryRunner.manager.update(this.entity, item['id'], {
+          ...item,
+        });
+      });
 
+      await Promise.all(promises);
       await queryRunner.commitTransaction();
 
       // resgistro de log da operação
@@ -252,8 +285,11 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     const query = this.repository.createQueryBuilder().select();
 
     if (paginationArgs.filter) {
-      query.where(paginationArgs.filter);
+      query.where(paginationArgs.filter + ' and deleted=false');
+    } else {
+      query.where('deleted=false');
     }
+
     if (paginationArgs.orderby && paginationArgs.orderby_desc) {
       query.orderBy({ [paginationArgs.orderby]: 'DESC' });
     } else if (paginationArgs.orderby) {

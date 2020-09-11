@@ -138,6 +138,11 @@ export class StudentInformationEntity extends BasicFields {
   @Column({ name: 'relationship_pedag', nullable: true })
   @IsOptional()
   relationshipPedag?: number;
+
+  @Field({ nullable: true })
+  @Column({ name: 'new_student', nullable: true })
+  @IsOptional()
+  newStudent?: boolean;
 }
 
 @ObjectType()
