@@ -6,9 +6,7 @@ import { Paginated } from '../../common/pages';
 import { BasicFields } from 'src/common/types/basicfields';
 import { StudentEntity } from '../../students/entities/student.entity';
 import { OccurrenceEntity } from '../../occurrences/entities/occurrence.entity';
-import { TeacherEntity } from '../../teachers/entities/teacher.entity';
 import { SubjectEntity } from '../../subjects/entities/subject.entity';
-import { EmployeeEntity } from '../../employees/entities/employee.entity';
 
 @ObjectType()
 @Entity('studentoccurrence')

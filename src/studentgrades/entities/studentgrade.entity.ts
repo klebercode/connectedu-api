@@ -10,7 +10,6 @@ import { SubjectEntity } from '../../subjects/entities/subject.entity';
 
 @ObjectType()
 @Entity('studentgrade')
-@Unique(['studentId', 'yearId', 'subjectId', 'unit', 'typeUnit'])
 export class StudentGradeEntity extends BasicFields {
   @Field({ nullable: false })
   @Column({ name: 'student_id', nullable: false })

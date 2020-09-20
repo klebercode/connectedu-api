@@ -5,5 +5,4 @@ export class CreateUserLogDTO {
   readonly usertype: string;
   readonly operation: string;
   readonly description: string;
-  //readonly created_at: Date;
 }

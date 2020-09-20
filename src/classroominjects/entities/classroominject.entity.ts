@@ -16,7 +16,6 @@ import { ClassRoomItemEntity } from '../../classroomitems/entities/classroomitem
 
 @ObjectType()
 @Entity('classroominject')
-@Unique(['classroomItemId'])
 export class ClassRoomInjectEntity extends BasicFields {
   @Field({ nullable: true })
   @Column({ name: 'classroom_item_id', nullable: false })

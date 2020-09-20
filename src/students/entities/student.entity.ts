@@ -98,7 +98,61 @@ export class StudentEntity extends BasicFields {
   nationalityForeign?: string;
 
   @Field({ nullable: true })
-  @Column({ type: 'varchar', length: 1, nullable: true })
+  @Column({
+    name: 'father_id',
+    nullable: true,
+  })
+  @IsOptional()
+  fatherId?: number;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'reside_father',
+    nullable: true,
+  })
+  @IsOptional()
+  resideFather?: boolean;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'mother_id',
+    nullable: true,
+  })
+  @IsOptional()
+  motherId?: number;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'reside_mother',
+    nullable: true,
+  })
+  @IsOptional()
+  resideMother?: boolean;
+
+  @Field(type => ResponsibleEntity, { nullable: true })
+  @JoinColumn({ name: 'father_id' })
+  @ManyToOne(type => ResponsibleEntity)
+  @IsOptional()
+  father?: ResponsibleEntity;
+
+  @Field(type => ResponsibleEntity, { nullable: true })
+  @JoinColumn({ name: 'mother_id' })
+  @ManyToOne(type => ResponsibleEntity)
+  @IsOptional()
+  mother?: ResponsibleEntity;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'type_reside',
+    type: 'varchar',
+    length: 1,
+    nullable: true,
+  })
+  @IsOptional()
+  typeReside?: string;
+
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', length: 60, nullable: true })
   @IsOptional()
   reside?: string;
 
@@ -107,38 +161,11 @@ export class StudentEntity extends BasicFields {
   @IsOptional()
   separatedParents?: boolean;
 
-  @Field({ nullable: true })
-  @Column({ name: 'reside_responsable_id', nullable: true })
-  @IsOptional()
-  resideResponsableId?: number;
-
   @Field(type => ResponsibleEntity, { nullable: true })
   @JoinColumn({ name: 'reside_responsable_id' })
   @ManyToOne(type => ResponsibleEntity)
   @IsOptional()
   resideResponsable?: ResponsibleEntity;
-
-  @Field({ nullable: true })
-  @Column({ name: 'father_id', nullable: true })
-  @IsOptional()
-  fatherId?: number;
-
-  @Field(type => ResponsibleEntity, { nullable: true })
-  @JoinColumn({ name: 'father_id' })
-  @ManyToOne(type => ResponsibleEntity)
-  @IsOptional()
-  father?: ResponsibleEntity;
-
-  @Field({ nullable: true })
-  @Column({ name: 'mother_id', nullable: true })
-  @IsOptional()
-  motherId?: number;
-
-  @Field(type => ResponsibleEntity, { nullable: true })
-  @JoinColumn({ name: 'mother_id' })
-  @ManyToOne(type => ResponsibleEntity)
-  @IsOptional()
-  mother?: ResponsibleEntity;
 
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: true })

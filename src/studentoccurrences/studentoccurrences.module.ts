@@ -9,9 +9,7 @@ import { CustomersModule } from '../customers/customers.module';
 
 import { StudentsModule } from '../students/students.module';
 import { OccurrencesModule } from '../occurrences/occurrences.module';
-import { TeachersModule } from '../teachers/teachers.module';
 import { SubjectsModule } from '../subjects/subjects.module';
-import { EmployeesModule } from '../employees/employees.module';
 import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({
@@ -20,8 +18,6 @@ import { UserLogsModule } from '../userlogs/userlogs.module';
     CustomersModule,
     StudentsModule,
     OccurrencesModule,
-    EmployeesModule,
-    TeachersModule,
     SubjectsModule,
     UserLogsModule,
   ],

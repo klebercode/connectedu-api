@@ -10,7 +10,6 @@ import { TeacherEntity } from '../../teachers/entities/teacher.entity';
 
 @ObjectType()
 @Entity('classroomitem')
-@Unique(['classroomId', 'subjectId'])
 export class ClassRoomItemEntity extends BasicFields {
   @Field({ nullable: true })
   @Column({ name: 'classroom_id', nullable: false })

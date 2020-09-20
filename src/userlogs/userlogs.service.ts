@@ -3,8 +3,8 @@ import { Injectable, Inject } from '@nestjs/common';
 
 import { CustomersServiceDecorator } from '../customers/customers-service.decorator';
 import { CUSTOMER_CONNECTION_MONGO } from '../connectmongodb/connectmongodb.module';
-import { UserLog } from './entities/userlog.interface';
-import { CreateUserLogDTO } from './entities/create.userlog.dto';
+import { UserLog } from './types/userlog.interface';
+import { CreateUserLogDTO } from './types/create.userlog.dto';
 import { UserLogSchema } from './entities/userlog.schema';
 
 @CustomersServiceDecorator()

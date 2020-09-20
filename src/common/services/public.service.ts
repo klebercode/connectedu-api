@@ -1,4 +1,8 @@
-import { NotFoundException, HttpException } from '@nestjs/common';
+import {
+  NotFoundException,
+  HttpException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Repository, Connection, EntitySchema } from 'typeorm';
 import { PaginationArgs, paginate } from '../../common/pages';
 
@@ -50,6 +54,23 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
       }
     }
     return obj;
+  }
+
+  async findOneId(input: any): Promise<number> {
+    if (!input) {
+      return null;
+    }
+
+    const obj = await this.repository.findOne(input);
+    if (!obj) {
+      return null;
+    } else {
+      if (obj['deleted']) {
+        return null;
+      }
+    }
+
+    return obj['id'];
   }
 
   async create(
@@ -112,7 +133,10 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
-      throw new HttpException('Erro ao tentar criar novos registros !', error);
+      throw new InternalServerErrorException(
+        'Erro ao tentar criar novos registros !',
+        error,
+      );
     } finally {
       await queryRunner.release();
     }
@@ -127,7 +151,7 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
     const obj = await this.findOneById(id);
 
     if (!obj) {
-      throw new NotFoundException('Erro ao tentar atualizar registro');
+      throw new NotFoundException('Erro ao tentar atualizar registro !');
     } else {
       await this.repository.update(id, {
         ...input,
@@ -199,7 +223,10 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
-      throw new HttpException('Erro ao tentar atualizar os registros', error);
+      throw new InternalServerErrorException(
+        'Erro ao tentar atualizar os registros',
+        error,
+      );
     } finally {
       await queryRunner.release();
     }
@@ -270,7 +297,10 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
-      throw new HttpException('Erro ao tentar deletar os registros', error);
+      throw new InternalServerErrorException(
+        'Erro ao tentar deletar os registros',
+        error,
+      );
     } finally {
       await queryRunner.release();
     }

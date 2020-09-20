@@ -7,7 +7,6 @@ import { BasicFields } from 'src/common/types/basicfields';
 
 @ObjectType()
 @Entity('year')
-@Unique(['year'])
 export class YearEntity extends BasicFields {
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 4, nullable: false })

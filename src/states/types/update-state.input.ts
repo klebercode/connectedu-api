@@ -6,11 +6,15 @@ export class UpdateStateInput {
   @Field({ nullable: true })
   id: number;
 
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   @MaxLength(100)
   description: string;
 
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   @MaxLength(2)
   uf?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(2)
+  codeState: string;
 }

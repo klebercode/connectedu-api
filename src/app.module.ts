@@ -33,6 +33,7 @@ import { ContentAppliedsModule } from './contentapplied/contentapplieds.module';
 import { UserCentesModule } from './usercenter/usercenters.module';
 import { UserLogsModule } from './userlogs/userlogs.module';
 import { ConnectMongodbModule } from './connectmongodb/connectmongodb.module';
+import { MigrationsModule } from './migrations/migrations.module';
 
 // Modulos Publicos
 import { PermisisonsModule } from './permissions/permissions.module';
@@ -123,6 +124,8 @@ import { Customer } from './customers/entities/customer.object';
 
     // module mongodb
     UserLogsModule,
+
+    MigrationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

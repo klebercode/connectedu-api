@@ -37,7 +37,7 @@ type UserCenterEntity {
   deleted: Boolean
   legacyCode: String
   idUser: Float!
-  userType: TypeOwer!
+  userType: TypeUser!
   login: String
   email: String
   statusActiveWeb: Boolean!
@@ -48,7 +48,7 @@ type UserCenterEntity {
   keyAcessFirst: String!
 }
 
-enum TypeOwer {
+enum TypeUser {
   S
   R
   T
@@ -99,7 +99,7 @@ type KeyAccessEntity {
   organizationId: Float!
   statusActiveApp: Boolean
   statusActiveWeb: Boolean
-  typeUser: TypeOwer
+  typeUser: TypeUser
   keyAccess: String
 }
 
@@ -141,8 +141,9 @@ type StateEntity {
   updatedAt: DateTime
   deleted: Boolean
   legacyCode: String
-  description: String!
-  uf: String!
+  description: String
+  uf: String
+  codeState: String
 }
 
 type StatePaginated {
@@ -202,8 +203,8 @@ type ResponsibleEntity {
   whatsapp: String
   cpf: String
   identity: String
-  OrgIdentity: String
-  civilStatus: Boolean
+  orgIdentity: String
+  civilStatus: String
   note: String
   profession: String
   workCompany: String
@@ -240,14 +241,16 @@ type StudentEntity {
   stateNaturalnessForeign: String
   naturalnessForeign: String
   nationalityForeign: String
+  fatherId: Float
+  resideFather: Boolean
+  motherId: Float
+  resideMother: Boolean
+  father: ResponsibleEntity
+  mother: ResponsibleEntity
+  typeReside: String
   reside: String
   separatedParents: Boolean
-  resideResponsableId: Float
   resideResponsable: ResponsibleEntity
-  fatherId: Float
-  father: ResponsibleEntity
-  motherId: Float
-  mother: ResponsibleEntity
   adress: String
   district: String
   complement: String
@@ -576,18 +579,28 @@ type StudentInformationEntity {
   descriptionReason: String
   responsible1Id: Float
   responsible1: ResponsibleEntity
-  relationship1: Float
+  relationship1: Relationship
   responsible2Id: Float
   responsible2: ResponsibleEntity
-  relationship2: Float
+  relationship2: Relationship
   responsiblePedagId: Float
   responsiblePedag: ResponsibleEntity
-  relationshipPedag: Float
+  relationshipPedag: Relationship
   newStudent: Boolean
 }
 
 """Date custom scalar type"""
 scalar Date
+
+enum Relationship {
+  P
+  M
+  T
+  V
+  R
+  I
+  O
+}
 
 type StudentInformationPaginated {
   edges: [StudentInformationEntityEdge!]
@@ -1022,7 +1035,7 @@ type Mutation {
   classRoomInjectUpdate(input: UpdateClassRoomInjectInput!, id: Float!): ClassRoomInjectEntity!
   classRoomInjectUpdateMany(input: [UpdateClassRoomInjectInput!]!): Boolean!
   studentInformationCreate(input: CreatStudentInformationInput!): StudentInformationEntity!
-  sstudentInformationCreateMany(input: [CreatStudentInformationInput!]!): [StudentInformationEntity!]!
+  studentInformationCreateMany(input: [CreatStudentInformationInput!]!): [StudentInformationEntity!]!
   studentInformationDelete(id: Float!): Boolean!
   studentInformationDeleteMany(ids: [Float!]!): Boolean!
   studentInformationUpdate(input: UpdateStudentInformationInput!, id: Float!): StudentInformationEntity!
@@ -1069,6 +1082,8 @@ type Mutation {
   contentAppliedDeleteMany(ids: [Float!]!): Boolean!
   contentAppliedUpdate(input: UpdateContentAppliedInput!, id: Float!): ContentAppliedEntity!
   contentAppliedUpdateMany(input: [UpdateContentAppliedInput!]!): Boolean!
+  migrationsClassRoomItemMany(input: [MigrationsClassromitemsInput!]!): Boolean!
+  migrationsStundetMany(input: [MigrationsStudentInput!]!): [String!]!
   organizationCreate(input: CreateOrganizationInput!): OrganizationEntity!
   organizationCreateMany(input: [CreateOrganizationInput!]!): [OrganizationEntity!]!
   organizationDelete(id: Float!): Boolean!
@@ -1086,17 +1101,17 @@ input CreateCustomerInput {
 
 input CreateKeyAccessInput {
   ownerId: Float!
-  typeUser: TypeOwer!
+  typeUser: TypeUser!
 }
 
 input UpdateKeyAccessInput {
   ownerId: Float!
-  TypeUser: TypeOwer!
+  TypeUser: TypeUser!
 }
 
 input CreateUserCenterInput {
   idUser: Float!
-  userType: TypeOwer!
+  userType: TypeUser!
   login: String
   email: String
   password: String
@@ -1110,7 +1125,7 @@ input CreateUserCenterInput {
 input UpdateUserCenterInput {
   id: Float
   idUser: Float
-  userType: TypeOwer
+  userType: TypeUser
   login: String
   email: String
   password: String
@@ -1147,11 +1162,13 @@ input CreateStudentInput {
   stateNaturalnessForeign: String
   naturalnessForeign: String
   nationalityForeign: String
+  fatherId: Float
+  resideFather: Boolean
+  motherId: Float
+  resideMother: Boolean
+  typeReside: String
   reside: String
   separatedParents: Boolean
-  resideResponsableId: Float
-  fatherId: Float
-  motherId: Float
   adress: String
   district: String
   complement: String
@@ -1188,11 +1205,13 @@ input UpdateStudentInput {
   stateNaturalnessForeign: String
   naturalnessForeign: String
   nationalityForeign: String
+  fatherId: Float
+  resideFather: Boolean
+  motherId: Float
+  resideMother: Boolean
+  typeReside: String
   reside: String
   separatedParents: Boolean
-  resideResponsableId: Float
-  fatherId: Float
-  motherId: Float
   adress: String
   district: String
   complement: String
@@ -1219,12 +1238,14 @@ input UpdateStudentInput {
 input CreateStateInput {
   description: String!
   uf: String!
+  codeState: String!
 }
 
 input UpdateStateInput {
   id: Float
-  description: String!
-  uf: String!
+  description: String
+  uf: String
+  codeState: String
 }
 
 input CreateCityInput {
@@ -1258,8 +1279,8 @@ input CreateResponsibleInput {
   whatsapp: String
   cpf: String
   identity: String
-  OrgIdentity: String
-  civilStatus: Boolean
+  orgIdentity: String
+  civilStatus: String
   note: String
   profession: String
   workCompany: String
@@ -1287,8 +1308,8 @@ input UpdateResponsibleInput {
   whatsapp: String
   cpf: String
   identity: String
-  OrgIdentity: String
-  civilStatus: Boolean
+  orgIdentity: String
+  civilStatus: String
   note: String
   profession: String
   workCompany: String
@@ -1578,11 +1599,11 @@ input CreatStudentInformationInput {
   reasonExit: String
   descriptionReason: String
   responsible1Id: Float
-  relationship1: Float
+  relationship1: Relationship
   responsible2Id: Float
-  relationship2: Float
+  relationship2: Relationship
   responsiblePedagId: Float
-  relationshipPedag: Float
+  relationshipPedag: Relationship
   newStudent: Boolean
   legacyCode: String
 }
@@ -1602,11 +1623,11 @@ input UpdateStudentInformationInput {
   reasonExit: String
   descriptionReason: String
   responsible1Id: Float
-  relationship1: Float
+  relationship1: Relationship
   responsible2Id: Float
-  relationship2: Float
+  relationship2: Relationship
   responsiblePedagId: Float
-  relationshipPedag: Float
+  relationshipPedag: Relationship
   newStudent: Boolean
   legacyCode: String
 }
@@ -1806,6 +1827,130 @@ input UpdateContentAppliedInput {
   classHome: String
   justify: String
   legacyCode: String
+}
+
+input MigrationsClassromitemsInput {
+  classroomLegacyCode: String
+  subjectLegacyCode: String
+  teacherLegacyCode: String
+  workHours: Float
+  visibleReport: Boolean
+  visibleMinute: Boolean
+  registerCall: Boolean
+  registerContent: Boolean
+  registerOccurrence: Boolean
+  type: String
+  numberGrades: Float
+  gradeMin: Float
+  gradeMax: Float
+  order: Float
+}
+
+input MigrationsStudentInput {
+  name: String
+  useNickName: Boolean
+  nickName: String
+  dateBirth: DateTime
+  gender: String
+  stateNaturalness: String
+  cityNaturalness: String
+  reside: String
+  separatedParents: String
+  adress: String
+  district: String
+  complement: String
+  state: String
+  city: String
+  zipCode: String
+  schoolLast: String
+  email: String
+  phone: String
+  cellphone: String
+  whatsapp: String
+  cpf: String
+  identity: String
+  OrgIdentity: String
+  registryName: String
+  certificateNumber: String
+  bookNumber: String
+  bookSheet: String
+  legacyCode: String
+  mother_name: String
+  mother_nationality: String
+  mother_dateBirth: DateTime
+  mother_gender: String
+  mother_adress: String
+  mother_district: String
+  mother_complement: String
+  mother_state: String
+  mother_city: String
+  mother_zipCode: String
+  mother_email: String
+  mother_phone: String
+  mother_cellphone: String
+  mother_whatsapp: String
+  mother_cpf: String
+  mother_identity: String
+  mother_OrgIdentity: String
+  mother_civilStatus: String
+  mother_profession: String
+  mother_workCompany: String
+  mother_workPhone: String
+  father_name: String
+  father_nationality: String
+  father_dateBirth: DateTime
+  father_gender: String
+  father_adress: String
+  father_district: String
+  father_complement: String
+  father_state: String
+  father_city: String
+  father_zipCode: String
+  father_email: String
+  father_phone: String
+  father_cellphone: String
+  father_whatsapp: String
+  father_cpf: String
+  father_identity: String
+  father_OrgIdentity: String
+  father_civilStatus: String
+  father_profession: String
+  father_workCompany: String
+  father_workPhone: String
+  respfin_name: String
+  respfin_nationality: String
+  respfin_dateBirth: DateTime
+  respfin_gender: String
+  respfin_adress: String
+  respfin_district: String
+  respfin_complement: String
+  respfin_state: String
+  respfin_city: String
+  respfin_zipCode: String
+  respfin_email: String
+  respfin_phone: String
+  respfin_cellphone: String
+  respfin_whatsapp: String
+  respfin_cpf: String
+  respfin_identity: String
+  respfin_OrgIdentity: String
+  respfin_civilStatus: String
+  respfin_profession: String
+  respfin_workCompany: String
+  respfin_workPhone: String
+  year: String
+  dateRegistration: DateTime
+  classroom_legacyCode: String
+  situation: String
+  numberStudent: Float
+  payday: Float
+  formPayment: String
+  monthlyDiscount: Float
+  dateExit: DateTime
+  reasonExit: String
+  descriptionReason: String
+  responsiblePedag: String
+  newStudent: String
 }
 
 input CreateOrganizationInput {

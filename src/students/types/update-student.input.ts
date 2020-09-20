@@ -59,25 +59,34 @@ export class UpdateStudentInput {
   nationalityForeign?: string;
 
   @Field({ nullable: true })
+  @IsOptional()
+  fatherId?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  resideFather?: boolean;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  motherId?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  resideMother?: boolean;
+
+  @Field({ nullable: true })
   @MaxLength(1)
+  @IsOptional()
+  typeReside?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(60)
   @IsOptional()
   reside?: string;
 
   @Field({ nullable: true })
   @IsOptional()
   separatedParents?: boolean;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  resideResponsableId?: number;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  fatherId?: number;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  motherId?: number;
 
   @Field({ nullable: true })
   @MaxLength(100)

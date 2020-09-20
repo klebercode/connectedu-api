@@ -7,4 +7,15 @@ export enum TypeUser {
   E = 'E', //Employe
   I = 'I', //Intern
 }
-registerEnumType(TypeUser, { name: 'TypeOwer' });
+registerEnumType(TypeUser, { name: 'TypeUser' });
+
+export enum Relationship {
+  P = 'Pai',
+  M = 'Mãe',
+  T = 'Tio/Tia',
+  V = 'Avó/Avô',
+  R = 'Primo/Prima',
+  I = 'Irmão/Irmã',
+  O = 'Outros',
+}
+registerEnumType(Relationship, { name: 'Relationship' });

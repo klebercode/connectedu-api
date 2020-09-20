@@ -90,11 +90,12 @@ export class CreateResponsibleInput {
   @Field({ nullable: true })
   @MaxLength(15)
   @IsOptional()
-  OrgIdentity?: string;
+  orgIdentity?: string;
 
   @Field({ nullable: true })
+  @MaxLength(1)
   @IsOptional()
-  civilStatus?: boolean;
+  civilStatus?: string;
 
   @Field({ nullable: true })
   @IsOptional()

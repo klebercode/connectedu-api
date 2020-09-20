@@ -1,4 +1,8 @@
-import { HttpException, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Repository, Connection } from 'typeorm';
 import { PaginationArgs, paginate } from '../../common/pages';
 
@@ -53,6 +57,23 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
       }
     }
     return obj;
+  }
+
+  async findOneId(input: any): Promise<number> {
+    if (!input) {
+      return null;
+    }
+
+    const obj = await this.repository.findOne(input);
+    if (!obj) {
+      return null;
+    } else {
+      if (obj['deleted']) {
+        return null;
+      }
+    }
+
+    return obj['id'];
   }
 
   async create(
@@ -117,7 +138,10 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
-      throw new HttpException('Erro ao tentar criar novos registros !', error);
+      throw new InternalServerErrorException(
+        'Erro ao tentar criar novos registros !',
+        error,
+      );
     } finally {
       await queryRunner.release();
     }
@@ -204,7 +228,10 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
-      throw new HttpException('Erro ao tentar atualizar os registros', error);
+      throw new InternalServerErrorException(
+        'Erro ao tentar atualizar os registros',
+        error,
+      );
     } finally {
       await queryRunner.release();
     }
@@ -275,7 +302,10 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
-      throw new HttpException('Erro ao tentar deletar os registros', error);
+      throw new InternalServerErrorException(
+        'Erro ao tentar deletar os registros',
+        error,
+      );
     } finally {
       await queryRunner.release();
     }

@@ -152,20 +152,6 @@ export class studentsResolver extends ResolverDefault<
     }
   }
 
-  @ResolveField('resideResponsable')
-  async resideResponsable(@Parent() student: StudentEntity) {
-    const id = student.resideResponsableId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.responsiblesService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Responsável');
-    }
-  }
-
   @ResolveField('stateNaturalness')
   async stateNaturalness(@Parent() student: StudentEntity) {
     const id = student.stateNaturalnessId;

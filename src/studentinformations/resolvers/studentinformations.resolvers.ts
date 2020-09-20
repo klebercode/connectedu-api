@@ -87,7 +87,7 @@ export class StudentInformationsResolver extends ResolverDefault<
   }
 
   @Mutation(() => [StudentInformationEntity], {
-    name: 'sstudentInformationCreateMany',
+    name: 'studentInformationCreateMany',
   })
   async createMany(
     @Context() context: MyContext,
