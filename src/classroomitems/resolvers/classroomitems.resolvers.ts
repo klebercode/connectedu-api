@@ -82,7 +82,7 @@ export class ClassRoomItemsResolver extends ResolverDefault<
     return super.create(context, input);
   }
 
-  @Mutation(() => [ClassRoomItemEntity], { name: 'classRoomItemMany' })
+  @Mutation(() => [ClassRoomItemEntity], { name: 'classRoomItemCreateMany' })
   async createMany(
     @Context() context: MyContext,
     @Args({ name: 'input', type: () => [CreateClassRoomItemInput] })
@@ -106,6 +106,15 @@ export class ClassRoomItemsResolver extends ResolverDefault<
     ids: [number],
   ): Promise<boolean> {
     return super.deleteMany(context, ids);
+  }
+
+  @Mutation(() => ClassRoomItemEntity, { name: 'classRoomItemUpdate' })
+  async update(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+    @Args('input') input: UpdateClassRoomItemInput,
+  ): Promise<ClassRoomItemEntity> {
+    return super.update(context, id, input);
   }
 
   @Mutation(() => Boolean, { name: 'classRoomItemUpdateMany' })

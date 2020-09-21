@@ -1024,9 +1024,10 @@ type Mutation {
   classRoomUpdate(input: UpdateClassRoomInput!, id: Float!): ClassRoomEntity!
   classRoomUpdateMany(input: [UpdateClassRoomInput!]!): Boolean!
   classRoomItemCreate(input: CreateClassRoomItemInput!): ClassRoomItemEntity!
-  classRoomItemMany(input: [CreateClassRoomItemInput!]!): [ClassRoomItemEntity!]!
+  classRoomItemCreateMany(input: [CreateClassRoomItemInput!]!): [ClassRoomItemEntity!]!
   classRoomItemDelete(id: Float!): Boolean!
   classRoomItemDeleteMany(ids: [Float!]!): Boolean!
+  classRoomItemUpdate(input: UpdateClassRoomItemInput!, id: Float!): ClassRoomItemEntity!
   classRoomItemUpdateMany(input: [UpdateClassRoomItemInput!]!): Boolean!
   classRoomInjectCreate(input: CreateClassRoomInjectInput!): ClassRoomInjectEntity!
   classRoomInjectCreateMany(input: [CreateClassRoomInjectInput!]!): [ClassRoomInjectEntity!]!
