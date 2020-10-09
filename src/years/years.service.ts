@@ -1,4 +1,4 @@
-import { Inject, ConflictException } from '@nestjs/common';
+import { Inject, ConflictException, HttpException } from '@nestjs/common';
 import { Connection, Not } from 'typeorm';
 
 import { CustomersServiceDecorator } from '../customers/customers-service.decorator';
@@ -38,14 +38,21 @@ export class YearsService extends ServiceDefault<
     });
 
     if (wobjId) {
-      throw new ConflictException({
-        message: 'Registro já Existente !',
-        code: 409,
-      });
+      if (wobjId != id) {
+        throw new ConflictException({
+          message: 'Registro com o mesmo Ano já existente !',
+          code: 409,
+        });
+      }
     }
 
-    const obj = super.update(id, input, idUser, typeUser);
+    let obj;
 
+    try {
+      obj = super.update(id, input, idUser, typeUser);
+    } catch (error) {
+      throw new HttpException(error, error);
+    }
     return obj;
   }
 
@@ -93,12 +100,18 @@ export class YearsService extends ServiceDefault<
 
     if (wobjId) {
       throw new ConflictException({
-        message: 'Registro já Existente !',
+        message: 'Registro com o mesmo Ano já existente !',
         code: 409,
       });
     }
 
-    const obj = super.create(input, idUser, typeUser);
+    let obj;
+
+    try {
+      obj = super.create(input, idUser, typeUser);
+    } catch (error) {
+      throw new HttpException(error, error);
+    }
 
     return obj;
   }
