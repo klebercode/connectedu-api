@@ -1,9 +1,9 @@
 import {
   NotFoundException,
-  HttpException,
   InternalServerErrorException,
+  ConflictException,
 } from '@nestjs/common';
-import { Repository, Connection, EntitySchema } from 'typeorm';
+import { Repository, Connection } from 'typeorm';
 import { PaginationArgs, paginate } from '../../common/pages';
 
 export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
@@ -18,25 +18,54 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
   }
 
   async findAll(): Promise<EntityPublic[]> {
-    return await this.repository.find({ where: { deleted: false } });
+    const option = {
+      where: { deleted: false },
+    };
+
+    try {
+      return await this.repository.find(option);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Erro ao tentar lista registros !',
+        error,
+      );
+    }
   }
 
   async findByIds(ids: number[]): Promise<EntityPublic[]> {
-    return await this.repository.findByIds(ids, {
-      where: { deleted: false },
-    });
+    try {
+      return await this.repository.findByIds(ids, {
+        where: { deleted: false },
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Erro ao tentar listar registros especificos !',
+        error,
+      );
+    }
   }
 
   async findOneById(id: number): Promise<EntityPublic> {
     if (!id) {
       return null;
     }
-    const obj = await this.repository.findOne(id, {
-      where: { deleted: false },
-    });
+    let obj: any;
+
+    try {
+      obj = await this.repository.findOne(id, {
+        where: { deleted: false },
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Erro ao tentar localizar registro !',
+        error,
+      );
+    }
+
     if (!obj) {
       return null;
     }
+
     return obj;
   }
 
@@ -45,7 +74,17 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
       return null;
     }
 
-    const obj = await this.repository.findOne(input);
+    let obj: any;
+
+    try {
+      obj = await this.repository.findOne(input);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Erro ao tentar localizar registro !',
+        error,
+      );
+    }
+
     if (!obj) {
       return null;
     } else {
@@ -53,6 +92,7 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
         return null;
       }
     }
+
     return obj;
   }
 
@@ -61,7 +101,17 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
       return null;
     }
 
-    const obj = await this.repository.findOne(input);
+    let obj: any;
+
+    try {
+      obj = await this.repository.findOne(input);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Erro ao tentar localizar registro !',
+        error,
+      );
+    }
+
     if (!obj) {
       return null;
     } else {
@@ -78,18 +128,36 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
     idUser: number,
     typeUser: string,
   ): Promise<EntityPublic> {
-    const obj = await this.repository.save({ ...input });
+    let obj: any;
 
-    // resgistro de log da operação
-    await this.saveLogs(
-      this.entity.name,
-      obj['id'],
-      idUser,
-      typeUser,
-      'C',
-      obj,
-    );
-    // fim de log
+    try {
+      obj = await this.repository.save({
+        ...input,
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Erro ao tentar salvar novo registro !',
+        error,
+      );
+    }
+
+    try {
+      // resgistro de log da operação
+      await this.saveLogs(
+        this.entity.name,
+        obj['id'],
+        idUser,
+        typeUser,
+        'C',
+        obj,
+      );
+      // fim de log
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Erro ao tentar salvar registro de log para novo registro !',
+        error,
+      );
+    }
 
     return obj;
   }
@@ -101,22 +169,38 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
   ): Promise<EntityPublic[]> {
     const objects = [];
 
-    input.forEach(item => {
+    input.map(item => {
       objects.push({
         ...item,
       });
     });
 
-    const queryRunner = this.connectionPublic.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    let queryRunner: any;
+    let objectsSave: any;
 
     try {
-      const objectsSave = await queryRunner.manager.save(this.entity, objects);
-      await queryRunner.commitTransaction();
+      queryRunner = this.connectionPublic.createQueryRunner();
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
 
-      // resgistro de log da operação
-      const promisesLog = objectsSave.map(item => {
+      objectsSave = await queryRunner.manager.save(this.entity, objects);
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      throw new InternalServerErrorException(
+        'Erro ao tentar salvar novos registros !',
+        error,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+
+    let promisesLog: any;
+
+    // resgistro de log da operação
+    try {
+      promisesLog = objectsSave.map(item => {
         return this.saveLogs(
           this.entity.name,
           item['id'],
@@ -127,19 +211,15 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
         );
       });
       await Promise.all(promisesLog);
-      // fim de log
-
-      return objectsSave;
     } catch (error) {
-      await queryRunner.rollbackTransaction();
-
       throw new InternalServerErrorException(
-        'Erro ao tentar criar novos registros !',
+        'Erro ao tentar savar log de novos registros !',
         error,
       );
-    } finally {
-      await queryRunner.release();
     }
+    // fim de log
+
+    return objectsSave;
   }
 
   async update(
@@ -151,22 +231,36 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
     const obj = await this.findOneById(id);
 
     if (!obj) {
-      throw new NotFoundException('Erro ao tentar atualizar registro !');
-    } else {
+      throw new NotFoundException('Registro não localizado !');
+    }
+
+    try {
       await this.repository.update(id, {
         ...input,
       });
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Erro ao tentar salvar alteração !',
+        error,
+      );
     }
 
     // resgistro de log da operação
-    await this.saveLogs(
-      this.entity.name,
-      obj['id'],
-      idUser,
-      typeUser,
-      'U',
-      obj,
-    );
+    try {
+      await this.saveLogs(
+        this.entity.name,
+        obj['id'],
+        idUser,
+        typeUser,
+        'U',
+        obj,
+      );
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Erro ao tentar criar registro de log para alteração !',
+        error,
+      );
+    }
     // fim de log
 
     return obj;
@@ -177,11 +271,13 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
     idUser: number,
     typeUser: string,
   ): Promise<boolean> {
-    const queryRunner = this.connectionPublic.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    let queryRunner: any;
 
     try {
+      queryRunner = this.connectionPublic.createQueryRunner();
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+
       const promises = input.map(item => {
         return queryRunner.manager.update(
           this.entity,
@@ -195,13 +291,25 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
       await Promise.all(promises);
 
       await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
 
-      // resgistro de log da operação
-      const ids = input.map(item => {
-        return item['id'];
-      });
-      const objects = await this.findByIds(ids);
+      throw new InternalServerErrorException(
+        'Erro ao tentar salvar alteração dos regsitros !',
+        error,
+      );
+    } finally {
+      await queryRunner.release();
+    }
 
+    // resgistro de log da operação
+    const ids = input.map(item => {
+      return item['id'];
+    });
+
+    const objects = await this.findByIds(ids);
+
+    try {
       const promisesLog = objects.map(item => {
         return this.saveLogs(
           this.entity.name,
@@ -213,48 +321,66 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
         );
       });
       await Promise.all(promisesLog);
-      // fim de log
-
-      if (objects.length == 0) {
-        return false;
-      }
-
-      return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
       throw new InternalServerErrorException(
-        'Erro ao tentar atualizar os registros',
+        'Erro ao tentar salvar log de alterações dos regitros !',
         error,
       );
-    } finally {
-      await queryRunner.release();
     }
+    // fim de log
+
+    if (objects.length == 0) {
+      return false;
+    }
+
+    return true;
   }
 
-  async remove(id: number, idUser: number, typeUser: string): Promise<Boolean> {
+  async remove(id: number, idUser: number, typeUser: string): Promise<boolean> {
     const obj = await this.findOneById(id);
+
     if (obj) {
       obj['deleted'] = true;
-      await this.repository.update(id, obj);
 
-      // resgistro de log da operação
-      await this.saveLogs(
-        this.entity.name,
-        obj['id'],
-        idUser,
-        typeUser,
-        'D',
-        obj,
-      );
-      // fim de log
+      try {
+        await this.repository.update(id, obj);
+      } catch (error) {
+        throw new InternalServerErrorException(
+          'Erro ao tentar deletar registro !',
+          error,
+        );
+      }
+
+      try {
+        // resgistro de log da operação
+        await this.saveLogs(
+          this.entity.name,
+          obj['id'],
+          idUser,
+          typeUser,
+          'D',
+          obj,
+        );
+        // fim de log
+      } catch (error) {
+        throw new InternalServerErrorException(
+          'Erro ao tentar criar registro de log para deleção !',
+          error,
+        );
+      }
+    } else {
+      throw new NotFoundException('Registro não localizado para deleção !');
     }
 
     const objRet = await this.findOneById(id);
+
     if (!objRet) {
       return true;
+    } else {
+      throw new ConflictException('Não foi possível deletado registro !');
     }
-    return false;
   }
 
   async removeMany(
@@ -262,12 +388,14 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
     idUser: number,
     typeUser: string,
   ): Promise<boolean> {
-    const queryRunner = this.connectionPublic.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const objects = await this.findByIds(ids);
+
+    let queryRunner;
 
     try {
-      const objects = await this.findByIds(ids);
+      queryRunner = this.connectionPublic.createQueryRunner();
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
 
       const promises = objects.map(item => {
         item['deleted'] = true;
@@ -278,8 +406,19 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
 
       await Promise.all(promises);
       await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
 
-      // resgistro de log da operação
+      throw new InternalServerErrorException(
+        'Erro ao tentar deletar os registros !',
+        error,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+
+    // resgistro de log da operação
+    try {
       const promisesLog = objects.map(item => {
         return this.saveLogs(
           this.entity.name,
@@ -291,19 +430,15 @@ export class ServicePublic<EntityPublic, CreatePublic, UpdatePublic> {
         );
       });
       await Promise.all(promisesLog);
-      // fim de log
-
-      return true;
     } catch (error) {
-      await queryRunner.rollbackTransaction();
-
       throw new InternalServerErrorException(
-        'Erro ao tentar deletar os registros',
+        'Erro ao tentar criar registros de log para deleção !',
         error,
       );
-    } finally {
-      await queryRunner.release();
     }
+    // fim de log
+
+    return true;
   }
 
   async getPageServ(paginationArgs: PaginationArgs): Promise<any> {

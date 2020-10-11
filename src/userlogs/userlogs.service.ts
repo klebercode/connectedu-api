@@ -1,5 +1,9 @@
-import { Connection, Model, models, Schema } from 'mongoose';
-import { Injectable, Inject } from '@nestjs/common';
+import { Connection, Model } from 'mongoose';
+import {
+  Inject,
+  InternalServerErrorException,
+  ConflictException,
+} from '@nestjs/common';
 
 import { CustomersServiceDecorator } from '../customers/customers-service.decorator';
 import { CUSTOMER_CONNECTION_MONGO } from '../connectmongodb/connectmongodb.module';
@@ -16,34 +20,81 @@ export class UserLogsService {
   }
 
   async findAll(): Promise<UserLog[]> {
-    const customers = await this.model.find().exec();
-    return customers;
+    let obj: any;
+
+    try {
+      obj = await this.model.find().exec();
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Erro ao tentar lista registros de logs !',
+        error,
+      );
+    }
+
+    return obj;
   }
 
   async findOneById(userLogId: string): Promise<UserLog> {
-    const customer = await this.model.findById(userLogId).exec();
-    return customer;
+    let obj: any;
+
+    try {
+      obj = await this.model.findById(userLogId).exec();
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Erro ao tentar pesquisa registro de log !',
+        error,
+      );
+    }
+    return obj;
   }
 
   async create(createUserLogDTO: CreateUserLogDTO): Promise<UserLog> {
-    const newCustomer = new this.model(createUserLogDTO);
-    return newCustomer.save();
+    let obj: any;
+
+    try {
+      obj = await this.model.create(createUserLogDTO);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Erro ao tentar salvar registro especifico de log !',
+        error,
+      );
+    }
+
+    return obj;
   }
 
   async update(
     userLogId: string,
     createUserLogDTO: CreateUserLogDTO,
   ): Promise<UserLog> {
-    const updatedCustomer = await this.model.findByIdAndUpdate(
-      userLogId,
-      createUserLogDTO,
-      { new: true },
-    );
-    return updatedCustomer;
+    let obj: any;
+
+    try {
+      obj = await this.model.findByIdAndUpdate(userLogId, createUserLogDTO, {
+        new: true,
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Erro ao tentar salvar alteração de registro especifico de log !',
+        error,
+      );
+    }
+
+    return obj;
   }
 
   async remove(userLogId: string): Promise<any> {
-    const deletedCustomer = await this.model.findByIdAndRemove(userLogId);
-    return deletedCustomer;
+    let obj: any;
+
+    try {
+      obj = await this.model.findByIdAndRemove(userLogId);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Erro ao tentar deletar registro especifico de log !',
+        error,
+      );
+    }
+
+    return obj;
   }
 }

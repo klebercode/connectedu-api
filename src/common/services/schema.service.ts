@@ -1,5 +1,4 @@
 import {
-  HttpException,
   NotFoundException,
   InternalServerErrorException,
   ConflictException,
@@ -142,8 +141,8 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
       );
     }
 
+    // resgistro de log da operação
     try {
-      // resgistro de log da operação
       await this.saveLogs(
         this.entity.name,
         obj['id'],
@@ -152,13 +151,13 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
         'C',
         obj,
       );
-      // fim de log
     } catch (error) {
       throw new InternalServerErrorException(
         'Erro ao tentar salvar registro de log para novo registro !',
         error,
       );
     }
+    // fim de log
 
     return obj;
   }
@@ -198,8 +197,9 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     }
 
     let promisesLog: any;
+
+    // resgistro de log da operação
     try {
-      // resgistro de log da operação
       promisesLog = objectsSave.map(item => {
         return this.saveLogs(
           this.entity.name,
@@ -211,13 +211,13 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
         );
       });
       await Promise.all(promisesLog);
-      // fim de log
     } catch (error) {
       throw new InternalServerErrorException(
         'Erro ao tentar savar log de novos registros !',
         error,
       );
     }
+    // fim de log
 
     return objectsSave;
   }
@@ -245,8 +245,8 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
       );
     }
 
+    // resgistro de log da operação
     try {
-      // resgistro de log da operação
       await this.saveLogs(
         this.entity.name,
         obj['id'],
@@ -255,13 +255,13 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
         'U',
         obj,
       );
-      // fim de log
     } catch (error) {
       throw new InternalServerErrorException(
         'Erro ao tentar criar registro de log para alteração !',
         error,
       );
     }
+    // fim de log
 
     return obj;
   }
@@ -271,11 +271,13 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
     idUser: number,
     typeUser: string,
   ): Promise<boolean> {
-    const queryRunner = this.connection.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    let queryRunner: any;
 
     try {
+      queryRunner = this.connection.createQueryRunner();
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+
       const promises = input.map(item => {
         return queryRunner.manager.update(
           this.entity,
@@ -289,13 +291,25 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
       await Promise.all(promises);
 
       await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
 
-      // resgistro de log da operação
-      const ids = input.map(item => {
-        return item['id'];
-      });
-      const objects = await this.findByIds(ids);
+      throw new InternalServerErrorException(
+        'Erro ao tentar salvar alteração dos regsitros !',
+        error,
+      );
+    } finally {
+      await queryRunner.release();
+    }
 
+    // resgistro de log da operação
+    const ids = input.map(item => {
+      return item['id'];
+    });
+
+    const objects = await this.findByIds(ids);
+
+    try {
       const promisesLog = objects.map(item => {
         return this.saveLogs(
           this.entity.name,
@@ -307,23 +321,21 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
         );
       });
       await Promise.all(promisesLog);
-      // fim de log
-
-      if (objects.length == 0) {
-        return false;
-      }
-
-      return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();
 
       throw new InternalServerErrorException(
-        'Erro ao tentar atualizar os registros',
+        'Erro ao tentar salvar log de alterações dos regitros !',
         error,
       );
-    } finally {
-      await queryRunner.release();
     }
+    // fim de log
+
+    if (objects.length == 0) {
+      return false;
+    }
+
+    return true;
   }
 
   async remove(id: number, idUser: number, typeUser: string): Promise<boolean> {
@@ -341,8 +353,8 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
         );
       }
 
+      // resgistro de log da operação
       try {
-        // resgistro de log da operação
         await this.saveLogs(
           this.entity.name,
           obj['id'],
@@ -351,13 +363,13 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
           'D',
           obj,
         );
-        // fim de log
       } catch (error) {
         throw new InternalServerErrorException(
           'Erro ao tentar criar registro de log para deleção !',
           error,
         );
       }
+      // fim de log
     } else {
       throw new NotFoundException('Registro não localizado para deleção !');
     }
@@ -398,15 +410,15 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
       await queryRunner.rollbackTransaction();
 
       throw new InternalServerErrorException(
-        'Erro ao tentar deletar os registros',
+        'Erro ao tentar deletar os registros !',
         error,
       );
     } finally {
       await queryRunner.release();
     }
 
+    // resgistro de log da operação
     try {
-      // resgistro de log da operação
       const promisesLog = objects.map(item => {
         return this.saveLogs(
           this.entity.name,
@@ -418,13 +430,13 @@ export class ServiceDefault<EntityDefault, CreateDefault, UpdateDefault> {
         );
       });
       await Promise.all(promisesLog);
-      // fim de log
     } catch (error) {
       throw new InternalServerErrorException(
         'Erro ao tentar criar registros de log para deleção !',
         error,
       );
     }
+    // fim de log
 
     return true;
   }

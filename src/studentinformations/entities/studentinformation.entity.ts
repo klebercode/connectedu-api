@@ -4,7 +4,7 @@ import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 import { Relationship } from '../../common/enums/enum-typeuser';
 
-import { BasicFields } from 'src/common/types/basicfields';
+import { BasicFields } from '../../common/types/basicfields';
 import { ClassRoomEntity } from '../../classrooms/entities/classroom.entity';
 import { StudentEntity } from '../../students/entities/student.entity';
 import { YearEntity } from '../../years/entities/year.entity';

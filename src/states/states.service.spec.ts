@@ -1,20 +1,23 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CUSTOMER_CONNECTION } from '../customers/customers.module';
 
-import { YearsService } from './years.service';
-import { CreateYearInput } from './types/create-year.input';
-import { UpdateYearInput } from './types/update-year.input';
+import { StatesService } from './states.service';
+import { CreateStateInput } from './types/create-state.input';
+import { UpdateStateInput } from './types/update-state.input';
 
 import { UserLogsService } from '../userlogs/userlogs.service';
 import { TestUtil } from '../common/test/test.util';
+import { getConnectionToken } from '@nestjs/typeorm';
 
-describe('YearsService', () => {
-  let service: YearsService;
+describe('StatesService', () => {
+  let service: StatesService;
 
   const mockRepository = {
     getRepository: jest.fn(),
     createQueryRunner: jest.fn(),
   };
+
+  //const mockRepository = {};
 
   const userLogs = {
     create: jest.fn(),
@@ -23,10 +26,14 @@ describe('YearsService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        YearsService,
+        StatesService,
+        {
+          provide: getConnectionToken(),
+          useValue: mockRepository,
+        },
         {
           provide: CUSTOMER_CONNECTION,
-          useValue: mockRepository,
+          useValue: {},
         },
         {
           provide: UserLogsService,
@@ -35,7 +42,7 @@ describe('YearsService', () => {
       ],
     }).compile();
 
-    service = await module.resolve<YearsService>(YearsService);
+    service = module.get<StatesService>(StatesService);
   });
 
   afterEach(async () => {
@@ -49,7 +56,7 @@ describe('YearsService', () => {
   });
 
   describe('findAll', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -68,7 +75,7 @@ describe('YearsService', () => {
   });
 
   describe('findAll -> Error 500', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -105,7 +112,7 @@ describe('YearsService', () => {
   });
 
   describe('findByIds', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -124,7 +131,7 @@ describe('YearsService', () => {
   });
 
   describe('findByIds -> Null', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -142,7 +149,7 @@ describe('YearsService', () => {
   });
 
   describe('findByIds -> Error 500', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -165,7 +172,7 @@ describe('YearsService', () => {
   });
 
   describe('findOneById', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -178,7 +185,7 @@ describe('YearsService', () => {
     it('should return one specific Id', async () => {
       const objs = await service.findOneById(1);
 
-      expect(objs.year).toEqual(obj.year);
+      expect(objs.description).toEqual(obj.description);
       expect(objs).toStrictEqual(obj);
     });
   });
@@ -216,7 +223,7 @@ describe('YearsService', () => {
   });
 
   describe('findOneById -> Error 500', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -237,7 +244,7 @@ describe('YearsService', () => {
   });
 
   describe('findOne', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -249,10 +256,10 @@ describe('YearsService', () => {
 
     it('should return one specific object for input specific', async () => {
       const objs = await service.findOne({
-        where: [{ year: obj.year }],
+        where: [{ uf: obj.uf }],
       });
 
-      expect(objs.year).toEqual(obj.year);
+      expect(objs.uf).toEqual(obj.uf);
       expect(objs).toStrictEqual(obj);
     });
   });
@@ -274,7 +281,7 @@ describe('YearsService', () => {
   });
 
   describe('findOne -> Error 500', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -287,17 +294,16 @@ describe('YearsService', () => {
     it('should return error exception to obj specific', async () => {
       try {
         const objs = await service.findOne({
-          where: [{ year: obj.year }],
+          where: [{ uf: obj.uf }],
         });
       } catch (error) {
         expect(error['status']).toEqual(500);
-
         expect(error['message']).toEqual('Erro ao tentar localizar registro !');
       }
     });
   });
 
-  describe('findOne Year Specific -> Null', () => {
+  describe('findOne Uf Specific -> Null', () => {
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
         return {
@@ -306,9 +312,9 @@ describe('YearsService', () => {
       });
     });
 
-    it('should return null to specific year not found ', async () => {
+    it('should return null to specific UF not found ', async () => {
       const objs = await service.findOne({
-        where: [{ year: '2032' }],
+        where: [{ uf: 'CX' }],
       });
 
       expect(objs).toBeNull();
@@ -316,7 +322,7 @@ describe('YearsService', () => {
   });
 
   describe('findOne -> Deleted', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
     obj.deleted = true;
 
     beforeAll(async () => {
@@ -329,7 +335,7 @@ describe('YearsService', () => {
 
     it('should return null to year deleted', async () => {
       const objs = await service.findOne({
-        where: [{ year: obj.year }],
+        where: [{ uf: obj.uf }],
       });
 
       expect(objs).toBeNull();
@@ -337,7 +343,7 @@ describe('YearsService', () => {
   });
 
   describe('findOneId', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -349,7 +355,7 @@ describe('YearsService', () => {
 
     it('should return one Id for input specific', async () => {
       const id = await service.findOneId({
-        where: [{ year: obj.year }],
+        where: [{ uf: obj.uf }],
       });
 
       expect(id).toEqual(1);
@@ -372,7 +378,7 @@ describe('YearsService', () => {
     });
   });
 
-  describe('findOneId Year Specific -> Null', () => {
+  describe('findOneId Uf Specific -> Null', () => {
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
         return {
@@ -383,7 +389,7 @@ describe('YearsService', () => {
 
     it('should return null to obj specific not found', async () => {
       const objs = await service.findOneId({
-        where: [{ year: '2032' }],
+        where: [{ uf: 'CX' }],
       });
 
       expect(objs).toBeNull();
@@ -391,7 +397,7 @@ describe('YearsService', () => {
   });
 
   describe('findOneId -> Deleted', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
     obj.deleted = true;
 
     beforeAll(async () => {
@@ -404,7 +410,7 @@ describe('YearsService', () => {
 
     it('should return null to objects deleted', async () => {
       const objs = await service.findOneId({
-        where: [{ year: obj.year }],
+        where: [{ uf: obj.uf }],
       });
 
       expect(objs).toBeNull();
@@ -412,7 +418,7 @@ describe('YearsService', () => {
   });
 
   describe('findOneId -> Error 500', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -425,7 +431,7 @@ describe('YearsService', () => {
     it('should return error exception to obj specific', async () => {
       try {
         const objs = await service.findOneId({
-          where: [{ year: obj.year }],
+          where: [{ uf: obj.uf }],
         });
       } catch (error) {
         expect(error['status']).toEqual(500);
@@ -435,8 +441,8 @@ describe('YearsService', () => {
   });
 
   describe('create ', () => {
-    const obj = TestUtil.giveMeAvalidYear();
-    const newobj = TestUtil.giveMeAvalidYearNew();
+    const obj = TestUtil.giveMeAvalidStateEntity();
+    const newobj = TestUtil.giveMeAvalidStateEntityNew();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -456,7 +462,7 @@ describe('YearsService', () => {
   });
 
   describe('create -> Error 500', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -481,7 +487,7 @@ describe('YearsService', () => {
   });
 
   describe('create -> Error 500 mongo', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -505,32 +511,8 @@ describe('YearsService', () => {
     });
   });
 
-  describe('create -> Error 409 Conflict Year', () => {
-    const obj = TestUtil.giveMeAvalidYear();
-
-    beforeAll(async () => {
-      mockRepository.getRepository = jest.fn().mockImplementation(() => {
-        return {
-          findOne: jest.fn().mockReturnValue(obj),
-        };
-      });
-      userLogs.create = jest.fn();
-    });
-
-    it('should return error 409 to new object', async () => {
-      try {
-        await service.create(obj, 1, 'I');
-      } catch (error) {
-        expect(error['status']).toEqual(409);
-        expect(error['message']).toEqual(
-          'Registro com o mesmo Ano já existente !',
-        );
-      }
-    });
-  });
-
   describe('update', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -550,7 +532,7 @@ describe('YearsService', () => {
   });
 
   describe('update -> Error 500', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -573,7 +555,7 @@ describe('YearsService', () => {
   });
 
   describe('update -> Error 500 mongo', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -597,32 +579,8 @@ describe('YearsService', () => {
     });
   });
 
-  describe('update -> Error 409 Conflict Year', () => {
-    const obj = TestUtil.giveMeAvalidYear();
-
-    beforeAll(async () => {
-      mockRepository.getRepository = jest.fn().mockImplementation(() => {
-        return {
-          findOne: jest.fn().mockReturnValue(obj),
-        };
-      });
-      userLogs.create = jest.fn();
-    });
-
-    it('should return error 409 to update object', async () => {
-      try {
-        await service.update(2, obj, 1, 'I');
-      } catch (error) {
-        expect(error['status']).toEqual(409);
-        expect(error['message']).toEqual(
-          'Registro com o mesmo Ano já existente !',
-        );
-      }
-    });
-  });
-
   describe('update -> Error 404 not found', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -644,7 +602,7 @@ describe('YearsService', () => {
   });
 
   describe('remove', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -666,62 +624,8 @@ describe('YearsService', () => {
     });
   });
 
-  describe('remove -> Error 500', () => {
-    const obj = TestUtil.giveMeAvalidYear();
-
-    beforeAll(async () => {
-      mockRepository.getRepository = jest.fn().mockImplementation(() => {
-        return {
-          findOne: jest
-            .fn()
-            .mockReturnValueOnce(obj)
-            .mockReturnValue(null),
-          update: jest.fn().mockRejectedValue(new Error('error')),
-        };
-      });
-      userLogs.create = jest.fn();
-    });
-
-    it('should return exception error 500', async () => {
-      try {
-        const obj = await service.remove(1, 1, 'I');
-      } catch (error) {
-        expect(error['status']).toEqual(500);
-        expect(error['message']).toEqual('Erro ao tentar deletar registro !');
-      }
-    });
-  });
-
-  describe('remove -> Error 500 mongo', () => {
-    const obj = TestUtil.giveMeAvalidYear();
-
-    beforeAll(async () => {
-      mockRepository.getRepository = jest.fn().mockImplementation(() => {
-        return {
-          findOne: jest
-            .fn()
-            .mockReturnValueOnce(obj)
-            .mockReturnValue(null),
-          update: jest.fn().mockReturnValue(obj),
-        };
-      });
-      userLogs.create = jest.fn().mockRejectedValue(new Error());
-    });
-
-    it('should return exception error 500 mongodb', async () => {
-      try {
-        const obj = await service.remove(1, 1, 'I');
-      } catch (error) {
-        expect(error['status']).toEqual(500);
-        expect(error['message']).toEqual(
-          'Erro ao tentar criar registro de log para deleção !',
-        );
-      }
-    });
-  });
-
-  describe('remove -> Error 409 Conflict Year', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+  describe('remove  -> Error 409 Conflict no deleted', () => {
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -748,8 +652,62 @@ describe('YearsService', () => {
     });
   });
 
+  describe('remove -> Error 500', () => {
+    const obj = TestUtil.giveMeAvalidStateEntity();
+
+    beforeAll(async () => {
+      mockRepository.getRepository = jest.fn().mockImplementation(() => {
+        return {
+          findOne: jest
+            .fn()
+            .mockReturnValueOnce(obj)
+            .mockReturnValue(null),
+          update: jest.fn().mockRejectedValue(new Error('error')),
+        };
+      });
+      userLogs.create = jest.fn();
+    });
+
+    it('should return exception error 500', async () => {
+      try {
+        const obj = await service.remove(1, 1, 'I');
+      } catch (error) {
+        expect(error['status']).toEqual(500);
+        expect(error['message']).toEqual('Erro ao tentar deletar registro !');
+      }
+    });
+  });
+
+  describe('remove -> Error 500 mongo', () => {
+    const obj = TestUtil.giveMeAvalidStateEntity();
+
+    beforeAll(async () => {
+      mockRepository.getRepository = jest.fn().mockImplementation(() => {
+        return {
+          findOne: jest
+            .fn()
+            .mockReturnValueOnce(obj)
+            .mockReturnValue(null),
+          update: jest.fn().mockReturnValue(obj),
+        };
+      });
+      userLogs.create = jest.fn().mockRejectedValue(new Error());
+    });
+
+    it('should return exception error 500 mongodb', async () => {
+      try {
+        const obj = await service.remove(1, 1, 'I');
+      } catch (error) {
+        expect(error['status']).toEqual(500);
+        expect(error['message']).toEqual(
+          'Erro ao tentar criar registro de log para deleção !',
+        );
+      }
+    });
+  });
+
   describe('remove -> Error 404 not found', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -773,7 +731,7 @@ describe('YearsService', () => {
   });
 
   describe('createMany', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -797,9 +755,9 @@ describe('YearsService', () => {
     });
 
     it('should return objs saves', async () => {
-      const objInput = TestUtil.giveMeAvalidCreateYearInput();
+      const objInput = TestUtil.giveMeAvalidCreateStateInput();
 
-      let arrayObj: [CreateYearInput];
+      let arrayObj: [CreateStateInput];
       arrayObj = [objInput];
       arrayObj.push(objInput);
 
@@ -810,7 +768,7 @@ describe('YearsService', () => {
   });
 
   describe('createMany -> Error 500', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -834,9 +792,9 @@ describe('YearsService', () => {
     });
 
     it('should return exception to new objs', async () => {
-      const objInput = TestUtil.giveMeAvalidCreateYearInput();
+      const objInput = TestUtil.giveMeAvalidCreateStateInput();
 
-      let arrayObj: [CreateYearInput];
+      let arrayObj: [CreateStateInput];
       arrayObj = [objInput];
       arrayObj.push(objInput);
 
@@ -852,7 +810,7 @@ describe('YearsService', () => {
   });
 
   describe('createMany -> Error 500 mongo', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -876,9 +834,9 @@ describe('YearsService', () => {
     });
 
     it('should return execption error 500 mongodb', async () => {
-      const objInput = TestUtil.giveMeAvalidCreateYearInput();
+      const objInput = TestUtil.giveMeAvalidCreateStateInput();
 
-      let arrayObj: [CreateYearInput];
+      let arrayObj: [CreateStateInput];
       arrayObj = [objInput];
       arrayObj.push(objInput);
 
@@ -893,49 +851,8 @@ describe('YearsService', () => {
     });
   });
 
-  describe('createMany -> Error 409 Conflict Year', () => {
-    const obj = TestUtil.giveMeAvalidYear();
-
-    beforeAll(async () => {
-      mockRepository.getRepository = jest.fn().mockImplementation(() => {
-        return {
-          findOne: jest.fn().mockReturnValue(obj),
-          findByIds: jest.fn().mockReturnValue([obj]),
-        };
-      });
-
-      mockRepository.createQueryRunner = jest.fn().mockImplementation(() => {
-        return {
-          connect: jest.fn(),
-          startTransaction: jest.fn(),
-          commitTransaction: jest.fn(),
-          rollbackTransaction: jest.fn(),
-          release: jest.fn(),
-          manager: { save: jest.fn().mockReturnValue([obj]) },
-        };
-      });
-
-      userLogs.create = jest.fn();
-    });
-
-    it('should return error 409 to update object', async () => {
-      const objInput = TestUtil.giveMeAvalidCreateYearInput();
-
-      let arrayObj: [CreateYearInput];
-      arrayObj = [objInput];
-      arrayObj.push(objInput);
-
-      try {
-        await service.createMany(arrayObj, 1, 'I');
-      } catch (error) {
-        expect(error['status']).toEqual(409);
-        expect(error['message']).toEqual('Registros já Existentes !');
-      }
-    });
-  });
-
   describe('updateMany', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -960,9 +877,9 @@ describe('YearsService', () => {
     });
 
     it('should return objs saves', async () => {
-      const objInput = TestUtil.giveMeAvalidUpdateYearInput();
+      const objInput = TestUtil.giveMeAvalidUpdateStateInput();
 
-      let arrayObj: [UpdateYearInput];
+      let arrayObj: [UpdateStateInput];
       arrayObj = [objInput];
       arrayObj.push(objInput);
 
@@ -973,7 +890,7 @@ describe('YearsService', () => {
   });
 
   describe('updateMany -> Error 500', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -998,10 +915,14 @@ describe('YearsService', () => {
     });
 
     it('should return exception error 500', async () => {
-      const arrayObj = new UpdateYearInput();
+      const objInput = TestUtil.giveMeAvalidUpdateStateInput();
+
+      let arrayObj: [UpdateStateInput];
+      arrayObj = [objInput];
+      arrayObj.push(objInput);
 
       try {
-        const obj = await service.updateMany([arrayObj], 1, 'I');
+        const obj = await service.updateMany(arrayObj, 1, 'I');
       } catch (error) {
         expect(error['status']).toEqual(500);
         expect(error['message']).toEqual(
@@ -1012,7 +933,7 @@ describe('YearsService', () => {
   });
 
   describe('updateMany -> Error 500 mongo', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -1037,10 +958,14 @@ describe('YearsService', () => {
     });
 
     it('should return exception error 500 mongodb', async () => {
-      const arrayObj = new UpdateYearInput();
+      const objInput = TestUtil.giveMeAvalidUpdateStateInput();
+
+      let arrayObj: [UpdateStateInput];
+      arrayObj = [objInput];
+      arrayObj.push(objInput);
 
       try {
-        const obj = await service.updateMany([arrayObj], 1, 'I');
+        const obj = await service.updateMany(arrayObj, 1, 'I');
       } catch (error) {
         expect(error['status']).toEqual(500);
         expect(error['message']).toEqual(
@@ -1051,7 +976,7 @@ describe('YearsService', () => {
   });
 
   describe('updateMany -> Objects Deleted', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -1076,57 +1001,20 @@ describe('YearsService', () => {
     });
 
     it('should return false to updated objects deleted', async () => {
-      const arrayObj = new UpdateYearInput();
+      const objInput = TestUtil.giveMeAvalidUpdateStateInput();
 
-      const obj = await service.updateMany([arrayObj], 1, 'I');
+      let arrayObj: [UpdateStateInput];
+      arrayObj = [objInput];
+      arrayObj.push(objInput);
+
+      const obj = await service.updateMany(arrayObj, 1, 'I');
 
       expect(obj).toBe(false);
     });
   });
 
-  describe('updateMany -> Error 409 Conflict Year', () => {
-    const obj = TestUtil.giveMeAvalidYear();
-
-    beforeAll(async () => {
-      mockRepository.getRepository = jest.fn().mockImplementation(() => {
-        return {
-          findOne: jest.fn().mockReturnValue(obj),
-          findByIds: jest.fn().mockReturnValue([obj]),
-        };
-      });
-
-      mockRepository.createQueryRunner = jest.fn().mockImplementation(() => {
-        return {
-          connect: jest.fn(),
-          startTransaction: jest.fn(),
-          commitTransaction: jest.fn(),
-          rollbackTransaction: jest.fn(),
-          release: jest.fn(),
-          manager: { update: jest.fn().mockReturnValue([obj]) },
-        };
-      });
-
-      userLogs.create = jest.fn();
-    });
-
-    it('should return error 409 to update object', async () => {
-      const objInput = TestUtil.giveMeAvalidUpdateYearInput();
-
-      let arrayObj: [UpdateYearInput];
-      arrayObj = [objInput];
-      arrayObj.push(objInput);
-
-      try {
-        const obj = await service.updateMany(arrayObj, 1, 'I');
-      } catch (error) {
-        expect(error['status']).toEqual(409);
-        expect(error['message']).toEqual('Registros já Existentes !');
-      }
-    });
-  });
-
   describe('removeMany', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -1157,7 +1045,7 @@ describe('YearsService', () => {
   });
 
   describe('removeMany -> Error 500', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {
@@ -1193,7 +1081,7 @@ describe('YearsService', () => {
   });
 
   describe('removeMany -> Error 500 mongo', () => {
-    const obj = TestUtil.giveMeAvalidYear();
+    const obj = TestUtil.giveMeAvalidStateEntity();
 
     beforeAll(async () => {
       mockRepository.getRepository = jest.fn().mockImplementation(() => {

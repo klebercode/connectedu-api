@@ -4,7 +4,7 @@ import { Paginated } from '../../common/pages';
 
 import { StateEntity } from '../../states/entities/state.object';
 import { IsOptional, IsEmail } from 'class-validator';
-import { BasicFields } from 'src/common/types/basicfields';
+import { BasicFields } from '../../common/types/basicfields';
 import { CityEntity } from '../../cities/entities/city.object';
 
 @ObjectType()

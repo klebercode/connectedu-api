@@ -3,7 +3,7 @@ import { Entity, Column, Unique } from 'typeorm';
 import { IsOptional, isEmail } from 'class-validator';
 import { Optional } from '@nestjs/common';
 import { Paginated } from '../../common/pages';
-import { BasicFields } from 'src/common/types/basicfields';
+import { BasicFields } from '../../common/types/basicfields';
 
 @ObjectType()
 @Entity('user')

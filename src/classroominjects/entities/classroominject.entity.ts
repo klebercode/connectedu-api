@@ -10,7 +10,7 @@ import {
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { BasicFields } from 'src/common/types/basicfields';
+import { BasicFields } from '../../common/types/basicfields';
 import { SubjectEntity } from '../../subjects/entities/subject.entity';
 import { ClassRoomItemEntity } from '../../classroomitems/entities/classroomitem.entity';
 

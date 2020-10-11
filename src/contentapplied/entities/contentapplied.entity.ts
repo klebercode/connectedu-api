@@ -1,9 +1,9 @@
 import { Field, ObjectType, GraphQLISODateTime } from '@nestjs/graphql';
-import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
+import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { BasicFields } from 'src/common/types/basicfields';
+import { BasicFields } from '../../common/types/basicfields';
 import { YearEntity } from '../../years/entities/year.entity';
 import { SubjectEntity } from '../../subjects/entities/subject.entity';
 import { ClassRoomEntity } from '../../classrooms/entities/classroom.entity';

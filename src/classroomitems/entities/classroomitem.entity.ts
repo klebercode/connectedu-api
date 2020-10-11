@@ -3,7 +3,7 @@ import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { BasicFields } from 'src/common/types/basicfields';
+import { BasicFields } from '../../common/types/basicfields';
 import { ClassRoomEntity } from '../../classrooms/entities/classroom.entity';
 import { SubjectEntity } from '../../subjects/entities/subject.entity';
 import { TeacherEntity } from '../../teachers/entities/teacher.entity';

@@ -1,5 +1,3 @@
-import { async } from 'rxjs/internal/scheduler/async';
-
 // gerar digito verificador modulo 11
 export async function modulo11(valor: string, retornarResto: boolean) {
   if (typeof retornarResto === 'undefined') retornarResto = false;

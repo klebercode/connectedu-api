@@ -3,7 +3,7 @@ import { Entity, Column } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { BasicFields } from 'src/common/types/basicfields';
+import { BasicFields } from '../../common/types/basicfields';
 
 @ObjectType()
 @Entity('occurrence')
