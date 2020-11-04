@@ -1,0 +1,33 @@
+# EditorConfig is awesome: http://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+quote_type = single
+indent_style = space
+
+# 4 space indentation
+[*.py]
+indent_size = 4
+max_line_length=120
+quote_type = double
+
+# Tab indentation (no size specified)
+[Makefile]
+indent_style = tab
+
+# Indentation override for all JS under lib directory
+[*.{js,ts,html,css,json,yml}]
+indent_size = 2
+max_line_length=120
+
+### custom for markdown
+[*.md]
+# do not remove any whitespace characters preceding newline characters
+trim_trailing_whitespace = false
