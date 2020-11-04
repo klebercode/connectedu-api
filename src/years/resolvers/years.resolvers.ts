@@ -9,7 +9,7 @@ import {
   Parent,
 } from '@nestjs/graphql';
 
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
@@ -17,9 +17,6 @@ import { YearEntity, YearPaginated } from '../entities/year.entity';
 import { YearsService } from '../years.service';
 import { CreateYearInput } from '../types/create-year.input';
 import { UpdateYearInput } from '../types/update-year.input';
-
-import { UsersService } from '../../users/users.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import {
   HttpExceptionFilter,
   CustomException,
@@ -35,10 +32,7 @@ export class YearsResolver extends ResolverDefault<
   CreateYearInput,
   UpdateYearInput
 > {
-  constructor(
-    private readonly yearsService: YearsService,
-    private readonly usersService: UsersService,
-  ) {
+  constructor(private readonly yearsService: YearsService) {
     super('Exercício', yearsService);
   }
 
@@ -85,16 +79,20 @@ export class YearsResolver extends ResolverDefault<
   }
 
   @Mutation(() => Boolean, { name: 'yearDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'yearDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => YearEntity, { name: 'yearUpdate' })
@@ -116,32 +114,4 @@ export class YearsResolver extends ResolverDefault<
   }
 
   // **************************************  Resolucao de Campos
-
-  @ResolveField(() => UserEntity)
-  async userCreated(@Parent() yearEntity: YearEntity): Promise<any> {
-    const id = yearEntity.userCreatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
-    }
-  }
-
-  @ResolveField(() => UserEntity)
-  async userUpdated(@Parent() yearEntity: YearEntity) {
-    const id = yearEntity.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
-    }
-  }
 }

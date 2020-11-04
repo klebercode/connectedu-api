@@ -59,21 +59,34 @@ export class UpdateStudentInput {
   nationalityForeign?: string;
 
   @Field({ nullable: true })
-  @MaxLength(1)
-  @IsOptional()
-  reside?: string;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  resideResponsableId?: number;
-
-  @Field({ nullable: true })
   @IsOptional()
   fatherId?: number;
 
   @Field({ nullable: true })
   @IsOptional()
+  resideFather?: boolean;
+
+  @Field({ nullable: true })
+  @IsOptional()
   motherId?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  resideMother?: boolean;
+
+  @Field({ nullable: true })
+  @MaxLength(1)
+  @IsOptional()
+  typeReside?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(60)
+  @IsOptional()
+  reside?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  separatedParents?: boolean;
 
   @Field({ nullable: true })
   @MaxLength(100)
@@ -103,6 +116,11 @@ export class UpdateStudentInput {
   @MaxLength(10)
   @IsOptional()
   zipCode?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(60)
+  @IsOptional()
+  schoolLast?: string;
 
   @Field({ nullable: true })
   @MaxLength(100)
@@ -141,6 +159,26 @@ export class UpdateStudentInput {
   OrgIdentity?: string;
 
   @Field({ nullable: true })
+  @MaxLength(100)
+  @IsOptional()
+  registryName?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(100)
+  @IsOptional()
+  certificateNumber?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(15)
+  @IsOptional()
+  bookNumber?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(15)
+  @IsOptional()
+  bookSheet?: string;
+
+  @Field({ nullable: true })
   @IsOptional()
   note?: string;
 
@@ -148,4 +186,9 @@ export class UpdateStudentInput {
   @MaxLength(100)
   @IsOptional()
   profile?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

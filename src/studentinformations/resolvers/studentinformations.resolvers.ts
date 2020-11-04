@@ -11,7 +11,7 @@ import {
 
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 
 import {
   StudentInformationEntity,
@@ -21,8 +21,7 @@ import { StudentInformationsService } from '../studentinformations.service';
 import { CreatStudentInformationInput } from '../types/create-studentinformation.input';
 import { UpdateStudentInformationInput } from '../types/update-studentinformation.input';
 //importados
-import { UsersService } from '../../users/users.service';
-import { UserEntity } from '../../users/entities/user.entity';
+
 import { ClassRoomsService } from '../../classrooms/classrooms.service';
 import { ResponsiblesService } from '../../responsibles/responsibles.service';
 import { StudentsService } from '../../students/students.service';
@@ -44,7 +43,6 @@ export class StudentInformationsResolver extends ResolverDefault<
 > {
   constructor(
     private readonly studentInformationsService: StudentInformationsService,
-    private readonly usersService: UsersService,
     private readonly responsiblesService: ResponsiblesService,
     private readonly studentsService: StudentsService,
     private readonly yearsService: YearsService,
@@ -89,7 +87,7 @@ export class StudentInformationsResolver extends ResolverDefault<
   }
 
   @Mutation(() => [StudentInformationEntity], {
-    name: 'sstudentInformationCreateMany',
+    name: 'studentInformationCreateMany',
   })
   async createMany(
     @Context() context: MyContext,
@@ -100,16 +98,20 @@ export class StudentInformationsResolver extends ResolverDefault<
   }
 
   @Mutation(() => Boolean, { name: 'studentInformationDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'studentInformationDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => StudentInformationEntity, {
@@ -226,36 +228,6 @@ export class StudentInformationsResolver extends ResolverDefault<
       return this.responsiblesService.findOneById(id);
     } catch (error) {
       CustomException.catch(error, 'get', 'Responsável');
-    }
-  }
-
-  @ResolveField(type => UserEntity)
-  async userCreated(
-    @Parent() studentInformationEntity: StudentInformationEntity,
-  ): Promise<any> {
-    const id = studentInformationEntity.userCreatedId;
-    if (!id) {
-      return null;
-    }
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
-    }
-  }
-
-  @ResolveField(type => UserEntity)
-  async userUpdated(
-    @Parent() studentInformationEntity: StudentInformationEntity,
-  ) {
-    const id = studentInformationEntity.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
     }
   }
 }

@@ -69,6 +69,11 @@ export class CreateCompanyInput {
   cnpj?: string;
 
   @Field({ nullable: true })
+  @MaxLength(18)
+  @IsOptional()
+  stateRegistration?: string;
+
+  @Field({ nullable: true })
   @MaxLength(100)
   @IsOptional()
   recognition?: string;
@@ -77,6 +82,11 @@ export class CreateCompanyInput {
   @MaxLength(100)
   @IsOptional()
   publication?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(40)
+  @IsOptional()
+  registerSchool?: string;
 
   @Field({ nullable: true })
   @MaxLength(40)
@@ -101,4 +111,9 @@ export class CreateCompanyInput {
   @MaxLength(100)
   @IsOptional()
   image?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

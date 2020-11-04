@@ -4,11 +4,12 @@ import { DateScalar } from '../common/scalars/date.scalar';
 import { OccurrencesService } from './occurrences.service';
 import { OccurrencesResolver } from './resolvers/occurrences.resolvers';
 
-import { UsersModule } from '../users/users.module';
+import { UserCentesModule } from './../usercenter/usercenters.module';
 import { CustomersModule } from '../customers/customers.module';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({
-  imports: [UsersModule, CustomersModule],
+  imports: [UserCentesModule, CustomersModule, UserLogsModule],
   providers: [OccurrencesService, DateScalar, OccurrencesResolver],
   exports: [OccurrencesService],
 })

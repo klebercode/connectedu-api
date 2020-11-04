@@ -3,16 +3,14 @@ import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { UserBaseEntity } from 'src/users/entities/user-base-entity';
+import { BasicFields } from '../../common/types/basicfields';
 import { StudentEntity } from '../../students/entities/student.entity';
 import { OccurrenceEntity } from '../../occurrences/entities/occurrence.entity';
-import { TeacherEntity } from '../../teachers/entities/teacher.entity';
 import { SubjectEntity } from '../../subjects/entities/subject.entity';
-import { EmployeeEntity } from '../../employees/entities/employee.entity';
 
 @ObjectType()
 @Entity('studentoccurrence')
-export class StudentOccurrenceEntity extends UserBaseEntity {
+export class StudentOccurrenceEntity extends BasicFields {
   @Field({ nullable: true })
   @Column({ name: 'occurrence_id', nullable: false })
   @IsOptional()
@@ -41,22 +39,6 @@ export class StudentOccurrenceEntity extends UserBaseEntity {
   date?: Date;
 
   @Field({ nullable: true })
-  @Column({ name: 'type_origin', nullable: false })
-  @IsOptional()
-  typeOrigin?: number;
-
-  @Field({ nullable: true })
-  @Column({ name: 'teacher_id', nullable: true })
-  @IsOptional()
-  teacherId?: number;
-
-  @Field(type => TeacherEntity, { nullable: true })
-  @ManyToOne(type => TeacherEntity)
-  @JoinColumn({ name: 'teacher_id' })
-  @IsOptional()
-  teacher?: TeacherEntity;
-
-  @Field({ nullable: true })
   @Column({ name: 'subject_id', nullable: true })
   @IsOptional()
   subjectId?: number;
@@ -66,17 +48,6 @@ export class StudentOccurrenceEntity extends UserBaseEntity {
   @JoinColumn({ name: 'subject_id' })
   @IsOptional()
   subject?: SubjectEntity;
-
-  @Field({ nullable: true })
-  @Column({ name: 'employee_id', nullable: true })
-  @IsOptional()
-  employeeId?: number;
-
-  @Field(type => EmployeeEntity, { nullable: true })
-  @ManyToOne(type => EmployeeEntity)
-  @JoinColumn({ name: 'employee_id' })
-  @IsOptional()
-  employee?: EmployeeEntity;
 
   @Field({ nullable: true })
   @Column({ type: 'text', nullable: true })

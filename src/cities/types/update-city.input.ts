@@ -11,5 +11,9 @@ export class UpdateCityInput {
   description: string;
 
   @Field({ nullable: true })
+  @MaxLength(7)
+  codeCity: string;
+
+  @Field({ nullable: true })
   stateId?: number;
 }

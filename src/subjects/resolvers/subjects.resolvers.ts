@@ -9,7 +9,7 @@ import {
   Parent,
 } from '@nestjs/graphql';
 
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
@@ -18,8 +18,6 @@ import { SubjectsService } from '../subjects.service';
 import { CreateSubjectInput } from '../types/create-subject.input';
 import { UpdateSubjectInput } from '../types/update-subject.input';
 
-import { UsersService } from '../../users/users.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import {
   HttpExceptionFilter,
   CustomException,
@@ -35,10 +33,7 @@ export class SubjectsResolver extends ResolverDefault<
   CreateSubjectInput,
   UpdateSubjectInput
 > {
-  constructor(
-    private readonly subjectsService: SubjectsService,
-    private readonly usersService: UsersService,
-  ) {
+  constructor(private readonly subjectsService: SubjectsService) {
     super('Matéria', subjectsService);
   }
 
@@ -85,16 +80,20 @@ export class SubjectsResolver extends ResolverDefault<
   }
 
   @Mutation(() => Boolean, { name: 'subjectDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'subjectDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => SubjectEntity, { name: 'subjectUpdate' })
@@ -116,32 +115,4 @@ export class SubjectsResolver extends ResolverDefault<
   }
 
   // **************************************  Resolucao de Campos
-
-  @ResolveField(() => UserEntity)
-  async userCreated(@Parent() subjectEntity: SubjectEntity): Promise<any> {
-    const id = subjectEntity.userCreatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
-    }
-  }
-
-  @ResolveField(() => UserEntity)
-  async userUpdated(@Parent() subjectEntity: SubjectEntity): Promise<any> {
-    const id = subjectEntity.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
-    }
-  }
 }

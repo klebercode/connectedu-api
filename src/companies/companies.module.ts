@@ -4,13 +4,20 @@ import { DateScalar } from '../common/scalars/date.scalar';
 import { CompaniesResolver } from './resolvers/companies.resolver';
 import { CompaniesService } from './companies.service';
 
-import { UsersModule } from '../users/users.module';
 import { StatesModule } from '../states/states.module';
 import { CitiesModule } from '../cities/cities.module';
 import { CustomersModule } from '../customers/customers.module';
+import { UserCentesModule } from './../usercenter/usercenters.module';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({
-  imports: [UsersModule, CustomersModule, StatesModule, CitiesModule],
+  imports: [
+    UserCentesModule,
+    CustomersModule,
+    StatesModule,
+    CitiesModule,
+    UserLogsModule,
+  ],
   providers: [CompaniesResolver, CompaniesService, DateScalar],
   exports: [CompaniesService],
 })

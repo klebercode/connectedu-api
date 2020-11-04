@@ -3,11 +3,11 @@ import { Entity, Column } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { BaseEntity } from '../../base-entity';
+import { BasicFields } from '../../common/types/basicfields';
 
 @ObjectType()
 @Entity('organization')
-export class OrganizationEntity extends BaseEntity {
+export class OrganizationEntity extends BasicFields {
   @Field({ nullable: true })
   @Column({ length: 100, nullable: true })
   description: string;

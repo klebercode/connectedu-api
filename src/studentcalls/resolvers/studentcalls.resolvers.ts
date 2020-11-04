@@ -11,7 +11,7 @@ import {
 
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 
 import {
   StudentCallEntity,
@@ -22,8 +22,6 @@ import { CreatStudentCallInput } from '../types/create-studentcall.input';
 import { UpdateStudentCallInput } from '../types/update-studentcall.input';
 
 //importados
-import { UsersService } from '../../users/users.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import { StudentsService } from '../../students/students.service';
 import { SubjectsService } from '../../subjects/subjects.service';
 import {
@@ -43,7 +41,6 @@ export class StudentCallsResolver extends ResolverDefault<
 > {
   constructor(
     private readonly studentCallsService: StudentCallsService,
-    private readonly usersService: UsersService,
     private readonly studentsService: StudentsService,
     private readonly subjectsService: SubjectsService,
   ) {
@@ -95,16 +92,20 @@ export class StudentCallsResolver extends ResolverDefault<
   }
 
   @Mutation(() => Boolean, { name: 'studentCallDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'studentCallDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => StudentCallEntity, {
@@ -152,34 +153,6 @@ export class StudentCallsResolver extends ResolverDefault<
       return this.subjectsService.findOneById(id);
     } catch (error) {
       CustomException.catch(error, 'get', 'Estudante');
-    }
-  }
-
-  @ResolveField(type => UserEntity)
-  async userCreated(
-    @Parent() studentCallEntity: StudentCallEntity,
-  ): Promise<any> {
-    const id = studentCallEntity.userCreatedId;
-    if (!id) {
-      return null;
-    }
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
-    }
-  }
-
-  @ResolveField(type => UserEntity)
-  async userUpdated(@Parent() studentCallEntity: StudentCallEntity) {
-    const id = studentCallEntity.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
     }
   }
 }

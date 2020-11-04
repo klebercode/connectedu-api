@@ -63,14 +63,13 @@ export class CustomException extends HttpException {
         this.message = 'Erro não identificado';
         break;
     }
-
     throw new HttpException(
       {
         message: this.message + ' - ' + type,
         code: error['code'],
-        detail: error['detail'],
+        detail: error['message'],
       },
-      error['code'],
+      error['status'],
     );
   }
 }

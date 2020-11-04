@@ -8,6 +8,6 @@ export class AppService {
   constructor(@Inject(CUSTOMER_CONNECTION) private connection: Connection) {}
 
   getHello(): string {
-    return this.connection.name;
+    return 'Hello World!'; //this.connection.name;
   }
 }

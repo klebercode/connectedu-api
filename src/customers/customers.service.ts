@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Repository, Connection } from 'typeorm';
-import { InjectRepository, InjectConnection } from '@nestjs/typeorm';
+import { Connection } from 'typeorm';
+import { InjectConnection } from '@nestjs/typeorm';
 import { ServicePublic } from '../common/services/public.service';
 
 import { Customer } from './entities/customer.object';
 import { CreateCustomerInput } from './types/create-customer.input';
 import { UpdateCustomerInput } from './types/update-customer.input';
+import { UserLogsService } from '../userlogs/userlogs.service';
 
 @Injectable()
 export class CustomersService extends ServicePublic<
@@ -14,10 +15,20 @@ export class CustomersService extends ServicePublic<
   UpdateCustomerInput
 > {
   constructor(
-    @InjectConnection() connection: Connection,
-    @InjectRepository(Customer)
-    repository: Repository<Customer>,
+    @InjectConnection() connectionPublic: Connection,
+    private readonly userLogsService: UserLogsService,
   ) {
-    super(connection, repository, Customer);
+    super(connectionPublic, Customer, userLogsService);
+  }
+
+  async findHost(host: string): Promise<Customer> {
+    if (!host) {
+      return null;
+    }
+    const obj = await this.repository.findOne({ host });
+    if (!obj) {
+      return null;
+    }
+    return obj;
   }
 }

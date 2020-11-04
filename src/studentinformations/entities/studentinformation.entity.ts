@@ -2,8 +2,9 @@ import { Field, ObjectType, GraphQLISODateTime } from '@nestjs/graphql';
 import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
+import { Relationship } from '../../common/enums/enum-typeuser';
 
-import { UserBaseEntity } from 'src/users/entities/user-base-entity';
+import { BasicFields } from '../../common/types/basicfields';
 import { ClassRoomEntity } from '../../classrooms/entities/classroom.entity';
 import { StudentEntity } from '../../students/entities/student.entity';
 import { YearEntity } from '../../years/entities/year.entity';
@@ -11,8 +12,7 @@ import { ResponsibleEntity } from '../../responsibles/entities/responsible.entit
 
 @ObjectType()
 @Entity('studentinformation')
-@Unique(['studentId', 'yearId'])
-export class StudentInformationEntity extends UserBaseEntity {
+export class StudentInformationEntity extends BasicFields {
   @Field({ nullable: true })
   @Column({ name: 'student_id', nullable: false })
   @IsOptional()
@@ -72,7 +72,7 @@ export class StudentInformationEntity extends UserBaseEntity {
   formPayment?: number;
 
   @Field({ nullable: true })
-  @Column({ name: 'monthly_discount', nullable: true })
+  @Column({ type: 'float', name: 'monthly_discount', nullable: true })
   @IsOptional()
   monthlyDiscount?: number;
 
@@ -102,10 +102,10 @@ export class StudentInformationEntity extends UserBaseEntity {
   @IsOptional()
   responsible1?: ResponsibleEntity;
 
-  @Field({ nullable: true })
+  @Field(type => Relationship, { nullable: true })
   @Column({ name: 'relationship1', nullable: true })
   @IsOptional()
-  relationship1?: number;
+  relationship1?: Relationship;
 
   @Field({ nullable: true })
   @Column({ name: 'responsible2_id', nullable: true })
@@ -118,10 +118,10 @@ export class StudentInformationEntity extends UserBaseEntity {
   @IsOptional()
   responsible2?: ResponsibleEntity;
 
-  @Field({ nullable: true })
+  @Field(type => Relationship, { nullable: true })
   @Column({ name: 'relationship2', nullable: true })
   @IsOptional()
-  relationship2?: number;
+  relationship2?: Relationship;
 
   @Field({ nullable: true })
   @Column({ name: 'responsible_pedag_id', nullable: true })
@@ -134,10 +134,15 @@ export class StudentInformationEntity extends UserBaseEntity {
   @IsOptional()
   responsiblePedag?: ResponsibleEntity;
 
-  @Field({ nullable: true })
+  @Field(type => Relationship, { nullable: true })
   @Column({ name: 'relationship_pedag', nullable: true })
   @IsOptional()
-  relationshipPedag?: number;
+  relationshipPedag?: Relationship;
+
+  @Field({ nullable: true })
+  @Column({ name: 'new_student', nullable: true })
+  @IsOptional()
+  newStudent?: boolean;
 }
 
 @ObjectType()

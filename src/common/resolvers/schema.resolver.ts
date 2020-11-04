@@ -1,10 +1,10 @@
-import { MyContext } from '../types/myContext';
 import { NotFoundException } from '@nestjs/common';
 import { CustomException } from '../filters/http-exception.filter';
 import { PaginationArgs } from '../../common/pages';
+import { MyContext } from '../types/mycontext';
 
 export class ResolverDefault<EntityDefault, CreateDefault, UpdateDefault> {
-  constructor(private nameApp: any, private services) {}
+  constructor(private nameApp: any, private services: any) {}
 
   // metodos de queries
   async get(id: number): Promise<EntityDefault> {
@@ -51,7 +51,7 @@ export class ResolverDefault<EntityDefault, CreateDefault, UpdateDefault> {
   ): Promise<EntityDefault> {
     try {
       const { user } = context.req;
-      const obj = await this.services.create(input, user['id']);
+      const obj = await this.services.create(input, user['id'], user['type']);
       return obj;
     } catch (error) {
       CustomException.catch(error, 'create', this.nameApp);
@@ -64,24 +64,32 @@ export class ResolverDefault<EntityDefault, CreateDefault, UpdateDefault> {
   ): Promise<EntityDefault[]> {
     try {
       const { user } = context.req;
-      const obj = await this.services.createMany(input, user['id']);
+      const obj = await this.services.createMany(
+        input,
+        user['id'],
+        user['type'],
+      );
       return obj;
     } catch (error) {
       CustomException.catch(error, 'createMany', this.nameApp);
     }
   }
 
-  async delete(id: number): Promise<boolean> {
+  async delete(context: MyContext, id: number): Promise<boolean> {
     try {
-      return await this.services.remove(id);
+      const { user } = context.req;
+
+      return await this.services.remove(id, user['id'], user['type']);
     } catch (error) {
       CustomException.catch(error, 'delete', this.nameApp);
     }
   }
 
-  async deleteMany(ids: [number]): Promise<boolean> {
+  async deleteMany(context: MyContext, ids: [number]): Promise<boolean> {
     try {
-      return await this.services.removeMany(ids);
+      const { user } = context.req;
+
+      return await this.services.removeMany(ids, user['id'], user['type']);
     } catch (error) {
       CustomException.catch(error, 'deleteMany', this.nameApp);
     }
@@ -94,7 +102,12 @@ export class ResolverDefault<EntityDefault, CreateDefault, UpdateDefault> {
   ): Promise<EntityDefault> {
     try {
       const { user } = context.req;
-      const obj = await this.services.update(id, { ...input }, user['id']);
+      const obj = await this.services.update(
+        id,
+        { ...input },
+        user['id'],
+        user['type'],
+      );
       return obj;
     } catch (error) {
       CustomException.catch(error, 'update', this.nameApp);
@@ -107,7 +120,11 @@ export class ResolverDefault<EntityDefault, CreateDefault, UpdateDefault> {
   ): Promise<boolean> {
     try {
       const { user } = context.req;
-      const obj = await this.services.updateMany(input, user['id']);
+      const obj = await this.services.updateMany(
+        input,
+        user['id'],
+        user['type'],
+      );
       return obj;
     } catch (error) {
       CustomException.catch(error, 'updateMany', this.nameApp);

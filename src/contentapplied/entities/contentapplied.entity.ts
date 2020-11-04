@@ -1,9 +1,9 @@
 import { Field, ObjectType, GraphQLISODateTime } from '@nestjs/graphql';
-import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
+import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { UserBaseEntity } from 'src/users/entities/user-base-entity';
+import { BasicFields } from '../../common/types/basicfields';
 import { YearEntity } from '../../years/entities/year.entity';
 import { SubjectEntity } from '../../subjects/entities/subject.entity';
 import { ClassRoomEntity } from '../../classrooms/entities/classroom.entity';
@@ -11,7 +11,7 @@ import { TeacherEntity } from '../../teachers/entities/teacher.entity';
 
 @ObjectType()
 @Entity('contentapplied')
-export class ContentAppliedEntity extends UserBaseEntity {
+export class ContentAppliedEntity extends BasicFields {
   @Field({ nullable: false })
   @Column({ name: 'year_id', nullable: false })
   @IsOptional()

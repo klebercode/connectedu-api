@@ -1,15 +1,7 @@
 import { UseGuards, UseFilters } from '@nestjs/common';
-import {
-  Args,
-  Mutation,
-  Query,
-  Resolver,
-  ResolveField,
-  Context,
-  Parent,
-} from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver, Context } from '@nestjs/graphql';
 
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
@@ -18,10 +10,7 @@ import { UsersService } from '../users.service';
 import { CreateUsersInput } from '../types/create-user.input';
 import { UpdateUsersInput } from '../types/update-user.input';
 
-import {
-  HttpExceptionFilter,
-  CustomException,
-} from '../../common/filters/http-exception.filter';
+import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
 
@@ -80,16 +69,20 @@ export class UsersResolver extends ResolverDefault<
   }
 
   @Mutation(() => Boolean, { name: 'userDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'userDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => UserEntity, { name: 'userUpdate' })
@@ -110,48 +103,5 @@ export class UsersResolver extends ResolverDefault<
     return super.updateMany(context, input);
   }
 
-  @Mutation(() => Boolean, { name: 'userUpdatePassword' })
-  async updatePasswordUser(
-    @Context() context: MyContext,
-    @Args('id') id: number,
-    @Args('input') input: string,
-  ): Promise<boolean> {
-    try {
-      const { user } = context.req;
-      const ret = await this.usersService.updatePassword(id, input, user['id']);
-      return ret;
-    } catch (error) {
-      CustomException.catch(error, 'update', 'Password Usuário');
-    }
-  }
-
   // **************************************  Resolucao de Campos
-
-  @ResolveField('userCreated')
-  async userCreated(@Parent() user: UserEntity): Promise<any> {
-    const id = user.userCreatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
-    }
-  }
-
-  @ResolveField('userUpdated')
-  async userUpdated(@Parent() user: UserEntity) {
-    const id = user.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
-    }
-  }
 }

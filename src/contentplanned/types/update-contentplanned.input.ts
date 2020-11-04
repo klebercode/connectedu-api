@@ -50,4 +50,9 @@ export class UpdateContentPlannedInput {
   @Field({ nullable: true })
   @IsOptional()
   classHome?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

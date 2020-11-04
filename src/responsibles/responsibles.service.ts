@@ -8,6 +8,7 @@ import { ServiceDefault } from '../common/services/schema.service';
 import { ResponsibleEntity } from './entities/responsible.entity';
 import { CreateResponsibleInput } from './types/create-responsible.input';
 import { UpdateResponsibleInput } from './types/update-responsible.input';
+import { UserLogsService } from '../userlogs/userlogs.service';
 
 @CustomersServiceDecorator()
 export class ResponsiblesService extends ServiceDefault<
@@ -15,7 +16,10 @@ export class ResponsiblesService extends ServiceDefault<
   CreateResponsibleInput,
   UpdateResponsibleInput
 > {
-  constructor(@Inject(CUSTOMER_CONNECTION) connection: Connection) {
-    super(connection, ResponsibleEntity);
+  constructor(
+    @Inject(CUSTOMER_CONNECTION) connection: Connection,
+    private readonly userLogsService: UserLogsService,
+  ) {
+    super(connection, ResponsibleEntity, userLogsService);
   }
 }

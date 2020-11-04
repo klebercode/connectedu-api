@@ -12,7 +12,7 @@ import {
 
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 
 import {
   ContentAppliedEntity,
@@ -23,8 +23,7 @@ import { CreatContentAppliedInput } from '../types/create-contentapplied.input';
 import { UpdateContentAppliedInput } from '../types/update-contentapplied.input';
 
 //importados
-import { UsersService } from '../../users/users.service';
-import { UserEntity } from '../../users/entities/user.entity';
+
 import { YearsService } from '../../years/years.service';
 import { SubjectsService } from '../../subjects/subjects.service';
 import { TeachersService } from '../../teachers/teachers.service';
@@ -46,7 +45,6 @@ export class ContentAppliedsResolver extends ResolverDefault<
 > {
   constructor(
     private readonly contentAppliedsService: ContentAppliedsService,
-    private readonly usersService: UsersService,
     private readonly yearsService: YearsService,
     private readonly subjectsService: SubjectsService,
     private readonly teachersService: TeachersService,
@@ -100,16 +98,20 @@ export class ContentAppliedsResolver extends ResolverDefault<
   }
 
   @Mutation(() => Boolean, { name: 'contentAppliedDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'contentAppliedDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => ContentAppliedEntity, {
@@ -191,34 +193,6 @@ export class ContentAppliedsResolver extends ResolverDefault<
       return this.subjectsService.findOneById(id);
     } catch (error) {
       CustomException.catch(error, 'get', 'Matéria');
-    }
-  }
-
-  @ResolveField(type => UserEntity)
-  async userCreated(
-    @Parent() contentAppliedEntity: ContentAppliedEntity,
-  ): Promise<any> {
-    const id = contentAppliedEntity.userCreatedId;
-    if (!id) {
-      return null;
-    }
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
-    }
-  }
-
-  @ResolveField(type => UserEntity)
-  async userUpdated(@Parent() contentAppliedEntity: ContentAppliedEntity) {
-    const id = contentAppliedEntity.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
     }
   }
 }

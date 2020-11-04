@@ -26,4 +26,9 @@ export class CreateClassRoomInjectInput {
   @Field({ nullable: true })
   @IsOptional()
   average?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

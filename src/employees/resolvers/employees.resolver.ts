@@ -16,11 +16,9 @@ import { EmployeesService } from '../employees.service';
 import { CreateEmploeeInput } from '../types/create-employee.input';
 import { UpdateEmploeeInput } from '../types/update-employee.input';
 
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 import { StatesService } from '../../states/states.service';
-import { UsersService } from '../../users/users.service';
 import { CitiesService } from '../../cities/cities.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import {
   HttpExceptionFilter,
   CustomException,
@@ -38,7 +36,6 @@ export class EmployeesResolver extends ResolverDefault<
 > {
   constructor(
     private readonly employeesService: EmployeesService,
-    private readonly usersService: UsersService,
     private readonly statesService: StatesService,
     private readonly citiesService: CitiesService,
   ) {
@@ -88,16 +85,20 @@ export class EmployeesResolver extends ResolverDefault<
   }
 
   @Mutation(() => Boolean, { name: 'employeeDelete' })
-  async detele(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'employeeDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => EmployeeEntity, { name: 'employeeUpdate' })
@@ -143,32 +144,6 @@ export class EmployeesResolver extends ResolverDefault<
       return this.citiesService.findOneById(id);
     } catch (error) {
       CustomException.catch(error, 'get', 'Cidade');
-    }
-  }
-
-  @ResolveField(() => UserEntity)
-  async userCreated(@Parent() employee: EmployeeEntity): Promise<any> {
-    const id = employee.userCreatedId;
-    if (!id) {
-      return null;
-    }
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
-    }
-  }
-
-  @ResolveField(() => UserEntity)
-  async userUpdated(@Parent() employee: EmployeeEntity) {
-    const id = employee.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
     }
   }
 }

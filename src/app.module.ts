@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
+import { MongooseModule } from '@nestjs/mongoose';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { config } from './orm.config';
+import { config, configMongo } from './orm.config';
 
 // Import moulos
 import { AuthModule } from './auth/auth.module';
@@ -29,16 +30,26 @@ import { StudentGradesModule } from './studentgrades/studentgrades.module';
 import { StudentCallsModule } from './studentcalls/studentcalls.module';
 import { ContentPlannedsModule } from './contentplanned/contentplanneds.module';
 import { ContentAppliedsModule } from './contentapplied/contentapplieds.module';
+import { UserCentesModule } from './usercenter/usercenters.module';
+import { UserLogsModule } from './userlogs/userlogs.module';
+import { ConnectMongodbModule } from './connectmongodb/connectmongodb.module';
+import { MigrationsModule } from './migrations/migrations.module';
 
 // Modulos Publicos
 import { PermisisonsModule } from './permissions/permissions.module';
 import { PermissionEntity } from './permissions/entities/permission.object';
+
 import { OrganizationsModule } from './organizations/organizations.module';
 import { OrganizationEntity } from './organizations/entities/organization.object';
+
 import { StatesModule } from './states/states.module';
 import { StateEntity } from './states/entities/state.object';
+
 import { CitiesModule } from './cities/cities.module';
 import { CityEntity } from './cities/entities/city.object';
+
+import { KeyAccessModule } from './keyaccess/keyaccess.module';
+import { KeyAccessEntity } from './keyaccess/entities/keyaccess.object';
 
 // Schema do postgres
 import { CustomersModule } from './customers/customers.module';
@@ -49,6 +60,7 @@ import { Customer } from './customers/entities/customer.object';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -60,46 +72,60 @@ import { Customer } from './customers/entities/customer.object';
         host: configService.get<string>('DB_HOST'),
         database: configService.get<any>('DB_NAME'),
         entities: [
+          OrganizationEntity,
           Customer,
           StateEntity,
-          OrganizationEntity,
-          PermissionEntity,
           CityEntity,
+          PermissionEntity,
+          KeyAccessEntity,
         ],
       }),
       inject: [ConfigService],
     }),
+
     GraphQLModule.forRoot({
       installSubscriptionHandlers: true,
       autoSchemaFile: 'schema.gql',
       context: ({ req, res }) => ({ req, res }),
     }),
     AuthModule,
-    StatesModule,
     CustomersModule,
-    UsersModule,
-    StudentsModule,
-    FileUploadModule,
+    ConnectMongodbModule,
+
+    // publicos
     OrganizationsModule,
     PermisisonsModule,
+    StatesModule,
     CitiesModule,
-    UserPermissionsModule,
-    CompaniesModule,
+    FileUploadModule,
+    KeyAccessModule,
+
+    // schemas
     YearsModule,
+    CompaniesModule,
+    UsersModule,
+    UserPermissionsModule,
     SubjectsModule,
     TeachersModule,
     ClassRoomsModule,
     ClassRoomItemsModule,
     ClassRoomInjectsModule,
-    ResponsiblesModule,
-    StudentInformationsModule,
     EmployeesModule,
     OccurrencesModule,
+    ResponsiblesModule,
+    StudentsModule,
+    StudentInformationsModule,
     StudentOccurrencesModule,
     StudentGradesModule,
     StudentCallsModule,
     ContentPlannedsModule,
     ContentAppliedsModule,
+    UserCentesModule,
+
+    // module mongodb
+    UserLogsModule,
+
+    MigrationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

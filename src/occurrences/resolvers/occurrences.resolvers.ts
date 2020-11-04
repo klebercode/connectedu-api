@@ -9,7 +9,7 @@ import {
   Parent,
 } from '@nestjs/graphql';
 
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
@@ -21,8 +21,6 @@ import { OccurrencesService } from '../occurrences.service';
 import { CreateOccurrenceInput } from '../types/create-occurrence.input';
 import { UpdateOccurrenceInput } from '../types/update-occurrence.input';
 
-import { UsersService } from '../../users/users.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import {
   HttpExceptionFilter,
   CustomException,
@@ -38,10 +36,7 @@ export class OccurrencesResolver extends ResolverDefault<
   CreateOccurrenceInput,
   UpdateOccurrenceInput
 > {
-  constructor(
-    private readonly occurrencesService: OccurrencesService,
-    private readonly usersService: UsersService,
-  ) {
+  constructor(private readonly occurrencesService: OccurrencesService) {
     super('Ocorrência', occurrencesService);
   }
 
@@ -88,16 +83,20 @@ export class OccurrencesResolver extends ResolverDefault<
   }
 
   @Mutation(() => Boolean, { name: 'occurrenceDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'occurrenceDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => OccurrenceEntity, { name: 'occurrenceUpdate' })
@@ -119,30 +118,4 @@ export class OccurrencesResolver extends ResolverDefault<
   }
 
   // **************************************  Resolucao de Campos
-
-  @ResolveField(() => UserEntity)
-  async userCreated(@Parent() occurrence: OccurrenceEntity): Promise<any> {
-    const id = occurrence.userCreatedId;
-    if (!id) {
-      return null;
-    }
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
-    }
-  }
-
-  @ResolveField(() => UserEntity)
-  async userUpdated(@Parent() occurrence: OccurrenceEntity): Promise<any> {
-    const id = occurrence.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
-    }
-  }
 }

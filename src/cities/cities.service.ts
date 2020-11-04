@@ -1,11 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { Repository, Connection } from 'typeorm';
-import { InjectRepository, InjectConnection } from '@nestjs/typeorm';
+import { Injectable, Inject } from '@nestjs/common';
+import { Connection } from 'typeorm';
+import { InjectConnection } from '@nestjs/typeorm';
 import { ServicePublic } from '../common/services/public.service';
+import { CUSTOMER_CONNECTION } from '../customers/customers.module';
 
 import { CityEntity } from './entities/city.object';
 import { CreateCityInput } from './types/create-city.input';
 import { UpdateCityInput } from './types/update-city.input';
+import { UserLogsService } from '../userlogs/userlogs.service';
 
 @Injectable()
 export class CitiesService extends ServicePublic<
@@ -14,10 +16,10 @@ export class CitiesService extends ServicePublic<
   UpdateCityInput
 > {
   constructor(
-    @InjectConnection() connection: Connection,
-    @InjectRepository(CityEntity)
-    repository: Repository<CityEntity>,
+    @InjectConnection() connectionPublic: Connection,
+    @Inject(CUSTOMER_CONNECTION) connection: Connection,
+    private readonly userLogsService: UserLogsService,
   ) {
-    super(connection, repository, CityEntity);
+    super(connectionPublic, CityEntity, userLogsService);
   }
 }

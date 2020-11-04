@@ -8,6 +8,7 @@ import { ServiceDefault } from '../common/services/schema.service';
 import { SubjectEntity } from './entities/subject.entity';
 import { CreateSubjectInput } from './types/create-subject.input';
 import { UpdateSubjectInput } from './types/update-subject.input';
+import { UserLogsService } from '../userlogs/userlogs.service';
 
 @CustomersServiceDecorator()
 export class SubjectsService extends ServiceDefault<
@@ -15,7 +16,10 @@ export class SubjectsService extends ServiceDefault<
   CreateSubjectInput,
   UpdateSubjectInput
 > {
-  constructor(@Inject(CUSTOMER_CONNECTION) connection: Connection) {
-    super(connection, SubjectEntity);
+  constructor(
+    @Inject(CUSTOMER_CONNECTION) connection: Connection,
+    private readonly userLogsService: UserLogsService,
+  ) {
+    super(connection, SubjectEntity, userLogsService);
   }
 }

@@ -3,15 +3,15 @@ import { MaxLength, IsOptional } from 'class-validator';
 
 @InputType()
 export class CreateClassRoomItemInput {
-  @Field({ nullable: true })
+  @Field({ nullable: false })
   @IsOptional()
   classroomId?: number;
 
-  @Field({ nullable: true })
+  @Field({ nullable: false })
   @IsOptional()
   subjectId?: number;
 
-  @Field({ nullable: true })
+  @Field({ nullable: false })
   @IsOptional()
   teacherId?: number;
 
@@ -39,7 +39,7 @@ export class CreateClassRoomItemInput {
   @IsOptional()
   registerOccurrence?: boolean;
 
-  @Field({ nullable: true })
+  @Field({ nullable: false })
   @MaxLength(1)
   @IsOptional()
   type?: string;
@@ -55,4 +55,13 @@ export class CreateClassRoomItemInput {
   @Field({ nullable: true })
   @IsOptional()
   gradeMax?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  order?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

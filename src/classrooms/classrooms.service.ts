@@ -8,6 +8,7 @@ import { ServiceDefault } from '../common/services/schema.service';
 import { ClassRoomEntity } from './entities/classroom.entity';
 import { CreateClassRoomInput } from './types/create-classroom.input';
 import { UpdateClassRoomInput } from './types/update-classroom.input';
+import { UserLogsService } from '../userlogs/userlogs.service';
 
 @CustomersServiceDecorator()
 export class ClassRoomsService extends ServiceDefault<
@@ -15,7 +16,10 @@ export class ClassRoomsService extends ServiceDefault<
   CreateClassRoomInput,
   UpdateClassRoomInput
 > {
-  constructor(@Inject(CUSTOMER_CONNECTION) connection: Connection) {
-    super(connection, ClassRoomEntity);
+  constructor(
+    @Inject(CUSTOMER_CONNECTION) connection: Connection,
+    private readonly userLogsService: UserLogsService,
+  ) {
+    super(connection, ClassRoomEntity, userLogsService);
   }
 }

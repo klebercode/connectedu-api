@@ -11,13 +11,12 @@ import { Connection, createConnection, getConnection } from 'typeorm';
 import { Customer } from './entities/customer.object';
 import { CustomersService } from './customers.service';
 import { CustomersResolver } from './resolvers/customers.resolver';
-
-import { AuthModule } from '../auth/auth.module';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 export const CUSTOMER_CONNECTION = 'CUSTOMER_CONNECTION';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Customer])],
+  imports: [TypeOrmModule.forFeature([Customer]), UserLogsModule],
   providers: [
     {
       provide: CUSTOMER_CONNECTION,
@@ -33,7 +32,7 @@ export const CUSTOMER_CONNECTION = 'CUSTOMER_CONNECTION';
     CustomersService,
     CustomersResolver,
   ],
-  exports: [CUSTOMER_CONNECTION],
+  exports: [CUSTOMER_CONNECTION, CustomersService],
 })
 export class CustomersModule {
   constructor(private readonly connection: Connection) {}
@@ -44,7 +43,6 @@ export class CustomersModule {
         const customer: Customer = await this.connection
           .getRepository(Customer)
           .findOne({ where: { host: req.headers.host } });
-
         if (!customer) {
           throw new BadRequestException(
             '1 - Database Connection Error',
@@ -69,8 +67,6 @@ export class CustomersModule {
             synchronize: true,
             // logging: true,
           });
-
-          //console.log(__dirname + '/**/*.entity{.ts,.js}');
 
           if (createdConnection) {
             next();

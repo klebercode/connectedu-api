@@ -53,4 +53,9 @@ export class UpdateClassRoomInput {
   @Field({ nullable: true })
   @IsOptional()
   yearId?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

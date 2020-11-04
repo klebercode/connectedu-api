@@ -1,6 +1,9 @@
 import { UseGuards, UseFilters, NotFoundException } from '@nestjs/common';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { UserAuthGuard } from '../../auth/guards/userauth.guard';
+import { MyContext } from '../../common/types/mycontext';
+
+import { Args, Mutation, Query, Resolver, Context } from '@nestjs/graphql';
 
 import { StateEntity, StatePaginated } from '../entities/state.object';
 import { StatesService } from '../states.service';
@@ -11,7 +14,7 @@ import { HttpExceptionFilter } from '../../common/filters/http-exception.filter'
 import { ResolverPublic } from '../../common/resolvers/public.resolver';
 import { PaginationArgs } from '../../common/pages';
 
-@UseGuards(GqlAuthGuard)
+@UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => StateEntity)
 @UseFilters(HttpExceptionFilter)
 export class StatesResolver extends ResolverPublic<
@@ -49,44 +52,54 @@ export class StatesResolver extends ResolverPublic<
   }
 
   @Mutation(() => StateEntity, { name: 'stateCreate' })
-  async create(@Args('input') input: CreateStateInput): Promise<StateEntity> {
-    return super.create(input);
+  async create(
+    @Context() context: MyContext,
+    @Args('input') input: CreateStateInput,
+  ): Promise<StateEntity> {
+    return super.create(context, input);
   }
 
   @Mutation(() => [StateEntity], { name: 'stateCreateMany' })
   async createMany(
+    @Context() context: MyContext,
     @Args({ name: 'input', type: () => [CreateStateInput] })
     input: [CreateStateInput],
   ): Promise<StateEntity[]> {
-    return super.createMany(input);
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'stateDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'stateDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => StateEntity, { name: 'stateUpdate' })
   async update(
+    @Context() context: MyContext,
     @Args('id') id: number,
     @Args('input') input: UpdateStateInput,
   ): Promise<StateEntity> {
-    return super.update(id, input);
+    return super.update(context, id, input);
   }
 
   @Mutation(() => Boolean, { name: 'stateUpdateMany' })
   async updateMany(
+    @Context() context: MyContext,
     @Args({ name: 'input', type: () => [UpdateStateInput] })
     input: [UpdateStateInput],
   ): Promise<boolean> {
-    return super.updateMany(input);
+    return super.updateMany(context, input);
   }
 }

@@ -5,11 +5,20 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CitiesService } from './cities.service';
 import { CitiesResolver } from './resolvers/cities.resolver';
 import { CityEntity } from './entities/city.object';
-import { AuthModule } from '../auth/auth.module';
+
 import { StatesModule } from '../states/states.module';
+import { CustomersModule } from '../customers/customers.module';
+import { UserCentesModule } from './../usercenter/usercenters.module';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({
-  imports: [StatesModule, AuthModule, TypeOrmModule.forFeature([CityEntity])],
+  imports: [
+    StatesModule,
+    UserCentesModule,
+    TypeOrmModule.forFeature([CityEntity]),
+    CustomersModule,
+    UserLogsModule,
+  ],
   providers: [CitiesResolver, CitiesService, DateScalar],
   exports: [CitiesService],
 })

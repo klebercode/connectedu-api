@@ -37,4 +37,9 @@ export class CreatStudentGradeInput {
   @MaxLength(10)
   @IsOptional()
   concept?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

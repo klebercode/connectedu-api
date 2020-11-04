@@ -5,32 +5,38 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { UsersService } from '../../users/users.service';
 import { GqlExecutionContext } from '@nestjs/graphql';
+import { UserCentersService } from '../../usercenter/usercenters.service';
 
 @Injectable()
 export class UserAuthGuard implements CanActivate {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly userCentersService: UserCentersService) {}
+
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const ctx = GqlExecutionContext.create(context);
     const user = ctx.getContext().req.user;
-    const ret: any = this.validateUser(user.id, user.login, user.code);
+    const ret: any = this.validateUser(user.id, user.type, user.token);
     return ret;
   }
 
   async validateUser(
     id: number,
-    login: string,
-    code: number,
+    userType: string,
+    token: string,
   ): Promise<Boolean> {
-    const user = await this.usersService.findOneById(id);
+    const user = await this.userCentersService.findOne({
+      idUser: id,
+      userType: userType,
+      token: token,
+    });
     if (user) {
-      if (user.login === login && user.codeToken === code) {
-        return true;
-      }
+      return true;
     }
-    throw new UnauthorizedException();
+
+    throw new UnauthorizedException(
+      'Usuário não localizado na Central de Usuários',
+    );
   }
 }

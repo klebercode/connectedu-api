@@ -4,20 +4,22 @@ import { DateScalar } from '../common/scalars/date.scalar';
 import { StudentGradesService } from './studentgrades.service';
 import { StudentGradesResolver } from './resolvers/studentgrades.resolvers';
 
-import { UsersModule } from '../users/users.module';
 import { CustomersModule } from '../customers/customers.module';
 
 import { StudentsModule } from '../students/students.module';
 import { YearsModule } from '../years/years.module';
 import { SubjectsModule } from '../subjects/subjects.module';
+import { UserCentesModule } from './../usercenter/usercenters.module';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({
   imports: [
-    UsersModule,
+    UserCentesModule,
     CustomersModule,
     StudentsModule,
     SubjectsModule,
     YearsModule,
+    UserLogsModule,
   ],
   providers: [StudentGradesService, DateScalar, StudentGradesResolver],
   exports: [StudentGradesService],

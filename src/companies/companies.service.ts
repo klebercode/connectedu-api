@@ -8,6 +8,7 @@ import { ServiceDefault } from '../common/services/schema.service';
 import { CompanyEntity } from './entities/company.entity';
 import { CreateCompanyInput } from './types/create-company.input';
 import { UpdateCompanyInput } from './types/update-company.input';
+import { UserLogsService } from '../userlogs/userlogs.service';
 
 @CustomersServiceDecorator()
 export class CompaniesService extends ServiceDefault<
@@ -15,7 +16,10 @@ export class CompaniesService extends ServiceDefault<
   CreateCompanyInput,
   UpdateCompanyInput
 > {
-  constructor(@Inject(CUSTOMER_CONNECTION) connection: Connection) {
-    super(connection, CompanyEntity);
+  constructor(
+    @Inject(CUSTOMER_CONNECTION) connection: Connection,
+    private readonly userLogsService: UserLogsService,
+  ) {
+    super(connection, CompanyEntity, userLogsService);
   }
 }

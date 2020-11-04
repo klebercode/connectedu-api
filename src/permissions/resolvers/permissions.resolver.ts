@@ -1,7 +1,8 @@
 import { UseGuards, UseFilters } from '@nestjs/common';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-
+import { Args, Mutation, Query, Resolver, Context } from '@nestjs/graphql';
+import { UserAuthGuard } from '../../auth/guards/userauth.guard';
+import { MyContext } from '../../common/types/mycontext';
 import {
   PermissionEntity,
   PermissionPaginated,
@@ -14,7 +15,7 @@ import { HttpExceptionFilter } from '../../common/filters/http-exception.filter'
 import { ResolverPublic } from '../../common/resolvers/public.resolver';
 import { PaginationArgs } from '../../common/pages';
 
-@UseGuards(GqlAuthGuard)
+@UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => PermissionEntity)
 @UseFilters(HttpExceptionFilter)
 export class PermissionsResolver extends ResolverPublic<
@@ -53,45 +54,53 @@ export class PermissionsResolver extends ResolverPublic<
 
   @Mutation(() => PermissionEntity, { name: 'permissionCreate' })
   async create(
+    @Context() context: MyContext,
     @Args('input') input: CreatePermissionInput,
   ): Promise<PermissionEntity> {
-    return super.create(input);
+    return super.create(context, input);
   }
 
   @Mutation(() => [PermissionEntity], { name: 'permissionCreateMany' })
   async createMany(
+    @Context() context: MyContext,
     @Args({ name: 'input', type: () => [CreatePermissionInput] })
     input: [CreatePermissionInput],
   ): Promise<PermissionEntity[]> {
-    return super.createMany(input);
+    return super.createMany(context, input);
   }
 
   @Mutation(() => Boolean, { name: 'permissionDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'permissionDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => PermissionEntity, { name: 'permissionUpdate' })
   async update(
+    @Context() context: MyContext,
     @Args('id') id: number,
     @Args('input') input: UpdatePermissionInput,
   ): Promise<PermissionEntity> {
-    return super.update(id, input);
+    return super.update(context, id, input);
   }
 
   @Mutation(() => Boolean, { name: 'permissionUpdateMany' })
   async updateMany(
+    @Context() context: MyContext,
     @Args({ name: 'input', type: () => [UpdatePermissionInput] })
     input: [UpdatePermissionInput],
   ): Promise<boolean> {
-    return super.updateMany(input);
+    return super.updateMany(context, input);
   }
 }

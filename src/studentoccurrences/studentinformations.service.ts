@@ -8,6 +8,7 @@ import { ServiceDefault } from '../common/services/schema.service';
 import { StudentOccurrenceEntity } from './entities/studentoccurrence.entity';
 import { CreatStudentOccurrenceInput } from './types/create-studentoccurrences.input';
 import { UpdateStudentOccurrenceInput } from './types/update-studentoccurrences.input';
+import { UserLogsService } from '../userlogs/userlogs.service';
 
 @CustomersServiceDecorator()
 export class StudentOccurrencesService extends ServiceDefault<
@@ -15,7 +16,10 @@ export class StudentOccurrencesService extends ServiceDefault<
   CreatStudentOccurrenceInput,
   UpdateStudentOccurrenceInput
 > {
-  constructor(@Inject(CUSTOMER_CONNECTION) connection: Connection) {
-    super(connection, StudentOccurrenceEntity);
+  constructor(
+    @Inject(CUSTOMER_CONNECTION) connection: Connection,
+    private readonly userLogsService: UserLogsService,
+  ) {
+    super(connection, StudentOccurrenceEntity, userLogsService);
   }
 }

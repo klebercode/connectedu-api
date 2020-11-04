@@ -19,4 +19,9 @@ export class CreateOccurrenceInput {
   @Field({ nullable: true })
   @IsOptional()
   points?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

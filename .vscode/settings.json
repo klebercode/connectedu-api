@@ -1,3 +1,7 @@
 {
-    "python.pythonPath": "/Users/klebersoares/.pyenv/versions/3.7.0/bin/python"
+  "python.pythonPath": "/Users/klebersoares/.pyenv/versions/3.7.0/bin/python",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

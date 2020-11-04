@@ -1,5 +1,6 @@
 import { Field, InputType, GraphQLISODateTime } from '@nestjs/graphql';
 import { MaxLength, IsOptional } from 'class-validator';
+import { Relationship } from '../../common/enums/enum-typeuser';
 
 @InputType()
 export class CreatStudentInformationInput {
@@ -58,23 +59,32 @@ export class CreatStudentInformationInput {
   @IsOptional()
   responsible1Id?: number;
 
-  @Field({ nullable: true })
+  @Field(type => Relationship, { nullable: true })
   @IsOptional()
-  relationship1?: number;
+  relationship1?: Relationship;
 
   @Field({ nullable: true })
   @IsOptional()
   responsible2Id?: number;
 
-  @Field({ nullable: true })
+  @Field(type => Relationship, { nullable: true })
   @IsOptional()
-  relationship2?: number;
+  relationship2?: Relationship;
 
   @Field({ nullable: true })
   @IsOptional()
   responsiblePedagId?: number;
 
+  @Field(type => Relationship, { nullable: true })
+  @IsOptional()
+  relationshipPedag?: Relationship;
+
   @Field({ nullable: true })
   @IsOptional()
-  relationshipPedag?: number;
+  newStudent?: boolean;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

@@ -54,4 +54,9 @@ export class UpdateContentAppliedInput {
   @Field({ nullable: true })
   @IsOptional()
   justify?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

@@ -4,13 +4,13 @@ import { IsOptional, IsEmail } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
 import { StateEntity } from '../../states/entities/state.object';
-import { UserBaseEntity } from '../../users/entities/user-base-entity';
+import { BasicFields } from '../../common/types/basicfields';
 import { CityEntity } from '../../cities/entities/city.object';
 import { ResponsibleEntity } from '../../responsibles/entities/responsible.entity';
 
 @ObjectType()
 @Entity('student')
-export class StudentEntity extends UserBaseEntity {
+export class StudentEntity extends BasicFields {
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: false })
   @IsOptional()
@@ -36,6 +36,7 @@ export class StudentEntity extends UserBaseEntity {
   @IsOptional()
   gender?: string;
 
+  // estado
   @Field({ nullable: true })
   @Column({
     name: 'code_nationality',
@@ -51,7 +52,7 @@ export class StudentEntity extends UserBaseEntity {
   @IsOptional()
   stateNaturalnessId?: number;
 
-  // usando com tabale  publica
+  // usando com tabale publica cidade
   @Field(type => StateEntity, { nullable: true })
   @IsOptional()
   stateNaturalness?: StateEntity;
@@ -61,7 +62,7 @@ export class StudentEntity extends UserBaseEntity {
   @IsOptional()
   cityNaturalnessId?: number;
 
-  // usando com tabale  publica
+  // usando com tabale publica estado
   @Field(type => CityEntity, { nullable: true })
   @IsOptional()
   cityNaturalness?: CityEntity;
@@ -97,25 +98,36 @@ export class StudentEntity extends UserBaseEntity {
   nationalityForeign?: string;
 
   @Field({ nullable: true })
-  @Column({ type: 'varchar', length: 1, nullable: true })
-  @IsOptional()
-  reside?: string;
-
-  @Field({ nullable: true })
-  @Column({ name: 'reside_responsable_id', nullable: true })
-  @IsOptional()
-  resideResponsableId?: number;
-
-  @Field(type => ResponsibleEntity, { nullable: true })
-  @JoinColumn({ name: 'reside_responsable_id' })
-  @ManyToOne(type => ResponsibleEntity)
-  @IsOptional()
-  resideResponsable?: ResponsibleEntity;
-
-  @Field({ nullable: true })
-  @Column({ name: 'father_id', nullable: true })
+  @Column({
+    name: 'father_id',
+    nullable: true,
+  })
   @IsOptional()
   fatherId?: number;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'reside_father',
+    nullable: true,
+  })
+  @IsOptional()
+  resideFather?: boolean;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'mother_id',
+    nullable: true,
+  })
+  @IsOptional()
+  motherId?: number;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'reside_mother',
+    nullable: true,
+  })
+  @IsOptional()
+  resideMother?: boolean;
 
   @Field(type => ResponsibleEntity, { nullable: true })
   @JoinColumn({ name: 'father_id' })
@@ -123,16 +135,37 @@ export class StudentEntity extends UserBaseEntity {
   @IsOptional()
   father?: ResponsibleEntity;
 
-  @Field({ nullable: true })
-  @Column({ name: 'mother_id', nullable: true })
-  @IsOptional()
-  motherId?: number;
-
   @Field(type => ResponsibleEntity, { nullable: true })
   @JoinColumn({ name: 'mother_id' })
   @ManyToOne(type => ResponsibleEntity)
   @IsOptional()
   mother?: ResponsibleEntity;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'type_reside',
+    type: 'varchar',
+    length: 1,
+    nullable: true,
+  })
+  @IsOptional()
+  typeReside?: string;
+
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', length: 60, nullable: true })
+  @IsOptional()
+  reside?: string;
+
+  @Field({ nullable: true })
+  @Column({ name: 'separated_parents', nullable: true })
+  @IsOptional()
+  separatedParents?: boolean;
+
+  @Field(type => ResponsibleEntity, { nullable: true })
+  @JoinColumn({ name: 'reside_responsable_id' })
+  @ManyToOne(type => ResponsibleEntity)
+  @IsOptional()
+  resideResponsable?: ResponsibleEntity;
 
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: true })
@@ -176,6 +209,11 @@ export class StudentEntity extends UserBaseEntity {
   zipCode?: string;
 
   @Field({ nullable: true })
+  @Column({ name: 'school_last', type: 'varchar', length: 60, nullable: true })
+  @IsOptional()
+  schoolLast?: string;
+
+  @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: true })
   @IsOptional()
   @IsEmail()
@@ -210,6 +248,36 @@ export class StudentEntity extends UserBaseEntity {
   @Column({ name: 'org_identity', type: 'varchar', length: 15, nullable: true })
   @IsOptional()
   OrgIdentity?: string;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'registry_name',
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+  })
+  @IsOptional()
+  registryName?: string;
+
+  @Field({ nullable: true })
+  @Column({
+    name: 'certificate_number',
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+  })
+  @IsOptional()
+  certificateNumber?: string;
+
+  @Field({ nullable: true })
+  @Column({ name: 'book_number', type: 'varchar', length: 15, nullable: true })
+  @IsOptional()
+  bookNumber?: string;
+
+  @Field({ nullable: true })
+  @Column({ name: 'book_sheet', type: 'varchar', length: 15, nullable: true })
+  @IsOptional()
+  bookSheet?: string;
 
   @Field({ nullable: true })
   @Column({ type: 'text', nullable: true })

@@ -14,4 +14,9 @@ export class CreateOrganizationInput {
   @Field(() => GraphQLISODateTime, { nullable: true })
   @IsOptional()
   dateEnd?: Date;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

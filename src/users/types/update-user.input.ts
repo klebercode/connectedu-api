@@ -16,11 +16,6 @@ export class UpdateUsersInput {
   @Field({ nullable: true })
   @MaxLength(100)
   @IsOptional()
-  login: string;
-
-  @Field({ nullable: true })
-  @MaxLength(100)
-  @IsOptional()
   profile: string;
 
   @Field({ nullable: true })

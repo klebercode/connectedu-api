@@ -19,11 +19,9 @@ import { ResponsiblesService } from '../responsibles.service';
 import { CreateResponsibleInput } from '../types/create-responsible.input';
 import { UpdateResponsibleInput } from '../types/update-responsible.input';
 
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 import { StatesService } from '../../states/states.service';
-import { UsersService } from '../../users/users.service';
 import { CitiesService } from '../../cities/cities.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import {
   HttpExceptionFilter,
   CustomException,
@@ -41,7 +39,6 @@ export class ResponsiblesResolver extends ResolverDefault<
 > {
   constructor(
     private readonly responsiblesService: ResponsiblesService,
-    private readonly usersService: UsersService,
     private readonly statesService: StatesService,
     private readonly citiesService: CitiesService,
   ) {
@@ -81,7 +78,7 @@ export class ResponsiblesResolver extends ResolverDefault<
     return super.create(context, input);
   }
 
-  @Mutation(() => [ResponsibleEntity], { name: 'subjectCreateMany' })
+  @Mutation(() => [ResponsibleEntity], { name: 'responsibleCreateMany' })
   async createMany(
     @Context() context: MyContext,
     @Args({ name: 'input', type: () => [CreateResponsibleInput] })
@@ -91,16 +88,20 @@ export class ResponsiblesResolver extends ResolverDefault<
   }
 
   @Mutation(() => Boolean, { name: 'responsibleDelete' })
-  async detele(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'responsibleDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => ResponsibleEntity, { name: 'responsibleUpdate' })
@@ -146,26 +147,6 @@ export class ResponsiblesResolver extends ResolverDefault<
       return this.citiesService.findOneById(id);
     } catch (error) {
       CustomException.catch(error, 'get', 'Cidade');
-    }
-  }
-
-  @ResolveField(() => UserEntity)
-  async userCreated(@Parent() responsible: ResponsibleEntity): Promise<any> {
-    const id = responsible.userCreatedId;
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
-    }
-  }
-
-  @ResolveField(() => UserEntity)
-  async userUpdated(@Parent() responsible: ResponsibleEntity) {
-    const id = responsible.userUpdatedId;
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
     }
   }
 }

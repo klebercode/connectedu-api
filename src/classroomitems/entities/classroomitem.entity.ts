@@ -3,15 +3,14 @@ import { Entity, Column, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { Paginated } from '../../common/pages';
 
-import { UserBaseEntity } from 'src/users/entities/user-base-entity';
+import { BasicFields } from '../../common/types/basicfields';
 import { ClassRoomEntity } from '../../classrooms/entities/classroom.entity';
 import { SubjectEntity } from '../../subjects/entities/subject.entity';
 import { TeacherEntity } from '../../teachers/entities/teacher.entity';
 
 @ObjectType()
 @Entity('classroomitem')
-@Unique(['classroomId', 'subjectId'])
-export class ClassRoomItemEntity extends UserBaseEntity {
+export class ClassRoomItemEntity extends BasicFields {
   @Field({ nullable: true })
   @Column({ name: 'classroom_id', nullable: false })
   @IsOptional()
@@ -94,6 +93,11 @@ export class ClassRoomItemEntity extends UserBaseEntity {
   @Column({ name: 'garde_max', nullable: true })
   @IsOptional()
   gradeMax?: number;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  @IsOptional()
+  order?: number;
 }
 
 @ObjectType()

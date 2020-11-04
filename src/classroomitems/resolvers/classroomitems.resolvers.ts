@@ -12,9 +12,7 @@ import {
 
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
-import { MyContext } from '../../common/types/myContext';
-import { UsersService } from '../../users/users.service';
-import { UserEntity } from '../../users/entities/user.entity';
+import { MyContext } from '../../common/types/mycontext';
 
 import {
   ClassRoomItemEntity,
@@ -44,7 +42,6 @@ export class ClassRoomItemsResolver extends ResolverDefault<
 > {
   constructor(
     private readonly classRoomItemsService: ClassRoomItemsService,
-    private readonly usersService: UsersService,
     private readonly classRoomsService: ClassRoomsService,
     private readonly subjectsService: SubjectsService,
     private readonly teachersService: TeachersService,
@@ -85,7 +82,7 @@ export class ClassRoomItemsResolver extends ResolverDefault<
     return super.create(context, input);
   }
 
-  @Mutation(() => [ClassRoomItemEntity], { name: 'classRoomItemMany' })
+  @Mutation(() => [ClassRoomItemEntity], { name: 'classRoomItemCreateMany' })
   async createMany(
     @Context() context: MyContext,
     @Args({ name: 'input', type: () => [CreateClassRoomItemInput] })
@@ -95,16 +92,20 @@ export class ClassRoomItemsResolver extends ResolverDefault<
   }
 
   @Mutation(() => Boolean, { name: 'classRoomItemDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'classRoomItemDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => ClassRoomItemEntity, { name: 'classRoomItemUpdate' })
@@ -128,10 +129,8 @@ export class ClassRoomItemsResolver extends ResolverDefault<
   // **************************************  Resolucao de Campos
 
   @ResolveField('classroom')
-  async classroom(
-    @Parent() classRoomItemEntity: ClassRoomItemEntity,
-  ): Promise<any> {
-    const id = classRoomItemEntity.classroomId;
+  async classroom(@Parent() classRoomItem: ClassRoomItemEntity): Promise<any> {
+    const id = classRoomItem.classroomId;
     if (!id) {
       return null;
     }
@@ -143,10 +142,8 @@ export class ClassRoomItemsResolver extends ResolverDefault<
   }
 
   @ResolveField('subject')
-  async subject(
-    @Parent() classRoomItemEntity: ClassRoomItemEntity,
-  ): Promise<any> {
-    const id = classRoomItemEntity.subjectId;
+  async subject(@Parent() classRoomItem: ClassRoomItemEntity): Promise<any> {
+    const id = classRoomItem.subjectId;
     if (!id) {
       return null;
     }
@@ -158,10 +155,8 @@ export class ClassRoomItemsResolver extends ResolverDefault<
   }
 
   @ResolveField('teacher')
-  async teacher(
-    @Parent() classRoomItemEntity: ClassRoomItemEntity,
-  ): Promise<any> {
-    const id = classRoomItemEntity.teacherId;
+  async teacher(@Parent() classRoomItem: ClassRoomItemEntity): Promise<any> {
+    const id = classRoomItem.teacherId;
     if (!id) {
       return null;
     }
@@ -169,34 +164,6 @@ export class ClassRoomItemsResolver extends ResolverDefault<
       return this.teachersService.findOneById(id);
     } catch (error) {
       CustomException.catch(error, 'get', 'Professor');
-    }
-  }
-
-  @ResolveField(type => UserEntity)
-  async userCreated(
-    @Parent() classRoomItemEntity: ClassRoomItemEntity,
-  ): Promise<any> {
-    const id = classRoomItemEntity.userCreatedId;
-    if (!id) {
-      return null;
-    }
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuario');
-    }
-  }
-
-  @ResolveField(type => UserEntity)
-  async userUpdated(@Parent() classRoomItemEntity: ClassRoomItemEntity) {
-    const id = classRoomItemEntity.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuario');
     }
   }
 }

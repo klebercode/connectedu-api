@@ -10,4 +10,8 @@ export class CreateStateInput {
   @Field({ nullable: false })
   @MaxLength(2)
   uf?: string;
+
+  @Field({ nullable: false })
+  @MaxLength(2)
+  codeState: string;
 }

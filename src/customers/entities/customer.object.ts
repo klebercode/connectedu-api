@@ -1,24 +1,25 @@
 import { Column, Entity, Unique } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { BaseEntity } from '../../base-entity';
+import { BasicFields } from '../../common/types/basicfields';
 
 @Entity()
 @ObjectType()
 @Unique(['host'])
-export class Customer extends BaseEntity {
-  @Field()
-  @Column()
+@Unique(['domain'])
+export class Customer extends BasicFields {
+  @Field({ nullable: false })
+  @Column({ length: 100, nullable: true })
   host: string;
 
-  @Field()
-  @Column()
+  @Field({ nullable: false })
+  @Column({ length: 100, nullable: true })
   domain: string;
 
-  @Field()
-  @Column()
+  @Field({ nullable: false })
+  @Column({ length: 100, nullable: true })
   name: string;
 
-  @Field({ nullable: true })
-  @Column({ name: 'organization_id', nullable: true })
+  @Field({ nullable: false })
+  @Column({ name: 'organization_id', nullable: false })
   organizationId?: number;
 }

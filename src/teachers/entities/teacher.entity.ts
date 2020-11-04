@@ -1,15 +1,15 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, GraphQLISODateTime } from '@nestjs/graphql';
 import { Entity, Column } from 'typeorm';
 import { Paginated } from '../../common/pages';
 
 import { StateEntity } from '../../states/entities/state.object';
 import { IsOptional, IsEmail } from 'class-validator';
-import { UserBaseEntity } from '../../users/entities/user-base-entity';
+import { BasicFields } from '../../common/types/basicfields';
 import { CityEntity } from '../../cities/entities/city.object';
 
 @ObjectType()
 @Entity('teacher')
-export class TeacherEntity extends UserBaseEntity {
+export class TeacherEntity extends BasicFields {
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: false })
   name: string;
@@ -22,6 +22,16 @@ export class TeacherEntity extends UserBaseEntity {
     nullable: true,
   })
   nickName: string;
+
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  @Column({ name: 'date_birth', nullable: true })
+  @IsOptional()
+  dateBirth: Date;
+
+  @Field({ nullable: true })
+  @Column({ type: 'varchar', length: 1, nullable: true })
+  @IsOptional()
+  gender?: string;
 
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: true })

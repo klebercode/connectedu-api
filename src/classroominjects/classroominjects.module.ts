@@ -4,14 +4,21 @@ import { DateScalar } from '../common/scalars/date.scalar';
 import { ClassRoomInjectsService } from './classroominjects.service';
 import { ClassRoomInjectsResolver } from './resolvers/classroominjects.resolvers';
 
-import { UsersModule } from '../users/users.module';
 import { CustomersModule } from '../customers/customers.module';
 
 import { ClassRoomItemsModule } from '../classroomitems/classroomitems.module';
 import { SubjectsModule } from '../subjects/subjects.module';
+import { UserCentesModule } from './../usercenter/usercenters.module';
+import { UserLogsModule } from '../userlogs/userlogs.module';
 
 @Module({
-  imports: [UsersModule, CustomersModule, ClassRoomItemsModule, SubjectsModule],
+  imports: [
+    UserCentesModule,
+    CustomersModule,
+    ClassRoomItemsModule,
+    SubjectsModule,
+    UserLogsModule,
+  ],
   providers: [ClassRoomInjectsService, DateScalar, ClassRoomInjectsResolver],
   exports: [ClassRoomInjectsService],
 })

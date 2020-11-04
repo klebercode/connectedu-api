@@ -8,6 +8,7 @@ import { ServiceDefault } from '../common/services/schema.service';
 import { UserPermissionEntity } from './entities/userpermission.entity';
 import { CreateUserPermissionInput } from './types/create-userpermission.input';
 import { UpdateUserPermissionInput } from './types/update-userpermission.input';
+import { UserLogsService } from '../userlogs/userlogs.service';
 
 @CustomersServiceDecorator()
 export class UserPermissionsService extends ServiceDefault<
@@ -15,7 +16,10 @@ export class UserPermissionsService extends ServiceDefault<
   CreateUserPermissionInput,
   UpdateUserPermissionInput
 > {
-  constructor(@Inject(CUSTOMER_CONNECTION) connection: Connection) {
-    super(connection, UserPermissionEntity);
+  constructor(
+    @Inject(CUSTOMER_CONNECTION) connection: Connection,
+    private readonly userLogsService: UserLogsService,
+  ) {
+    super(connection, UserPermissionEntity, userLogsService);
   }
 }

@@ -12,7 +12,7 @@ import {
 
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 
 import {
   ClassRoomEntity,
@@ -22,10 +22,8 @@ import { ClassRoomsService } from '../classrooms.service';
 import { CreateClassRoomInput } from '../types/create-classroom.input';
 import { UpdateClassRoomInput } from '../types/update-classroom.input';
 
-import { UsersService } from '../../users/users.service';
 import { CompaniesService } from '../../companies/companies.service';
 import { YearsService } from '../../years/years.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import {
   HttpExceptionFilter,
   CustomException,
@@ -43,7 +41,6 @@ export class ClassRoomsResolver extends ResolverDefault<
 > {
   constructor(
     private readonly classRoomsService: ClassRoomsService,
-    private readonly usersService: UsersService,
     private readonly yearsService: YearsService,
     private readonly companiesService: CompaniesService,
   ) {
@@ -93,16 +90,20 @@ export class ClassRoomsResolver extends ResolverDefault<
   }
 
   @Mutation(() => Boolean, { name: 'classRoomDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'classRoomDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => ClassRoomEntity, { name: 'classRoomUpdate' })
@@ -126,8 +127,8 @@ export class ClassRoomsResolver extends ResolverDefault<
   // **************************************  Resolucao de Campos
 
   @ResolveField('year')
-  async year(@Parent() classRoomEntity: ClassRoomEntity): Promise<any> {
-    const id = classRoomEntity.yearId;
+  async year(@Parent() classRoom: ClassRoomEntity): Promise<any> {
+    const id = classRoom.yearId;
     if (!id) {
       return null;
     }
@@ -139,8 +140,8 @@ export class ClassRoomsResolver extends ResolverDefault<
   }
 
   @ResolveField('company')
-  async company(@Parent() classRoomEntity: ClassRoomEntity): Promise<any> {
-    const id = classRoomEntity.companyId;
+  async company(@Parent() classRoom: ClassRoomEntity): Promise<any> {
+    const id = classRoom.companyId;
     if (!id) {
       return null;
     }
@@ -148,32 +149,6 @@ export class ClassRoomsResolver extends ResolverDefault<
       return this.companiesService.findOneById(id);
     } catch (error) {
       CustomException.catch(error, 'get', 'Empresa');
-    }
-  }
-
-  @ResolveField(type => UserEntity)
-  async userCreated(@Parent() classRoomEntity: ClassRoomEntity): Promise<any> {
-    const id = classRoomEntity.userCreatedId;
-    if (!id) {
-      return null;
-    }
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuario');
-    }
-  }
-
-  @ResolveField(type => UserEntity)
-  async userUpdated(@Parent() classRoomEntity: ClassRoomEntity) {
-    const id = classRoomEntity.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuario');
     }
   }
 }

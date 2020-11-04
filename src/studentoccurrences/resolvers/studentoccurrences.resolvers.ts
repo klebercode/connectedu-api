@@ -11,7 +11,7 @@ import {
 
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 
 import {
   StudentOccurrenceEntity,
@@ -22,13 +22,10 @@ import { CreatStudentOccurrenceInput } from '../types/create-studentoccurrences.
 import { UpdateStudentOccurrenceInput } from '../types/update-studentoccurrences.input';
 
 //importados
-import { UsersService } from '../../users/users.service';
-import { UserEntity } from '../../users/entities/user.entity';
+
 import { StudentsService } from '../../students/students.service';
 import { OccurrencesService } from '../../occurrences/occurrences.service';
-import { TeachersService } from '../../teachers/teachers.service';
 import { SubjectsService } from '../../subjects/subjects.service';
-import { EmployeesService } from '../../employees/employees.service';
 import {
   HttpExceptionFilter,
   CustomException,
@@ -46,12 +43,9 @@ export class StudentOccurrencesResolver extends ResolverDefault<
 > {
   constructor(
     private readonly studentOccurrencesService: StudentOccurrencesService,
-    private readonly usersService: UsersService,
     private readonly studentsService: StudentsService,
     private readonly occurrencesService: OccurrencesService,
-    private readonly teachersService: TeachersService,
     private readonly subjectsService: SubjectsService,
-    private readonly employeesService: EmployeesService,
   ) {
     super('Ocorrência Estudante', studentOccurrencesService);
   }
@@ -103,16 +97,20 @@ export class StudentOccurrencesResolver extends ResolverDefault<
   }
 
   @Mutation(() => Boolean, { name: 'studentOccurrenceDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'studentOccurrenceDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => StudentOccurrenceEntity, {
@@ -169,22 +167,6 @@ export class StudentOccurrencesResolver extends ResolverDefault<
     }
   }
 
-  @ResolveField('teacher')
-  async teacher(
-    @Parent() studentOccurrenceEntity: StudentOccurrenceEntity,
-  ): Promise<any> {
-    const id = studentOccurrenceEntity.teacherId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.teachersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Professor');
-    }
-  }
-
   @ResolveField('subject')
   async subject(
     @Parent() studentOccurrenceEntity: StudentOccurrenceEntity,
@@ -198,54 +180,6 @@ export class StudentOccurrencesResolver extends ResolverDefault<
       return this.subjectsService.findOneById(id);
     } catch (error) {
       CustomException.catch(error, 'get', 'Matéria');
-    }
-  }
-
-  @ResolveField('employee')
-  async employee(
-    @Parent() studentOccurrenceEntity: StudentOccurrenceEntity,
-  ): Promise<any> {
-    const id = studentOccurrenceEntity.employeeId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.employeesService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Funcionário');
-    }
-  }
-
-  @ResolveField(type => UserEntity)
-  async userCreated(
-    @Parent() studentOccurrenceEntity: StudentOccurrenceEntity,
-  ): Promise<any> {
-    const id = studentOccurrenceEntity.userCreatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
-    }
-  }
-
-  @ResolveField(type => UserEntity)
-  async userUpdated(
-    @Parent() studentOccurrenceEntity: StudentOccurrenceEntity,
-  ) {
-    const id = studentOccurrenceEntity.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
     }
   }
 }

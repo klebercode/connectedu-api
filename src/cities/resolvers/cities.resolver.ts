@@ -1,11 +1,15 @@
 import { UseGuards, UseFilters } from '@nestjs/common';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
+import { UserAuthGuard } from '../../auth/guards/userauth.guard';
+import { MyContext } from '../../common/types/mycontext';
+
 import {
   Args,
   Mutation,
   Query,
   Resolver,
   ResolveField,
+  Context,
   Parent,
 } from '@nestjs/graphql';
 
@@ -22,7 +26,7 @@ import {
 import { ResolverPublic } from '../../common/resolvers/public.resolver';
 import { PaginationArgs } from '../../common/pages';
 
-@UseGuards(GqlAuthGuard)
+@UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => CityEntity)
 @UseFilters(HttpExceptionFilter)
 export class CitiesResolver extends ResolverPublic<
@@ -64,47 +68,56 @@ export class CitiesResolver extends ResolverPublic<
 
   @Mutation(() => CityEntity, { name: 'cityCreate' })
   async create(
+    @Context() context: MyContext,
     @Args({ name: 'input', type: () => CreateCityInput })
     input: CreateCityInput,
   ): Promise<CityEntity> {
-    return super.create(input);
+    return super.create(context, input);
   }
 
   @Mutation(() => [CityEntity], { name: 'cityCreateMany' })
   async createMany(
+    @Context() context: MyContext,
     @Args({ name: 'input', type: () => [CreateCityInput] })
     input: [CreateCityInput],
   ): Promise<CityEntity[]> {
-    return super.createMany(input);
+    return super.createMany(context, input);
   }
+  context;
 
   @Mutation(() => Boolean, { name: 'cityDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'cityDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => CityEntity, { name: 'cityUpdate' })
   async update(
+    @Context() context: MyContext,
     @Args('id') id: number,
     @Args('input') input: UpdateCityInput,
   ): Promise<CityEntity> {
-    return super.update(id, input);
+    return super.update(context, id, input);
   }
 
   @Mutation(() => Boolean, { name: 'cityUpdateMany' })
   async updateMany(
+    @Context() context: MyContext,
     @Args({ name: 'input', type: () => [UpdateCityInput] })
     input: [UpdateCityInput],
   ): Promise<boolean> {
-    return super.updateMany(input);
+    return super.updateMany(context, input);
   }
 
   // **************************************  Resolucao de Campos

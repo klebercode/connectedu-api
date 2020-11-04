@@ -9,7 +9,7 @@ import {
   Parent,
 } from '@nestjs/graphql';
 
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 import { GqlAuthGuard } from '../../auth/guards/jwt-gqlauth.guard';
 import { UserAuthGuard } from '../../auth/guards/userauth.guard';
 
@@ -21,15 +21,15 @@ import { UserPermissionsService } from '../userpermissions.service';
 import { CreateUserPermissionInput } from '../types/create-userpermission.input';
 import { UpdateUserPermissionInput } from '../types/update-userpermission.input';
 
-import { UsersService } from '../../users/users.service';
 import { PermissionsService } from '../../permissions/permissions.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import {
   HttpExceptionFilter,
   CustomException,
 } from '../../common/filters/http-exception.filter';
+
 import { ResolverDefault } from '../../common/resolvers/schema.resolver';
 import { PaginationArgs } from '../../common/pages';
+import { UserCentersService } from '../../usercenter/usercenters.service';
 
 @UseGuards(GqlAuthGuard, UserAuthGuard)
 @Resolver(of => UserPermissionEntity)
@@ -41,8 +41,8 @@ export class UserPermissionsResolver extends ResolverDefault<
 > {
   constructor(
     private readonly userPermissionsService: UserPermissionsService,
-    private readonly usersService: UsersService,
     private readonly permissionsService: PermissionsService,
+    private readonly userCentersService: UserCentersService,
   ) {
     super('Permissões Usuário', userPermissionsService);
   }
@@ -90,16 +90,20 @@ export class UserPermissionsResolver extends ResolverDefault<
   }
 
   @Mutation(() => Boolean, { name: 'userPermissionDelete' })
-  async delete(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'userPermissionDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => UserPermissionEntity, { name: 'userPermissionUpdate' })
@@ -130,9 +134,9 @@ export class UserPermissionsResolver extends ResolverDefault<
     }
 
     try {
-      return this.usersService.findOneById(id);
+      return this.userCentersService.findOneById(id);
     } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
+      CustomException.catch(error, 'get', 'Central de Usuários');
     }
   }
 
@@ -147,36 +151,6 @@ export class UserPermissionsResolver extends ResolverDefault<
       return this.permissionsService.findOneById(id);
     } catch (error) {
       CustomException.catch(error, 'get', 'Permissão');
-    }
-  }
-
-  @ResolveField(() => UserEntity)
-  async userCreated(
-    @Parent() userPermission: UserPermissionEntity,
-  ): Promise<any> {
-    const id = userPermission.userCreatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
-    }
-  }
-
-  @ResolveField(() => UserEntity)
-  async userUpdated(@Parent() userPermission: UserPermissionEntity) {
-    const id = userPermission.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
     }
   }
 }

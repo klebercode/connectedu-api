@@ -17,21 +17,14 @@ export class CreatStudentOccurrenceInput {
 
   @Field({ nullable: true })
   @IsOptional()
-  typeOrigin?: number;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  teacherId?: number;
-
-  @Field({ nullable: true })
-  @IsOptional()
   subjectId?: number;
 
   @Field({ nullable: true })
   @IsOptional()
-  employeeId?: number;
+  note?: string;
 
   @Field({ nullable: true })
   @IsOptional()
-  note?: string;
+  @MaxLength(20)
+  legacyCode: string;
 }

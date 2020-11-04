@@ -4,12 +4,12 @@ import { Paginated } from '../../common/pages';
 
 import { StateEntity } from '../../states/entities/state.object';
 import { IsOptional, IsEmail } from 'class-validator';
-import { UserBaseEntity } from '../../users/entities/user-base-entity';
+import { BasicFields } from '../../common/types/basicfields';
 import { CityEntity } from '../../cities/entities/city.object';
 
 @ObjectType()
 @Entity('responsible')
-export class ResponsibleEntity extends UserBaseEntity {
+export class ResponsibleEntity extends BasicFields {
   @Field({ nullable: true })
   @Column({ type: 'varchar', length: 100, nullable: false })
   @IsOptional()
@@ -115,12 +115,12 @@ export class ResponsibleEntity extends UserBaseEntity {
   @Field({ nullable: true })
   @Column({ name: 'org_identity', type: 'varchar', length: 15, nullable: true })
   @IsOptional()
-  OrgIdentity?: string;
+  orgIdentity?: string;
 
   @Field({ nullable: true })
-  @Column({ name: 'civil_status', nullable: true })
+  @Column({ name: 'civil_status', type: 'varchar', length: 1, nullable: true })
   @IsOptional()
-  civilStatus?: boolean;
+  civilStatus?: string;
 
   @Field({ nullable: true })
   @Column({ type: 'text', nullable: true })

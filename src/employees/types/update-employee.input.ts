@@ -102,4 +102,9 @@ export class UpdateEmploeeInput {
   @MaxLength(100)
   @IsOptional()
   profile?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }

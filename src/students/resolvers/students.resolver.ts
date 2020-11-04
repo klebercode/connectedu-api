@@ -17,12 +17,10 @@ import { StudentsService } from '../students.service';
 import { CreateStudentInput } from '../types/create-student.input';
 import { UpdateStudentInput } from '../types/update-student.input';
 
-import { MyContext } from '../../common/types/myContext';
+import { MyContext } from '../../common/types/mycontext';
 import { StatesService } from '../../states/states.service';
-import { UsersService } from '../../users/users.service';
 import { CitiesService } from '../../cities/cities.service';
 import { ResponsiblesService } from '../../responsibles/responsibles.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import {
   HttpExceptionFilter,
   CustomException,
@@ -40,7 +38,6 @@ export class studentsResolver extends ResolverDefault<
 > {
   constructor(
     private readonly studentsblesService: StudentsService,
-    private readonly usersService: UsersService,
     private readonly statesService: StatesService,
     private readonly citiesService: CitiesService,
     private readonly responsiblesService: ResponsiblesService,
@@ -91,16 +88,20 @@ export class studentsResolver extends ResolverDefault<
   }
 
   @Mutation(() => Boolean, { name: 'studentDelete' })
-  async detele(@Args('id') id: number): Promise<boolean> {
-    return super.delete(id);
+  async delete(
+    @Context() context: MyContext,
+    @Args('id') id: number,
+  ): Promise<boolean> {
+    return super.delete(context, id);
   }
 
   @Mutation(() => Boolean, { name: 'studentDeleteMany' })
   async deleteMany(
+    @Context() context: MyContext,
     @Args({ name: 'ids', type: () => [Number] })
     ids: [number],
   ): Promise<boolean> {
-    return super.deleteMany(ids);
+    return super.deleteMany(context, ids);
   }
 
   @Mutation(() => StudentEntity, { name: 'studentUpdate' })
@@ -140,20 +141,6 @@ export class studentsResolver extends ResolverDefault<
   @ResolveField('father')
   async father(@Parent() student: StudentEntity) {
     const id = student.fatherId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.responsiblesService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Responsável');
-    }
-  }
-
-  @ResolveField('resideResponsable')
-  async resideResponsable(@Parent() student: StudentEntity) {
-    const id = student.resideResponsableId;
     if (!id) {
       return null;
     }
@@ -218,34 +205,6 @@ export class studentsResolver extends ResolverDefault<
       return this.citiesService.findOneById(id);
     } catch (error) {
       CustomException.catch(error, 'get', 'Cidade');
-    }
-  }
-
-  @ResolveField(type => UserEntity)
-  async userCreated(@Parent() student: StudentEntity): Promise<any> {
-    const id = student.userCreatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
-    }
-  }
-
-  @ResolveField(type => UserEntity)
-  async userUpdated(@Parent() student: StudentEntity) {
-    const id = student.userUpdatedId;
-    if (!id) {
-      return null;
-    }
-
-    try {
-      return this.usersService.findOneById(id);
-    } catch (error) {
-      CustomException.catch(error, 'get', 'Usuário');
     }
   }
 }

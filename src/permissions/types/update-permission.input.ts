@@ -13,4 +13,13 @@ export class UpdatePermissionInput {
   @Field({ nullable: false })
   @MaxLength(100)
   description: string;
+
+  @Field({ nullable: false })
+  @MaxLength(3)
+  type: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxLength(20)
+  legacyCode: string;
 }
